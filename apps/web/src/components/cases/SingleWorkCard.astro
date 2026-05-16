@@ -53,12 +53,13 @@ const { url, image, industry, client, tagline } = {
       <Text
         tag="h4"
         variant="displayMD"
-        class="text-base-900 text-balance font-medium tracking-tight font-display lg:col-span-2 lg:-mt-2"
+        class="text-base-900 text-left font-medium tracking-tight font-display lg:col-span-2 lg:-mt-2"
+        style="font-size: 28px;"
       >
         {client}
       </Text>
     </a>
-      <Kicker variant="default">{getIndustryDisplayName(industry)}</Kicker>
+      <Kicker variant="default" class="text-left" style="font-size: 12px;">{getIndustryDisplayName(industry)}</Kicker>
 
   </div>
 </article>
