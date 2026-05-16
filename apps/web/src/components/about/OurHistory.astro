@@ -1,53 +1,74 @@
 ---
+import { Image } from "astro:assets";
 import Timeline from "@/components/ui/timeline.astro";
 import Text from "@/components/fundations/elements/Text.astro";
 import Kicker from "@/components/fundations/elements/Kicker.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+import madaviNorrsken1 from "@/images/about/madavi-norrsken-2022.jpg";
+import madaviNorrsken2 from "@/images/about/madavi-norrsken-2022-2.jpg";
+import madaviTeam1 from "@/images/about/madavi-team-2023.jpg";
+import teamPicture from "@/images/about/team-picture-2023.jpg";
+import madaviTeam2024 from "@/images/about/Madavi-Team-2024.png";
+import madaviTeam20241 from "@/images/about/Madavi-Team-2024-1.png";
 
 const timelineData = [
+  {
+    title: "2017",
+    content: `
+      <p class="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8">
+        Madavi was founded in a dorm room by Victor Ambuyo with a vision to build sustainable solutions through technology. Registered as Oratech Solutions Ltd in Kenya, focusing on custom web and mobile app development.
+      </p>
+      <p class="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8">
+        Bootstrap operation driven by a student entrepreneur's passion for technology-driven transformation.
+      </p>
+    `,
+  },
   {
     title: "2018",
     content: `
       <p class="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8">
-        Founded Madavi Agency with a simple vision: help businesses stand out and win in the digital space. Started as a digital marketing powerhouse focused on delivering measurable results.
+        Official launch of Madavi Agency (June 25, 2018) with expanded team of 5 people. Shifted focus to digital marketing, web development, product design, and UI/UX design serving SMEs across East Africa.
       </p>
-      <div class="grid grid-cols-2 gap-4">
+      <div class="grid grid-cols-2 gap-4 mb-8">
         <div class="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05)]">
-          <span class="text-white font-semibold">Brand Building</span>
+          <span class="text-white font-semibold">Web Dev (30%)</span>
         </div>
         <div class="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05)]">
-          <span class="text-white font-semibold">Digital Growth</span>
+          <span class="text-white font-semibold">Mobile Dev (20%)</span>
         </div>
         <div class="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full bg-gradient-to-br from-pink-400 to-pink-600 flex items-center justify-center shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05)]">
-          <span class="text-white font-semibold">Marketing</span>
+          <span class="text-white font-semibold">Marketing (10%)</span>
         </div>
         <div class="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05)]">
-          <span class="text-white font-semibold">Results Driven</span>
+          <span class="text-white font-semibold">UI/UX Design (20%)</span>
         </div>
       </div>
+      <p class="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal">
+        Project pricing: $1,000-$10,000 minimum; Hourly: $30-70/hour
+      </p>
     `,
   },
   {
     title: "2019-2020",
     content: `
-      <p class="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8">
-        Rapid expansion across continents. Established offices in key markets and scaled to serve 60+ businesses, delivering over $20M in combined revenue growth for our partners.
+      <p class="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-4">
+        <strong>November 2020:</strong> Named among top-performing B2B companies by Clutch across Kenya, Nigeria, South Africa & Tanzania with 4.8/5 rating (50+ reviews).
       </p>
       <p class="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8">
-        Built a team of talented professionals across three continents. Strengthened our position as a trusted digital transformation partner for growing businesses.
+        Expanded service portfolio to include performance marketing, SEO, and content marketing. Served 60+ clients across healthcare, education, e-commerce, and professional services sectors. Generated $20M+ in combined revenue growth for partners.
       </p>
       <div class="grid grid-cols-2 gap-4">
         <div class="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full bg-gradient-to-br from-cyan-400 to-cyan-600 flex items-center justify-center shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05)]">
-          <span class="text-white font-semibold">Global Reach</span>
+          <span class="text-white font-semibold">60+ Clients</span>
         </div>
         <div class="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full bg-gradient-to-br from-indigo-400 to-indigo-600 flex items-center justify-center shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05)]">
-          <span class="text-white font-semibold">60+ Clients</span>
+          <span class="text-white font-semibold">$20M Growth</span>
         </div>
         <div class="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full bg-gradient-to-br from-violet-400 to-violet-600 flex items-center justify-center shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05)]">
           <span class="text-white font-semibold">Team Growth</span>
         </div>
         <div class="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05)]">
-          <span class="text-white font-semibold">$20M Growth</span>
+          <span class="text-white font-semibold">Clutch Recognition</span>
         </div>
       </div>
     `,
@@ -56,49 +77,36 @@ const timelineData = [
     title: "2021",
     content: `
       <p class="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-4">
-        A critical turning point in our journey. While working with clients, we recognized a major pain point:
+        <strong>Truecaller Partnership:</strong> Strategic partnership for mobile authentication and SDK integration, positioning Madavi as technology innovation leader in East Africa.
       </p>
-      <div class="mb-8">
+      <p class="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8">
+        Recognized market needs and began positioning as "growth marketing agency" with emphasis on measurable business results and performance integration.
+      </p>
+      <div class="mb-4">
         <div class="flex gap-2 items-center text-neutral-700 dark:text-neutral-300 text-xs md:text-sm">
-          ✅ Teams drowning in repetitive, manual tasks
+          ✅ Mobile authentication solutions
         </div>
         <div class="flex gap-2 items-center text-neutral-700 dark:text-neutral-300 text-xs md:text-sm">
-          ✅ Chasing payments and sending reminders
+          ✅ Security-focused development
         </div>
         <div class="flex gap-2 items-center text-neutral-700 dark:text-neutral-300 text-xs md:text-sm">
-          ✅ Copying data and following up with leads
-        </div>
-        <div class="flex gap-2 items-center text-neutral-700 dark:text-neutral-300 text-xs md:text-sm">
-          ✅ Necessary work that drained time and energy
+          ✅ Regional digital infrastructure expertise
         </div>
       </div>
-      <p class="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8">
-        This insight inspired our evolution from marketing agency to digital transformation partner.
-      </p>
     `,
   },
   {
     title: "2022",
     content: `
       <p class="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8">
-        Strategic pivot from one-off marketing campaigns to building sustainable systems. Launched our consulting division focused on automation, AI integration, and operational excellence.
+        <strong>Geographic Expansion:</strong> Established offices in Nairobi (Senteu Plaza) and Kigali (Norrsken House). Pan-African positioning as one of East Africa's leading custom web and mobile development companies.
       </p>
       <p class="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8">
-        Developed proprietary frameworks for business automation, process optimization, and sustainable growth strategies.
+        Continued serving healthcare, education technology, e-commerce, and professional services sectors. Growing regional presence across Kenya and Rwanda.
       </p>
       <div class="grid grid-cols-2 gap-4">
-        <div class="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05)]">
-          <span class="text-white font-semibold">Automation</span>
-        </div>
-        <div class="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05)]">
-          <span class="text-white font-semibold">Strategy</span>
-        </div>
-        <div class="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05)]">
-          <span class="text-white font-semibold">Systems</span>
-        </div>
-        <div class="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full bg-gradient-to-br from-lime-400 to-lime-600 flex items-center justify-center shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05)]">
-          <span class="text-white font-semibold">Excellence</span>
-        </div>
+        <img src="${madaviNorrsken1.src}" alt="Norrsken House Kigali 2022" class="rounded-lg object-cover h-40 md:h-56 lg:h-72 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05)]" />
+        <img src="${madaviNorrsken2.src}" alt="Norrsken House Kigali 2022" class="rounded-lg object-cover h-40 md:h-56 lg:h-72 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05)]" />
       </div>
     `,
   },
@@ -106,74 +114,94 @@ const timelineData = [
     title: "2023",
     content: `
       <p class="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8">
-        Deep specialization in AI implementation and business automation. Developed proprietary methodologies and frameworks for:
+        <strong>Major Milestones:</strong> Team grew 180% (from 5 to 14 people). Incorporated in Delaware, USA, establishing tri-continental presence (Africa + North America).
       </p>
-      <div class="mb-8">
+      <p class="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8">
+        Strategic pivot began toward AI adoption advisory. Recognized AI disruption opportunity and started internal research and client experimentation.
+      </p>
+      <div class="grid grid-cols-2 gap-4 mb-8">
+        <img src="${madaviTeam1.src}" alt="Madavi Team 2023" class="rounded-lg object-cover h-40 md:h-56 lg:h-72 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05)]" />
+        <img src="${teamPicture.src}" alt="Team Picture 2023" class="rounded-lg object-cover h-40 md:h-56 lg:h-72 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05)]" />
+      </div>
+      <div>
         <div class="flex gap-2 items-center text-neutral-700 dark:text-neutral-300 text-xs md:text-sm">
-          ✅ AI-powered process automation
+          ✅ Team: 5 → 14 people (180% growth)
         </div>
         <div class="flex gap-2 items-center text-neutral-700 dark:text-neutral-300 text-xs md:text-sm">
-          ✅ Predictive analytics implementation
+          ✅ Delaware Incorporation
         </div>
         <div class="flex gap-2 items-center text-neutral-700 dark:text-neutral-300 text-xs md:text-sm">
-          ✅ Intelligent workflow optimization
+          ✅ Specialized roles emerging
         </div>
         <div class="flex gap-2 items-center text-neutral-700 dark:text-neutral-300 text-xs md:text-sm">
-          ✅ Enterprise digital transformation
+          ✅ AI experiments launched
         </div>
       </div>
-      <p class="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal">
-        Positioned as thought leaders in AI-driven business transformation.
-      </p>
     `,
   },
   {
     title: "2024",
     content: `
       <p class="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8">
-        Launched Madavi Consulting as dedicated AI and digital transformation advisory. Combined years of agency experience with cutting-edge AI capabilities.
+        <strong>Client Base Scaling & Service Expansion:</strong> Expanded service offerings to clients in both the US and East Africa. Demonstrated AI adoption expertise across diverse markets and industries.
       </p>
       <p class="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8">
-        Serving enterprise clients with comprehensive AI strategy, implementation, and optimization services for critical industries and large-scale operations.
+        <strong>New Service Lines:</strong> Introduced Madavi-Gro, a dedicated Training-as-a-Service offering for marketing teams of organizations seeking to upskill their talent.
+      </p>
+      <p class="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8">
+        <strong>Thought Leadership:</strong> Launched YouTube Teaching Series featuring team members sharing expertise content with the general public. Built community through educational content and practical guidance.
       </p>
       <div class="grid grid-cols-2 gap-4">
-        <div class="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full bg-gradient-to-br from-fuchsia-400 to-fuchsia-600 flex items-center justify-center shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05)]">
-          <span class="text-white font-semibold">Enterprise AI</span>
-        </div>
-        <div class="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full bg-gradient-to-br from-rose-400 to-rose-600 flex items-center justify-center shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05)]">
-          <span class="text-white font-semibold">Transformation</span>
-        </div>
-        <div class="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full bg-gradient-to-br from-sky-400 to-sky-600 flex items-center justify-center shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05)]">
-          <span class="text-white font-semibold">Strategy</span>
-        </div>
-        <div class="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05)]">
-          <span class="text-white font-semibold">Growth</span>
-        </div>
+        <img src="${madaviTeam2024.src}" alt="Madavi Team 2024" class="rounded-lg object-cover h-40 md:h-56 lg:h-72 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05)]" />
+        <img src="${madaviTeam20241.src}" alt="Madavi Team 2024" class="rounded-lg object-cover h-40 md:h-56 lg:h-72 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05)]" />
       </div>
     `,
   },
   {
-    title: "2025 & Beyond",
+    title: "2025",
+    content: `
+      <p class="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8">
+        <strong>AI-First Transformation:</strong> Major strategic pivot from digital agency to AI adoption advisory. Developed HCAIF (Human-Centric AI Integration Framework) through 50+ client engagements.
+      </p>
+      <p class="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8">
+        <strong>Launched Three-Pillar Service Model:</strong> Executive Advisory, Implementation & Delivery, and Ongoing Partnership. Specialized in law firms, healthcare, nonprofits, e-commerce/retail, and African enterprises.
+      </p>
+      <p class="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8">
+        <strong>Product Launches:</strong> Sauti Voice AI and Kuzafy. Brand restructure with multi-brand architecture (madavi.co, agency.madavi.co, madavi.africa, MadaviQ, MadaviGro).
+      </p>
+      <p class="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-4">
+        <strong>Service Formalization:</strong> Clear pricing and service offerings, comprehensive content infrastructure for thought leadership.
+      </p>
+      <div class="flex gap-2 items-center text-neutral-700 dark:text-neutral-300 text-xs md:text-sm">
+        ✅ Kenya launches National AI Strategy 2025-2030
+      </div>
+    `,
+  },
+  {
+    title: "2026 & Beyond",
     content: `
       <p class="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-4">
-        Our vision for the future:
+        <strong>Strategic Vision:</strong>
       </p>
       <div class="mb-8">
         <div class="flex gap-2 items-center text-neutral-700 dark:text-neutral-300 text-xs md:text-sm">
-          ✅ Global leader in AI-driven transformation
+          ✅ Scale HCAIF adoption across African markets
         </div>
         <div class="flex gap-2 items-center text-neutral-700 dark:text-neutral-300 text-xs md:text-sm">
-          ✅ Serving Fortune 500 companies globally
+          ✅ Establish certification program for framework practitioners
         </div>
         <div class="flex gap-2 items-center text-neutral-700 dark:text-neutral-300 text-xs md:text-sm">
-          ✅ Advancing AI ethics and responsible implementation
+          ✅ Expand to key African tech hubs (Lagos, Johannesburg, Cape Town)
         </div>
         <div class="flex gap-2 items-center text-neutral-700 dark:text-neutral-300 text-xs md:text-sm">
-          ✅ Building sustainable AI solutions for critical industries
+          ✅ Develop proprietary SaaS assessment tools
+        </div>
+        <div class="flex gap-2 items-center text-neutral-700 dark:text-neutral-300 text-xs md:text-sm">
+          ✅ Framework licensing to consultancies and agencies
         </div>
       </div>
       <p class="text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal">
-        Continuing to innovate and help organizations unlock the full potential of artificial intelligence and automation.
+        From dorm room startup to pan-African AI adoption leader. Building sustainable, human-centric AI solutions with capability transfer at the core.
       </p>
     `,
   },
@@ -189,14 +217,14 @@ const timelineData = [
         variant="textLG"
         class="text-base-900 lg:text-pretty lg:mt-4 font-medium font-display"
       >
-        From Digital Marketing to AI-Driven Transformation
+        From Dorm Room to AI Adoption Advisory
       </Text>
       <Text
         tag="p"
         variant="textBase"
         class="text-base-600 lg:text-pretty mt-4 max-w-3xl"
       >
-        Over the past years, we've evolved from a digital marketing agency to a strategic partner in AI and digital transformation. Our journey has been driven by deep client insights, market shifts, and a commitment to delivering sustainable, technology-enabled growth.
+        Since 2017, Madavi has evolved from a bootstrap startup to a pan-African AI adoption advisory firm. Our journey spans three business phases: digital agency (2017-2023), growth marketing transformation (2020-2023), and AI-first advisory (2024-present). We've served 60+ clients, generated $20M+ in combined revenue growth, and developed proprietary frameworks for human-centric AI integration.
       </Text>
     </div>
 
