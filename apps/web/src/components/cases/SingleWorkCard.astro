@@ -13,12 +13,11 @@ if (!post) {
   throw new Error("SingleWorkCard requires a 'post' prop");
 }
 
-const { url, image, industry, client, tagline } = {
+const { url, image, industry, client } = {
   url: "/our-work/" + post.slug,
   image: post.data.image.url,
   industry: post.data.industry,
   client: post.data.client,
-  tagline: post.data.tagline,
 };
 ---
 
@@ -38,16 +37,6 @@ const { url, image, industry, client, tagline } = {
   </a>
 
   <div class="p-6 flex flex-col gap-3">
-
-        {tagline && (
-      <Text
-        tag="p"
-        variant="textBase"
-        class="text-base-500 dark:text-base-400 italic"
-      >
-        {tagline}
-      </Text>
-    )}
 
     <a href={url} class="relative z-10">
       <Text
