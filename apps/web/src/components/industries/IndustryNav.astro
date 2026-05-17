@@ -23,7 +23,7 @@ const navLinks = [
 const headerBaseClass = "fixed inset-x-0 top-0 z-50 transition-all duration-300";
 ---
 
-<header class={`${headerBaseClass} bg-[#005B65]`} data-navbar-variant="legal">
+<header class={`${headerBaseClass} bg-[#005B65]`} data-navbar-variant="industry">
   <Wrapper variant="standard" class="py-6">
     <div class="flex items-center justify-between gap-4">
       <a href="/" class="flex items-center gap-3 max-w-xs transition-colors text-white [.scrolled_&]:text-base-900">
@@ -68,8 +68,8 @@ const headerBaseClass = "fixed inset-x-0 top-0 z-50 transition-all duration-300"
 
 <script is:inline>
   // Handle navbar scroll detection
-  function handleLegalNavbarScroll() {
-    const header = document.querySelector("header[data-navbar-variant='legal']");
+  function handleIndustryNavbarScroll() {
+    const header = document.querySelector("header[data-navbar-variant='industry']");
     if (!header) return;
 
     function updateNavbarStyle() {
@@ -95,5 +95,5 @@ const headerBaseClass = "fixed inset-x-0 top-0 z-50 transition-all duration-300"
     window.addEventListener("scroll", updateNavbarStyle);
   }
 
-  handleLegalNavbarScroll();
+  handleIndustryNavbarScroll();
 </script>
