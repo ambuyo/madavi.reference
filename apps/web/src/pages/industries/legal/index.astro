@@ -43,12 +43,13 @@ const legalPrinciples = [
 ---
 
 <BaseLayout seo={seo} navVariant="transparent">
-  <section class="bg-slate-900 relative overflow-hidden">
+  <div class="bg-slate-900 relative overflow-hidden min-h-screen">
     <div class="absolute inset-0 opacity-10" style="background-image: linear-gradient(0deg, transparent 24%, rgba(255,255,255,.05) 25%, rgba(255,255,255,.05) 26%, transparent 27%, transparent 74%, rgba(255,255,255,.05) 75%, rgba(255,255,255,.05) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(255,255,255,.05) 25%, rgba(255,255,255,.05) 26%, transparent 27%, transparent 74%, rgba(255,255,255,.05) 75%, rgba(255,255,255,.05) 76%, transparent 77%, transparent); background-size: 50px 50px;"></div>
     <Wrapper
       variant="standard"
       class="py-12 pt-48 relative z-10"
     >
+    <section>
       <div class="max-w-4xl">
         <Kicker class="text-white uppercase tracking-widest text-sm">Industry</Kicker>
         <Text
@@ -62,7 +63,8 @@ const legalPrinciples = [
         </Text>
       </div>
     </Wrapper>
-  </section>
+    </section>
+  </div>
 
   <section>
     <Wrapper variant="standard" class="py-24">
