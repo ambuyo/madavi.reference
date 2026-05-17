@@ -4,14 +4,12 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import Text from "@/components/fundations/elements/Text.astro";
 import Kicker from "@/components/fundations/elements/Kicker.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
-// Sections
-import Testimonials from "@/components/customers/Testimonials.astro";
 // Components
-import ServiceCard from "@/components/services/ServiceCard.astro";
+import ServiceCard from "@/components/capabilities/template/ServiceCard.astro";
 // Content
 import { getCollection } from "astro:content";
 const services = await getCollection("services");
-services.sort((a, b) => {
+services.sort((a: any, b: any) => {
   const featuredDiff = (b.data.featured ? 1 : 0) - (a.data.featured ? 1 : 0);
   if (featuredDiff !== 0) return featuredDiff;
   return a.data.title.localeCompare(b.data.title);
@@ -44,7 +42,7 @@ const legalPrinciples = [
 ];
 ---
 
-<BaseLayout seo={seo} navTransparent={true}>
+<BaseLayout seo={seo} navVariant="transparent">
   <section class="bg-accent-800">
     <Wrapper
       variant="standard"
@@ -71,7 +69,7 @@ const legalPrinciples = [
   <section>
     <Wrapper variant="standard" class="py-24">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-24">
-        {services.map((service) => <ServiceCard service={service} />)}
+        {services.map((service: any) => <ServiceCard service={service} />)}
       </div>
     </Wrapper>
   </section>
@@ -117,6 +115,4 @@ const legalPrinciples = [
       </div>
     </Wrapper>
   </section>
-
-  <Testimonials />
 </BaseLayout>
