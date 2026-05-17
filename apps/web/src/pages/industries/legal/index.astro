@@ -43,25 +43,23 @@ const legalPrinciples = [
 ---
 
 <BaseLayout seo={seo} navVariant="transparent">
-  <section class="bg-accent-800">
+  <section class="bg-slate-900 relative overflow-hidden">
+    <div class="absolute inset-0 opacity-10" style="background-image: linear-gradient(0deg, transparent 24%, rgba(255,255,255,.05) 25%, rgba(255,255,255,.05) 26%, transparent 27%, transparent 74%, rgba(255,255,255,.05) 75%, rgba(255,255,255,.05) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(255,255,255,.05) 25%, rgba(255,255,255,.05) 26%, transparent 27%, transparent 74%, rgba(255,255,255,.05) 75%, rgba(255,255,255,.05) 76%, transparent 77%, transparent); background-size: 50px 50px;"></div>
     <Wrapper
       variant="standard"
-      class="py-12 pt-48 lg:border-x lg:border-white/10"
+      class="py-12 pt-48 relative z-10"
     >
-      <div class="grid grid-cols-1 lg:grid-cols-3 lg:items-end gap-12">
-        <div class="max-w-4xl text-balance lg:col-span-2">
-          <Kicker class="text-white">Industry</Kicker>
-          <Text
-            tag="h1"
-            variant="displayMD"
-            class="font-medium tracking-tight mt-12 text-white"
-          >
-            AI solutions built for law firms and legal enterprises.
-          </Text>
-          <Text tag="p" variant="textLG" class="text-base-200 mt-4">
-            From case management automation to legal research acceleration, we help law firms leverage AI while protecting confidentiality, maintaining ethical standards, and amplifying attorney expertise.
-          </Text>
-        </div>
+      <div class="max-w-4xl">
+        <Kicker class="text-white uppercase tracking-widest text-sm">Industry</Kicker>
+        <Text
+          tag="h1"
+          class="font-medium tracking-tight mt-8 text-white text-5xl lg:text-6xl leading-tight font-display"
+        >
+          AI solutions built for law firms and legal enterprises.
+        </Text>
+        <Text tag="p" class="text-slate-300 mt-6 text-lg max-w-2xl">
+          From case management automation to legal research acceleration, we help law firms leverage AI while protecting confidentiality, maintaining ethical standards, and amplifying attorney expertise.
+        </Text>
       </div>
     </Wrapper>
   </section>
