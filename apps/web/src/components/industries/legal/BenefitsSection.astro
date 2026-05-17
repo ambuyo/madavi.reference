@@ -1,0 +1,118 @@
+---
+import Text from "@/components/fundations/elements/Text.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+
+interface Benefit {
+  title: string;
+  description: string;
+}
+
+interface Delivery {
+  title: string;
+  description: string;
+}
+
+interface Props {
+  number: number;
+  title: string;
+  subtitle: string;
+  benefits: Benefit[];
+  deliveryItems: Delivery[];
+}
+
+const { number, title, subtitle, benefits, deliveryItems } = Astro.props;
+---
+
+<section class="py-12 lg:py-16">
+  <Wrapper variant="standard">
+    <div class="mb-12">
+      <div class="flex items-start gap-6">
+        <div class="text-6xl lg:text-7xl font-bold text-base-200">{number}</div>
+        <div>
+          <Text
+            tag="h2"
+            variant="displayMD"
+            class="text-base-900 font-display text-balance"
+          >
+            {title}
+          </Text>
+          <Text
+            tag="p"
+            variant="textLG"
+            class="text-base-600 mt-2"
+          >
+            {subtitle}
+          </Text>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid lg:grid-cols-7 gap-8 lg:gap-12">
+      <!-- Benefits Column (70%) -->
+      <div class="lg:col-span-5">
+        <Text
+          tag="h3"
+          variant="textLG"
+          class="text-base-900 font-semibold mb-8"
+        >
+          Benefits You Get
+        </Text>
+        <div class="space-y-6">
+          {
+            benefits.map((benefit) => (
+              <div class="border-l-4 border-accent-500 pl-6 p-4 rounded-lg" style="background-color: #FFDEAD;">
+                <Text
+                  tag="h4"
+                  variant="textBase"
+                  class="text-base-900 font-semibold mb-2"
+                >
+                  {benefit.title}
+                </Text>
+                <Text
+                  tag="p"
+                  variant="textSM"
+                  class="text-base-600"
+                >
+                  {benefit.description}
+                </Text>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+
+      <!-- How We Deliver Column (30%) -->
+      <div class="lg:col-span-2">
+        <Text
+          tag="h3"
+          variant="textLG"
+          class="text-base-900 font-semibold mb-8"
+        >
+          How We Deliver
+        </Text>
+        <div class="space-y-6">
+          {
+            deliveryItems.map((item) => (
+              <div class="p-4 rounded-lg" style="background-color: #b2d8d8;">
+                <Text
+                  tag="h4"
+                  variant="textSM"
+                  class="text-base-900 font-semibold mb-1"
+                >
+                  {item.title}
+                </Text>
+                <Text
+                  tag="p"
+                  variant="textXS"
+                  class="text-base-600"
+                >
+                  {item.description}
+                </Text>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </Wrapper>
+</section>

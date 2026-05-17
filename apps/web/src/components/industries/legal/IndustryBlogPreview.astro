@@ -1,0 +1,49 @@
+---
+// Fundations
+import Text from "@/components/fundations/elements/Text.astro";
+import Kicker from "@/components/fundations/elements/Kicker.astro";
+import Button from "@/components/fundations/elements/Button.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+// Components
+import BlogCard from "@/components/blog/BlogCard.astro";
+// Data
+import { getPostsByCategory } from "@/lib/data";
+
+const legalPosts = await getPostsByCategory("legal");
+---
+
+<section>
+  <Wrapper variant="standard" class="py-12">
+    <div class="p-8 lg:p-12 bg-base-50">
+      <div class="max-w-xl">
+        <Kicker variant="default">Journal</Kicker>
+        <Text
+          tag="h2"
+          variant="displayMD"
+          class="text-base-900 text-balance font-display lg:mt-8"
+        >
+          Latest Insights
+        </Text>
+        <Text
+          tag="p"
+          variant="textBase"
+          class="text-base-700 lg:text-balance lg:col-span-2 mt-4"
+        >
+          Stay informed with our latest articles on legal AI, digital transformation, and practice management trends.
+        </Text>
+        <Button
+          variant="default"
+          size="xs"
+          isLink={true}
+          href="/blog"
+          class="w-fit mt-8"
+        >
+          View All Articles
+        </Button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 mt-12 gap-4">
+        {legalPosts.slice(0, 3).map((post) => <BlogCard post={post} />)}
+      </div>
+    </div>
+  </Wrapper>
+</section>

@@ -1,0 +1,80 @@
+---
+import { getCollection } from "astro:content";
+// Fundations
+import Text from "@/components/fundations/elements/Text.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+// Icons
+import Plus from "@/components/fundations/icons/Plus.astro";
+
+interface Props {
+  title?: string;
+  description?: string;
+  faqSlug?: string;
+}
+
+const {
+  title = "Frequently Asked Questions",
+  description = "Find answers to common questions about AI implementation for law firms.",
+  faqSlug = "law-firms",
+} = Astro.props;
+
+// Fetch FAQ from collection
+const faqs = await getCollection("faqs");
+const faqEntry = faqs.find(entry => entry.data.slug === faqSlug);
+
+// Transform FAQ data to component format
+const faqData = faqEntry ? [{
+  category: faqEntry.data.title,
+  questions: faqEntry.data.faqs.map(faq => ({
+    question: faq.question,
+    answer: faq.shortAnswer
+  }))
+}] : [];
+---
+
+<section>
+  <Wrapper variant="standard" class="py-12">
+    <div class="max-w-2xl">
+      <Text
+        tag="h2"
+        variant="displayLG"
+        class="text-base-900 text-balance font-medium tracking-tight mt-8 font-display"
+      >
+        {title}
+      </Text>
+      <Text
+        tag="p"
+        variant="textBase"
+        class="text-base-600 lg:text-balance mt-4"
+      >
+        {description}
+      </Text>
+    </div>
+    <div class="space-y-8 gap-8 mt-12 lg:mt-24">
+      {
+        faqData.map((category) => (
+          <div class="p-8 lg:p-12 bg-base-50">
+            <Text
+              tag="h3"
+              variant="textXL"
+              class="text-base-900 text-balance font-medium tracking-tight font-display"
+            >
+              {category.category}
+            </Text>
+            <div class="divide-y divide-base-100 border-y border-base-100 mt-2 text-balance">
+              {category.questions.map((faq) => (
+                <details class="group">
+                  <summary class="cursor-pointer py-4 text-base font-medium text-base-900 hover:text-accent-500 transition-colors grid grid-cols-1 lg:grid-cols-2 select-none">
+                    {faq.question}
+                    <Plus class="size-5 hidden lg:block transition-transform group-open:rotate-180 duration-300 ml-auto" />
+                  </summary>
+                  <div class="pb-4 text-base-600">{faq.answer}</div>
+                </details>
+              ))}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </Wrapper>
+</section>

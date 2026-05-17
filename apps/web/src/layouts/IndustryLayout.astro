@@ -1,0 +1,126 @@
+---
+// Styles
+import "@/styles/global.css";
+
+// SEO & Head Components
+import BaseHead from "@/components/fundations/head/BaseHead.astro";
+import SEOHead from "@/components/SEOHead.astro";
+import StructuredData from "@/components/StructuredData.astro";
+
+// Analytics Components
+import GoogleAnalytics from "@/components/fundations/scripts/GoogleAnalytics.astro";
+import LLMAnalytics from "@/components/fundations/scripts/LLMAnalytics.astro";
+
+// Layout Components
+import IndustryNav from "@/components/industries/IndustryNav.astro";
+import MainCta from "@/components/ctas/MainCta.astro";
+import Footer from "@/components/global/Footer.astro";
+import Search from "@/components/global/Search.astro";
+
+interface Props {
+  seo?: {
+    title?: string;
+    description?: string;
+    image?: { url: string; alt?: string };
+    type?: "website" | "article";
+    publishedTime?: string;
+    noindex?: boolean;
+  };
+
+  title?: string;
+  description?: string;
+  canonical?: string;
+  seoType?: "article" | "website" | "organization";
+  publishDate?: Date;
+  modifiedDate?: Date;
+  author?: string;
+  image?: string;
+  keywords?: string[];
+
+  hideMainCta?: boolean;
+  hideFooter?: boolean;
+}
+
+const {
+  // Legacy
+  seo,
+
+  // New SEO
+  title,
+  description,
+  canonical,
+  seoType = "website",
+  publishDate,
+  modifiedDate,
+  author,
+  image,
+  keywords = [],
+
+  // Layout
+  hideMainCta = false,
+  hideFooter = false,
+} = Astro.props;
+
+// Merge legacy and new SEO data (new takes precedence)
+const seoTitle = title || seo?.title;
+const seoDescription = description || seo?.description;
+const seoImage = image || seo?.image?.url;
+const seoPublishedTime = publishDate || (seo?.publishedTime ? new Date(seo.publishedTime) : undefined);
+---
+
+<html lang="en" class="scroll-smooth">
+  <head>
+    <!-- Legacy head components (kept for backward compatibility) -->
+    <BaseHead seo={seo} />
+
+    <!-- Enhanced SEO head with meta tags (LLM-optimized) -->
+    {seoTitle && (
+      <SEOHead
+        title={seoTitle}
+        description={seoDescription || ""}
+        canonical={canonical}
+        type={seoType}
+        publishDate={seoPublishedTime}
+        modifiedDate={modifiedDate}
+        author={author}
+        image={seoImage}
+        keywords={keywords}
+      />
+    )}
+
+    <!-- JSON-LD Structured Data for search engines -->
+    {seoTitle && (
+      <StructuredData
+        type={seoType === "article" ? "Article" : "WebPage"}
+        data={{
+          headline: seoTitle,
+          description: seoDescription,
+          url: Astro.url.href,
+          image: seoImage,
+          datePublished: seoPublishedTime?.toISOString?.(),
+          dateModified: modifiedDate?.toISOString?.(),
+          author: author
+            ? {
+                "@type": "Person",
+                name: author,
+              }
+            : undefined,
+        }}
+      />
+    )}
+
+    <!-- Analytics -->
+    <GoogleAnalytics />
+    <LLMAnalytics />
+  </head>
+
+  <body class="flex flex-col bg-white min-h-svh pt-16">
+    <IndustryNav />
+    <main class="grow"><slot /></main>
+    {!hideMainCta && <MainCta />}
+    {!hideFooter && <Footer />}
+    <Search />
+  </body>
+</html>
+
+<script is:inline src="/src/components/fundations/scripts/KeenSliderTestimonials.astro"></script>

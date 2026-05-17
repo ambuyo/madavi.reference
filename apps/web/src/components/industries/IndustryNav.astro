@@ -29,21 +29,23 @@ const headerBaseClass = "fixed inset-x-0 top-0 z-50 transition-all duration-300"
       <a href="/" class="flex items-center gap-3 max-w-xs transition-colors text-white [.scrolled_&]:text-base-900">
         <Logo variant="light" class="h-16 w-auto" />
       </a>
-      <nav class="hidden items-center gap-8 lg:flex group" aria-label="Primary">
-        {
-          navLinks.map((link) => {
-            const hasMegamenu = link.hasMegamenu;
-            return (
-              <a
-                href={link.href}
-                data-megamenu={link.label.toLowerCase()}
-                class={`text-sm font-medium transition-colors text-white/80 hover:text-white [.scrolled_&]:text-base-700 [.scrolled_&]:hover:text-base-950 ${hasMegamenu ? "has-megamenu" : ""}`}
-              >
-                {link.label}
-              </a>
-            );
-          })
-        }
+      <nav class="hidden items-center lg:flex group peer" aria-label="Primary">
+        <div class="flex items-center gap-8 px-8 py-4 rounded-full bg-white/10 backdrop-blur-md border border-white/20 group-hover:bg-white/20">
+          {
+            navLinks.map((link) => {
+              const hasMegamenu = link.hasMegamenu;
+              return (
+                <a
+                  href={link.href}
+                  data-megamenu={link.label.toLowerCase()}
+                  class={`text-sm font-medium transition-colors text-white/80 hover:text-white [.scrolled_&]:text-base-700 [.scrolled_&]:hover:text-base-950 ${hasMegamenu ? "has-megamenu" : ""}`}
+                >
+                  {link.label}
+                </a>
+              );
+            })
+          }
+        </div>
       </nav>
       <div class="flex items-center gap-2">
         <Search variant="transparent" />
@@ -52,7 +54,7 @@ const headerBaseClass = "fixed inset-x-0 top-0 z-50 transition-all duration-300"
           size="xs"
           variant="light"
           href="/contact"
-          class="hidden lg:flex [.scrolled_&]:variant-default"
+          class="hidden lg:flex px-6 py-2 rounded-full bg-white text-base-900 font-medium hover:bg-gray-100 [.scrolled_&]:bg-base-900 [.scrolled_&]:text-white [.scrolled_&]:hover:bg-base-800"
         >
           Get My AI Audit
         </Button>

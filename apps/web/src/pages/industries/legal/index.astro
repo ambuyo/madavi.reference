@@ -1,23 +1,133 @@
 ---
-// Fundations
-import BaseHead from "@/components/fundations/head/BaseHead.astro";
-import IndustryNav from "@/components/industries/IndustryNav.astro";
-import Footer from "@/components/global/Footer.astro";
+import { getCollection } from "astro:content";
+import IndustryLayout from "@/layouts/IndustryLayout.astro";
+import Text from "@/components/fundations/elements/Text.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+import ThreeTierProblems from "@/components/industries/legal/3TierProblems.astro";
+import IndustryValueProposition from "@/components/industries/legal/IndustryValueProposition.astro";
+import BenefitsSection from "@/components/industries/legal/BenefitsSection.astro";
+import IndustryROI from "@/components/industries/legal/IndustryROI.astro";
+import IndustryBlogPreview from "@/components/industries/legal/IndustryBlogPreview.astro";
+import IndustryFAQs from "@/components/industries/legal/IndustryFAQs.astro";
+
+// Fetch industry content from markdown
+const industries = await getCollection("industries");
+const industryContent = industries.find(ind => ind.id === "industry_legal_content.md");
+const industryData = industryContent?.data || {};
 
 const seo = {
-  title: "Legal Industry AI Solutions",
-  description: "Specialized AI consulting and digital transformation for law firms and legal enterprises.",
+  title: industryData.seo?.title || "Legal Industry AI Solutions",
+  description: industryData.seo?.description || "Specialized AI consulting and digital transformation for law firms and legal enterprises.",
   type: "website" as const,
 };
 ---
 
-<html lang="en" class="scroll-smooth">
-  <head>
-    <BaseHead seo={seo} />
-  </head>
-  <body class="flex flex-col bg-white min-h-dvh">
-    <IndustryNav />
-    <main class="grow pt-24"></main>
-    <Footer />
-  </body>
-</html>
+<IndustryLayout seo={seo}>
+  <section class="bg-[#005B65] text-white">
+    <Wrapper variant="standard" class="py-24 lg:py-32">
+      <div class="max-w-3xl">
+        <Text
+          tag="p"
+          variant="textXS"
+          class="text-white/80 tracking-wide uppercase"
+        >
+          AI FOR LAW FIRMS
+
+        </Text>
+        <Text
+          tag="h1"
+          variant="displayLG"
+          class="text-white font-display font-bold mt-2"
+        >
+Turn Non-Billable Time Into Revenue</Text>
+        <Text
+          tag="p"
+          variant="textLG"
+          class="text-white/90 mt-6"
+        >
+AI systems that free law firm associates from repetitive work, so they can focus on the high-value advisory work clients pay premium rates for.        </Text>
+      </div>
+    </Wrapper>
+  </section>
+
+  <IndustryValueProposition />
+
+  <ThreeTierProblems />
+
+  <BenefitsSection
+    number={1}
+    title="Strategic Counsel: Navigate AI Decisions Without Vendor Bias"
+    subtitle="Independent advisory for managing partners and COOs"
+    benefits={[
+      {
+        title: "Decisions Based on Economics, Not Hype",
+        description: "Evaluate investments through realization rates and leverage ratios—not vendor promises. Know exactly what billable hour impact to expect before you spend."
+      },
+      {
+        title: "Partners Evaluate Technology Independently",
+        description: "Your management committee won't need external consultants for every vendor. They'll have frameworks to compare claims, identify red flags, negotiate contracts confidently."
+      },
+      {
+        title: "Faster Decisions Without Paralysis",
+        description: "Move from 'should we do AI?' to 'which AI investments matter most?' with clear prioritization based on client impact and competitive positioning."
+      },
+      {
+        title: "Risk Mitigation Before Deployment",
+        description: "Identify ethics concerns, confidentiality risks, and malpractice exposure before deployment—not after bar association complaints."
+      }
+    ]}
+    deliveryItems={[
+      {
+        title: "Executive Advisory Retainer",
+        description: "Monthly/bi-weekly strategic counsel sessions, vendor evaluation frameworks, budget guidance"
+      },
+      {
+        title: "Leadership AI Fluency Cohort",
+        description: "8-week training for 6-12 partners building evaluation capabilities"
+      },
+      {
+        title: "Ethics & Governance",
+        description: "ABA guidelines compliance, privilege protection, risk assessment"
+      },
+      {
+        title: "Investment: $3K-8K/month",
+        description: "3-month minimum commitment"
+      }
+    ]}
+  />
+
+  <IndustryROI
+    title="Real ROI: What Billable Hour Impact Actually Looks Like"
+    before={{
+      title: "Before AI Implementation",
+      stats: [
+        { label: "Review Time per Agreement", value: "6 hours" },
+        { label: "Monthly Agreements", value: "40" },
+        { label: "Total Monthly Hours", value: "240 hours" },
+        { label: "Monthly Revenue", value: "$72,000" }
+      ]
+    }}
+    after={{
+      title: "After AI Implementation",
+      stats: [
+        { label: "Review Time per Agreement", value: "4 hours" },
+        { label: "Time Saved by AI", value: "2 hours" },
+        { label: "Freed Hours for New Work", value: "80 hours/month" },
+        { label: "Additional Monthly Revenue", value: "$24,000" }
+      ]
+    }}
+    investment="Total Year 1 Investment: $103,000"
+    netBenefit="$185,000"
+    roiPercentage="180%"
+    secondaryBenefits={[
+      { title: "Client Satisfaction", description: "Faster turnaround = client loyalty" },
+      { title: "Associate Retention", description: "Strategic work > mechanical review" },
+      { title: "Competitive Edge", description: "Fixed-fee offerings become profitable" },
+      { title: "Partner Capacity", description: "Supervise more work efficiently" }
+    ]}
+  />
+
+  <IndustryBlogPreview />
+
+  <IndustryFAQs />
+</IndustryLayout>
