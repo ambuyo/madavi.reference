@@ -42,6 +42,35 @@ const legalPrinciples = [
 ];
 ---
 
+<style>
+  header {
+    background: transparent !important;
+  }
+
+  header nav {
+    background: rgba(15, 23, 42, 0.6) !important;
+    backdrop-filter: blur(8px);
+    border-radius: 9999px;
+    padding: 12px 32px !important;
+  }
+
+  header[data-navbar-variant="transparent"] nav a {
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  header[data-navbar-variant="transparent"] nav a:hover {
+    color: white;
+  }
+
+  header.scrolled {
+    background: white !important;
+  }
+
+  header.scrolled nav {
+    background: transparent !important;
+  }
+</style>
+
 <BaseLayout seo={seo} navVariant="transparent">
   <div class="bg-slate-900 relative overflow-hidden min-h-screen">
     <div class="absolute inset-0 opacity-10" style="background-image: linear-gradient(0deg, transparent 24%, rgba(255,255,255,.05) 25%, rgba(255,255,255,.05) 26%, transparent 27%, transparent 74%, rgba(255,255,255,.05) 75%, rgba(255,255,255,.05) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(255,255,255,.05) 25%, rgba(255,255,255,.05) 26%, transparent 27%, transparent 74%, rgba(255,255,255,.05) 75%, rgba(255,255,255,.05) 76%, transparent 77%, transparent); background-size: 50px 50px;"></div>
