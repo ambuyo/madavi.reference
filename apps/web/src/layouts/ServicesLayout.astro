@@ -9,7 +9,7 @@ import Kicker from "@/components/fundations/elements/Kicker.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 
 // Components
-import ServiceCard from "@/components/capabilities/template/ServiceCard.astro";
+import IndustryCard from "@/components/capabilities/template/IndustryCard.astro";
 // Data
 import { getServices } from "@/lib/data";
 const allServices = await getServices();
@@ -197,7 +197,7 @@ const relatedServices = allServices
           </div>
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-2 mt-4 p-8 lg:p-12 bg-base-50">
             {relatedServices.map((service) => (
-              <ServiceCard service={service} />
+              <IndustryCard service={service} />
             ))}
           </div>
         </Wrapper>
