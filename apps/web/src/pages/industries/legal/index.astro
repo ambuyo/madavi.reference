@@ -1,0 +1,122 @@
+---
+// Fundations
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Text from "@/components/fundations/elements/Text.astro";
+import Kicker from "@/components/fundations/elements/Kicker.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+// Sections
+import Testimonials from "@/components/customers/Testimonials.astro";
+// Components
+import ServiceCard from "@/components/services/ServiceCard.astro";
+// Content
+import { getCollection } from "astro:content";
+const services = await getCollection("services");
+services.sort((a, b) => {
+  const featuredDiff = (b.data.featured ? 1 : 0) - (a.data.featured ? 1 : 0);
+  if (featuredDiff !== 0) return featuredDiff;
+  return a.data.title.localeCompare(b.data.title);
+});
+
+const seo = {
+  title: "Legal Industry AI Solutions",
+  description: "Specialized AI consulting and digital transformation for law firms and legal enterprises.",
+  type: "website" as const,
+};
+
+// Legal-specific principles
+const legalPrinciples = [
+  {
+    title: "Understand legal workflows deeply",
+    description: "We map your firm's processes—case management, billing, discovery, client communication—to identify where AI creates real value without disrupting practice.",
+  },
+  {
+    title: "Protect confidentiality completely",
+    description: "Every automation we build respects privilege, data security, and regulatory requirements. Privacy isn't optional; it's foundational.",
+  },
+  {
+    title: "Amplify attorney expertise",
+    description: "We build tools that handle routine work—document review, research, scheduling, billing—so your team focuses on strategy, client relationships, and high-value analysis.",
+  },
+  {
+    title: "Maintain ethical standards",
+    description: "Our solutions are designed to comply with bar association rules, disclosure requirements, and professional responsibility standards specific to legal practice.",
+  },
+];
+---
+
+<BaseLayout seo={seo} navTransparent={true}>
+  <section class="bg-accent-800">
+    <Wrapper
+      variant="standard"
+      class="py-12 pt-48 lg:border-x lg:border-white/10"
+    >
+      <div class="grid grid-cols-1 lg:grid-cols-3 lg:items-end gap-12">
+        <div class="max-w-4xl text-balance lg:col-span-2">
+          <Kicker class="text-white">Industry</Kicker>
+          <Text
+            tag="h1"
+            variant="displayMD"
+            class="font-medium tracking-tight mt-12 text-white"
+          >
+            AI solutions built for law firms and legal enterprises.
+          </Text>
+          <Text tag="p" variant="textLG" class="text-base-200 mt-4">
+            From case management automation to legal research acceleration, we help law firms leverage AI while protecting confidentiality, maintaining ethical standards, and amplifying attorney expertise.
+          </Text>
+        </div>
+      </div>
+    </Wrapper>
+  </section>
+
+  <section>
+    <Wrapper variant="standard" class="py-24">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-24">
+        {services.map((service) => <ServiceCard service={service} />)}
+      </div>
+    </Wrapper>
+  </section>
+
+  <section class="bg-accent-950 relative overflow-hidden">
+    <Wrapper
+      variant="standard"
+      class="py-24 lg:py-48 lg:border-x lg:border-white/10"
+    >
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+        <div>
+          <Kicker class="text-accent-400">Our principles</Kicker>
+        </div>
+
+        <div class="lg:col-span-2 text-balance">
+          <Text tag="h2" variant="displayLG" class="text-white font-medium">
+            The standards we hold ourselves to across <span class="text-accent-500">confidentiality</span>, <span class="text-accent-500">ethics</span>, and <span class="text-accent-500">attorney amplification</span>
+          </Text>
+
+          <Text tag="p" variant="textLG" class="text-base-400 mt-4">
+            Building AI for legal firms requires deep respect for practice standards, client privilege, and the irreplaceable value of attorney judgment.
+          </Text>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-24 mt-12">
+            {
+              legalPrinciples.map(({ title, description }) => (
+                <div>
+                  <Text
+                    tag="h3"
+                    variant="displayXS"
+                    class="font-medium text-white"
+                  >
+                    {title}
+                  </Text>
+                  <Text tag="p" variant="textSM" class="text-base-400 mt-2">
+                    {description}
+                  </Text>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </Wrapper>
+  </section>
+
+  <Testimonials />
+</BaseLayout>
