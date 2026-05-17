@@ -1,0 +1,78 @@
+---
+// Fundations
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Navigation from "@/components/global/Navigation.astro";
+import Text from "@/components/fundations/elements/Text.astro";
+import Kicker from "@/components/fundations/elements/Kicker.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+
+const seo = {
+  title: "Legal Industry AI Solutions",
+  description: "Specialized AI consulting and digital transformation for law firms and legal enterprises.",
+  type: "website" as const,
+};
+---
+
+<html lang="en" class="scroll-smooth">
+  <head>
+    <title>{seo.title}</title>
+    <meta name="description" content={seo.description} />
+  </head>
+  <body class="flex flex-col bg-white min-h-dvh">
+    <Navigation variant="transparent" />
+
+    <main class="grow">
+      <section class="relative overflow-hidden min-h-screen" style="background-color: #01545F;">
+        <div class="absolute inset-0 opacity-10" style="background-image: linear-gradient(0deg, transparent 24%, rgba(255,255,255,.05) 25%, rgba(255,255,255,.05) 26%, transparent 27%, transparent 74%, rgba(255,255,255,.05) 75%, rgba(255,255,255,.05) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(255,255,255,.05) 25%, rgba(255,255,255,.05) 26%, transparent 27%, transparent 74%, rgba(255,255,255,.05) 75%, rgba(255,255,255,.05) 76%, transparent 77%, transparent); background-size: 50px 50px;"></div>
+
+        <Wrapper variant="standard" class="py-12 pt-48 relative z-10">
+          <div class="max-w-4xl">
+            <Kicker class="text-white uppercase tracking-widest text-sm">Industry</Kicker>
+            <Text
+              tag="h1"
+              class="font-medium tracking-tight mt-8 text-white text-5xl lg:text-6xl leading-tight font-display"
+            >
+              AI solutions built for law firms and legal enterprises.
+            </Text>
+            <Text tag="p" class="text-slate-300 mt-6 text-lg max-w-2xl">
+              From case management automation to legal research acceleration, we help law firms leverage AI while protecting confidentiality, maintaining ethical standards, and amplifying attorney expertise.
+            </Text>
+          </div>
+        </Wrapper>
+      </section>
+    </main>
+
+    <style>
+      :root {
+        --navbar-bg: #01545F;
+      }
+
+      header {
+        background: var(--navbar-bg) !important;
+      }
+
+      header nav {
+        background: rgba(1, 84, 95, 0.8) !important;
+        backdrop-filter: blur(8px);
+        border-radius: 9999px;
+        padding: 12px 32px !important;
+      }
+
+      header[data-navbar-variant="transparent"] nav a {
+        color: rgba(255, 255, 255, 0.8);
+      }
+
+      header[data-navbar-variant="transparent"] nav a:hover {
+        color: white;
+      }
+
+      header.scrolled {
+        background: white !important;
+      }
+
+      header.scrolled nav {
+        background: transparent !important;
+      }
+    </style>
+  </body>
+</html>
