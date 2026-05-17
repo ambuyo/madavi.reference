@@ -7,7 +7,7 @@ import Kicker from "@/components/fundations/elements/Kicker.astro";
 import Button from "@/components/fundations/elements/Button.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 // Components
-import IndustryCard from "@/components/capabilities/template/IndustryCard.astro";
+import ServiceCard from "@/components/capabilities/template/ServiceCard.astro";
 // Data
 import { getServices } from "@/lib/data";
 const allServices = await getServices();
@@ -40,7 +40,7 @@ const allServices = await getServices();
         {
           allServices
             .slice(0, 2)
-            .map((service) => <IndustryCard service={service} />)
+            .map((service) => <ServiceCard service={service} />)
         }
         <div
           class="bg-accent-400 p-8 flex flex-col h-full justify-between gap-8"

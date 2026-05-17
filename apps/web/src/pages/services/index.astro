@@ -5,7 +5,7 @@ import Text from "@/components/fundations/elements/Text.astro";
 import Kicker from "@/components/fundations/elements/Kicker.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 // Components
-import IndustryCard from "@/components/capabilities/template/IndustryCard.astro";
+import ServiceCard from "@/components/capabilities/template/ServiceCard.astro";
 // Data
 import { getServices } from "@/lib/data";
 const allServices = await getServices();
@@ -57,7 +57,7 @@ const servicesByCategory: Record<string, typeof allServices> =
               </Text>
               <div class="grid grid-cols-1 lg:grid-cols-2 gap-2 mt-4 p-8 lg:p-12 bg-base-50">
                 {services.map((service) => (
-                  <IndustryCard service={service} />
+                  <ServiceCard service={service} />
                 ))}
               </div>
             </div>
