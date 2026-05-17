@@ -1,0 +1,99 @@
+---
+// Assets
+import Logo from "@/components/assets/Logo.astro";
+// Fundations
+import Button from "@/components/fundations/elements/Button.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+// Components
+import Search from "@/components/global/Search.astro";
+import MobileNav from "@/components/global/MobileNav.astro";
+import Megamenu from "@/components/global/Megamenu.astro";
+import ResourcesMegamenu from "@/components/global/ResourcesMegamenu.astro";
+
+// Navigation links
+const navLinks = [
+  { label: "Capabilities", href: "/capabilities", hasMegamenu: true },
+  { label: "Resources", href: "/resources", hasMegamenu: true },
+  { label: "Our Work", href: "/our-work" },
+  { label: "About", href: "/about" },
+  { label: "Our Approach", href: "/our-approach" },
+  { label: "Contact", href: "/#contact" },
+];
+
+const headerBaseClass = "fixed inset-x-0 top-0 z-50 transition-all duration-300";
+---
+
+<header class={`${headerBaseClass} bg-[#005B65]`} data-navbar-variant="legal">
+  <Wrapper variant="standard" class="py-6">
+    <div class="flex items-center justify-between gap-4">
+      <a href="/" class="flex items-center gap-3 max-w-xs transition-colors text-white [.scrolled_&]:text-base-900">
+        <Logo variant="light" class="h-16 w-auto" />
+      </a>
+      <nav class="hidden items-center gap-8 lg:flex group" aria-label="Primary">
+        {
+          navLinks.map((link) => {
+            const hasMegamenu = link.hasMegamenu;
+            return (
+              <a
+                href={link.href}
+                data-megamenu={link.label.toLowerCase()}
+                class={`text-sm font-medium transition-colors text-white/80 hover:text-white [.scrolled_&]:text-base-700 [.scrolled_&]:hover:text-base-950 ${hasMegamenu ? "has-megamenu" : ""}`}
+              >
+                {link.label}
+              </a>
+            );
+          })
+        }
+      </nav>
+      <div class="flex items-center gap-2">
+        <Search variant="transparent" />
+        <Button
+          isLink
+          size="xs"
+          variant="light"
+          href="/contact"
+          class="hidden lg:flex [.scrolled_&]:variant-default"
+        >
+          Get My AI Audit
+        </Button>
+        <MobileNav links={navLinks} variant="transparent" />
+      </div>
+    </div>
+  </Wrapper>
+  <div class="group/megamenu">
+    <Megamenu />
+  </div>
+  <ResourcesMegamenu />
+</header>
+
+<script is:inline>
+  // Handle navbar scroll detection
+  function handleLegalNavbarScroll() {
+    const header = document.querySelector("header[data-navbar-variant='legal']");
+    if (!header) return;
+
+    function updateNavbarStyle() {
+      const isScrolled = window.scrollY > 10;
+      if (isScrolled) {
+        header.classList.add("scrolled");
+        header.classList.add("bg-white");
+        header.classList.add("border-b");
+        header.classList.add("border-base-200");
+        header.classList.add("shadow-sm");
+        header.classList.remove("bg-[#005B65]");
+      } else {
+        header.classList.remove("scrolled");
+        header.classList.remove("bg-white");
+        header.classList.remove("border-b");
+        header.classList.remove("border-base-200");
+        header.classList.remove("shadow-sm");
+        header.classList.add("bg-[#005B65]");
+      }
+    }
+
+    updateNavbarStyle();
+    window.addEventListener("scroll", updateNavbarStyle);
+  }
+
+  handleLegalNavbarScroll();
+</script>

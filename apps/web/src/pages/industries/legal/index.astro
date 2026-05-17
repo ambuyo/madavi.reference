@@ -1,6 +1,8 @@
 ---
 // Fundations
-import BaseLayout from "@/layouts/BaseLayout.astro";
+import BaseHead from "@/components/fundations/head/BaseHead.astro";
+import LegalNav from "@/components/industries/LegalNav.astro";
+import Footer from "@/components/global/Footer.astro";
 
 const seo = {
   title: "Legal Industry AI Solutions",
@@ -9,5 +11,13 @@ const seo = {
 };
 ---
 
-<BaseLayout seo={seo} navVariant="transparent">
-</BaseLayout>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <BaseHead seo={seo} />
+  </head>
+  <body class="flex flex-col bg-white min-h-dvh">
+    <LegalNav />
+    <main class="grow pt-24"></main>
+    <Footer />
+  </body>
+</html>
