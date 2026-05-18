@@ -35,7 +35,7 @@ hero:
   kicker: "AI FOR NONPROFIT ORGANIZATIONS"
   headline: "When Mission Meets Innovation"
   description: "AI systems that free nonprofit staff from administrative burden, so they can focus on the mission work that attracted donors and volunteers in the first place."
-  backgroundColor: "#6A4C93"
+  backgroundColor: "#005B65"
 
 threeTierProblems:
   title: "The Three Problems Worth Solving"
@@ -44,15 +44,15 @@ threeTierProblems:
     - title: "Administrative Burden vs. Mission Work"
       benefit: "Staff Capacity Impact"
       description: "Nonprofit staff spend 45-55% of their time on admin tasks—grant reporting, donor stewardship, compliance documentation. Every hour on paperwork is an hour not delivering program services."
-      backgroundColor: "#8E44AD"
+      backgroundColor: "#FFA500"
     - title: "Donor Perception of Technology Spend"
       benefit: "Stakeholder Trust"
       description: "Boards and donors scrutinize overhead spending. 'Why are we paying for AI when we could hire another program officer?' Without clear mission ROI, technology investments face resistance."
-      backgroundColor: "#9B59B6"
+      backgroundColor: "#EC5800"
     - title: "Capacity Constraints Block Adoption"
       benefit: "Implementation Reality"
       description: "Staff are already stretched thin. Learning new systems feels like adding burden, not removing it. AI adoption requires protected time nonprofits rarely have to spare."
-      backgroundColor: "#AF7AC5"
+      backgroundColor: "#FF5F1F"
 
 benefits:
   number: 1
