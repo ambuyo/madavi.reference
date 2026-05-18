@@ -3,12 +3,12 @@ import { getCollection } from "astro:content";
 import IndustryLayout from "@/layouts/IndustryLayout.astro";
 import Text from "@/components/fundations/elements/Text.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
-import ThreeTierProblems from "@/components/industries/legal/3TierProblems.astro";
-import IndustryValueProposition from "@/components/industries/legal/IndustryValueProposition.astro";
-import BenefitsSection from "@/components/industries/legal/BenefitsSection.astro";
-import IndustryROI from "@/components/industries/legal/IndustryROI.astro";
-import IndustryBlogPreview from "@/components/industries/legal/IndustryBlogPreview.astro";
-import IndustryFAQs from "@/components/industries/legal/IndustryFAQs.astro";
+import ThreeTierProblems from "@/components/industries/3TierProblems.astro";
+import IndustryValueProposition from "@/components/industries/IndustryValueProposition.astro";
+import BenefitsSection from "@/components/industries/BenefitsSection.astro";
+import IndustryROI from "@/components/industries/IndustryROI.astro";
+import IndustryBlogPreview from "@/components/industries/IndustryBlogPreview.astro";
+import IndustryFAQs from "@/components/industries/IndustryFAQs.astro";
 
 // Fetch industry content from markdown
 const industries = await getCollection("industries");
