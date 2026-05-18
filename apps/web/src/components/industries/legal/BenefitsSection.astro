@@ -5,11 +5,13 @@ import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 interface Benefit {
   title: string;
   description: string;
+  backgroundColor?: string;
 }
 
 interface Delivery {
   title: string;
   description: string;
+  backgroundColor?: string;
 }
 
 interface Props {
@@ -60,7 +62,7 @@ const { number, title, subtitle, benefits, deliveryItems } = Astro.props;
         <div class="space-y-6">
           {
             benefits.map((benefit) => (
-              <div class="border-l-4 border-accent-500 pl-6 p-4 rounded-lg" style="background-color: #FFDEAD;">
+              <div class="border-l-4 border-accent-500 pl-6 p-4 rounded-lg" style={`background-color: ${benefit.backgroundColor || '#FFDEAD'}`}>
                 <Text
                   tag="h4"
                   variant="textBase"
@@ -93,7 +95,7 @@ const { number, title, subtitle, benefits, deliveryItems } = Astro.props;
         <div class="space-y-6">
           {
             deliveryItems.map((item) => (
-              <div class="p-4 rounded-lg" style="background-color: #b2d8d8;">
+              <div class="p-4 rounded-lg" style={`background-color: ${item.backgroundColor || '#b2d8d8'}`}>
                 <Text
                   tag="h4"
                   variant="textSM"

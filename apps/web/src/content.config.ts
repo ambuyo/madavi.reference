@@ -256,6 +256,8 @@ const industries = defineCollection({
     z.object({
       title: z.string(),
       summary: z.string(),
+      description: z.string().optional(),
+      slug: z.string().optional(),
       painPoints: z.array(z.string()).default([]),
       relevantServices: z.array(z.string()).default([]),
       image: z
@@ -264,6 +266,93 @@ const industries = defineCollection({
           alt: z.string(),
         })
         .optional(),
+      seo: z.object({
+        title: z.string().optional(),
+        description: z.string().optional(),
+        canonical: z.string().optional(),
+        keywords: z.array(z.string()).default([]),
+      }).optional(),
+      og: z.object({
+        title: z.string().optional(),
+        description: z.string().optional(),
+        type: z.string().optional(),
+      }).optional(),
+      twitter: z.object({
+        card: z.string().optional(),
+        title: z.string().optional(),
+        description: z.string().optional(),
+      }).optional(),
+      hero: z.object({
+        breadcrumb: z.string().optional(),
+        kicker: z.string().optional(),
+        headline: z.string().optional(),
+        description: z.string().optional(),
+        backgroundColor: z.string().optional(),
+      }).optional(),
+      threeTierProblems: z.object({
+        title: z.string().optional(),
+        description: z.string().optional(),
+        tiers: z.array(z.object({
+          title: z.string().optional(),
+          benefit: z.string().optional(),
+          description: z.string().optional(),
+          backgroundColor: z.string().optional(),
+        })).default([]),
+      }).optional(),
+      benefits: z.object({
+        number: z.number().optional(),
+        title: z.string().optional(),
+        subtitle: z.string().optional(),
+        benefitItems: z.array(z.object({
+          title: z.string().optional(),
+          description: z.string().optional(),
+          backgroundColor: z.string().optional(),
+        })).default([]),
+        deliveryItems: z.array(z.object({
+          title: z.string().optional(),
+          description: z.string().optional(),
+          backgroundColor: z.string().optional(),
+        })).default([]),
+      }).optional(),
+      valueProposition: z.object({
+        title: z.string().optional(),
+        description: z.string().optional(),
+        narrativeParagraphs: z.array(z.string()).default([]),
+      }).optional(),
+      roi: z.object({
+        title: z.string().optional(),
+        beforeSection: z.object({
+          title: z.string().optional(),
+          stats: z.array(z.object({
+            label: z.string().optional(),
+            value: z.string().optional(),
+          })).default([]),
+        }).optional(),
+        afterSection: z.object({
+          title: z.string().optional(),
+          stats: z.array(z.object({
+            label: z.string().optional(),
+            value: z.string().optional(),
+          })).default([]),
+        }).optional(),
+        investment: z.string().optional(),
+        netBenefit: z.string().optional(),
+        roiPercentage: z.string().optional(),
+        secondaryBenefits: z.array(z.object({
+          title: z.string().optional(),
+          description: z.string().optional(),
+        })).default([]),
+      }).optional(),
+      blog: z.object({
+        title: z.string().optional(),
+        description: z.string().optional(),
+        category: z.string().optional(),
+      }).optional(),
+      faqs: z.object({
+        slug: z.string().optional(),
+        title: z.string().optional(),
+        description: z.string().optional(),
+      }).optional(),
     }),
 });
 

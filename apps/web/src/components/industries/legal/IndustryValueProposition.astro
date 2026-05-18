@@ -5,6 +5,14 @@ import talk from "@/images/assets/talk.png";
 // Fundations
 import Text from "@/components/fundations/elements/Text.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  narrativeParagraphs: string[];
+}
+
+const { title, description, narrativeParagraphs } = Astro.props;
 ---
 
 <section>
@@ -30,36 +38,27 @@ import Wrapper from "@/components/fundations/containers/Wrapper.astro";
             variant="displayMD"
             class="text-base-950 text-balance font-medium tracking-tight font-display"
           >
-            Stop Losing Clients to Firms That Respond Faster
+            {title}
           </Text>
           <Text
             tag="p"
             variant="textBase"
             class="text-base-700 mt-6 text-pretty"
           >
-            Your associates spend 6+ hours daily on work that doesn't generate revenue—document review, legal research, contract analysis, client intake. All necessary. None billable. Meanwhile, clients expect faster response times than your headcount allows, junior associates need 18 months before they're profitable, and competitors with better technology are winning clients on speed.
+            {description}
           </Text>
-          <Text
-            tag="p"
-            variant="textBase"
-            class="text-base-700 mt-4 text-pretty"
-          >
-            Most legal tech vendors want you to adopt their platforms and change your workflows. We do the opposite: build AI systems that fit your existing practice, integrate with your document management (iManage, NetDocuments), and comply with ethics requirements from day one.
-          </Text>
-          <Text
-            tag="p"
-            variant="textBase"
-            class="text-base-700 mt-4 text-pretty"
-          >
-            The result: associates handle 30-40% more matters without weekend work, partners supervise more deals with existing teams, and routine work that consumed 6 hours now takes 2—freeing time for the high-value advisory work clients pay premium rates for.
-          </Text>
-          <Text
-            tag="p"
-            variant="textBase"
-            class="text-base-700 mt-4 text-pretty font-semibold"
-          >
-            This isn't AI replacing lawyers. It's AI making lawyers more profitable.
-          </Text>
+          {
+            narrativeParagraphs.map((paragraph, index) => (
+              <Text
+                tag="p"
+                variant="textBase"
+                class={`text-base-700 ${index === narrativeParagraphs.length - 1 ? 'font-semibold' : ''} text-pretty`}
+                style={`margin-top: ${index === 0 ? '24px' : '16px'}`}
+              >
+                {paragraph}
+              </Text>
+            ))
+          }
         </div>
       </div>
     </div>

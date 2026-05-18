@@ -12,7 +12,7 @@ import IndustryFAQs from "@/components/industries/legal/IndustryFAQs.astro";
 
 // Fetch industry content from markdown
 const industries = await getCollection("industries");
-const industryContent = industries.find(ind => ind.id === "industry_legal_content.md");
+const industryContent = industries.find((ind: any) => ind.id === "legal");
 const industryData = industryContent?.data || {};
 
 const seo = {
@@ -50,81 +50,40 @@ AI systems that free law firm associates from repetitive work, so they can focus
     </Wrapper>
   </section>
 
-  <IndustryValueProposition />
+  <IndustryValueProposition
+    title={industryData.valueProposition?.title}
+    description={industryData.valueProposition?.description}
+    narrativeParagraphs={industryData.valueProposition?.narrativeParagraphs || []}
+  />
 
-  <ThreeTierProblems />
+  <ThreeTierProblems
+    title={industryData.threeTierProblems?.title}
+    description={industryData.threeTierProblems?.description}
+    tiers={industryData.threeTierProblems?.tiers || []}
+  />
 
   <BenefitsSection
-    number={1}
-    title="Strategic Counsel: Navigate AI Decisions Without Vendor Bias"
-    subtitle="Independent advisory for managing partners and COOs"
-    benefits={[
-      {
-        title: "Decisions Based on Economics, Not Hype",
-        description: "Evaluate investments through realization rates and leverage ratios—not vendor promises. Know exactly what billable hour impact to expect before you spend."
-      },
-      {
-        title: "Partners Evaluate Technology Independently",
-        description: "Your management committee won't need external consultants for every vendor. They'll have frameworks to compare claims, identify red flags, negotiate contracts confidently."
-      },
-      {
-        title: "Faster Decisions Without Paralysis",
-        description: "Move from 'should we do AI?' to 'which AI investments matter most?' with clear prioritization based on client impact and competitive positioning."
-      },
-      {
-        title: "Risk Mitigation Before Deployment",
-        description: "Identify ethics concerns, confidentiality risks, and malpractice exposure before deployment—not after bar association complaints."
-      }
-    ]}
-    deliveryItems={[
-      {
-        title: "Executive Advisory Retainer",
-        description: "Monthly/bi-weekly strategic counsel sessions, vendor evaluation frameworks, budget guidance"
-      },
-      {
-        title: "Leadership AI Fluency Cohort",
-        description: "8-week training for 6-12 partners building evaluation capabilities"
-      },
-      {
-        title: "Ethics & Governance",
-        description: "ABA guidelines compliance, privilege protection, risk assessment"
-      },
-      {
-        title: "Investment: $3K-8K/month",
-        description: "3-month minimum commitment"
-      }
-    ]}
+    number={industryData.benefits?.number}
+    title={industryData.benefits?.title}
+    subtitle={industryData.benefits?.subtitle}
+    benefits={industryData.benefits?.benefitItems || []}
+    deliveryItems={industryData.benefits?.deliveryItems || []}
   />
 
   <IndustryROI
-    title="Real ROI: What Billable Hour Impact Actually Looks Like"
+    title={industryData.roi?.title}
     before={{
-      title: "Before AI Implementation",
-      stats: [
-        { label: "Review Time per Agreement", value: "6 hours" },
-        { label: "Monthly Agreements", value: "40" },
-        { label: "Total Monthly Hours", value: "240 hours" },
-        { label: "Monthly Revenue", value: "$72,000" }
-      ]
+      title: industryData.roi?.beforeSection?.title,
+      stats: industryData.roi?.beforeSection?.stats || []
     }}
     after={{
-      title: "After AI Implementation",
-      stats: [
-        { label: "Review Time per Agreement", value: "4 hours" },
-        { label: "Time Saved by AI", value: "2 hours" },
-        { label: "Freed Hours for New Work", value: "80 hours/month" },
-        { label: "Additional Monthly Revenue", value: "$24,000" }
-      ]
+      title: industryData.roi?.afterSection?.title,
+      stats: industryData.roi?.afterSection?.stats || []
     }}
-    investment="Total Year 1 Investment: $103,000"
-    netBenefit="$185,000"
-    roiPercentage="180%"
-    secondaryBenefits={[
-      { title: "Client Satisfaction", description: "Faster turnaround = client loyalty" },
-      { title: "Associate Retention", description: "Strategic work > mechanical review" },
-      { title: "Competitive Edge", description: "Fixed-fee offerings become profitable" },
-      { title: "Partner Capacity", description: "Supervise more work efficiently" }
-    ]}
+    investment={industryData.roi?.investment}
+    netBenefit={industryData.roi?.netBenefit}
+    roiPercentage={industryData.roi?.roiPercentage}
+    secondaryBenefits={industryData.roi?.secondaryBenefits || []}
   />
 
   <IndustryBlogPreview />
