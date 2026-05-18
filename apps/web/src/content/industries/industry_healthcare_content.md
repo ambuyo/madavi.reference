@@ -35,7 +35,7 @@ hero:
   kicker: "AI FOR HEALTHCARE ORGANIZATIONS"
   headline: "When Patient Safety Meets Innovation"
   description: "AI systems that free clinical staff from administrative burden, so they can focus on the patient care work they were trained to do—and actually want to do."
-  backgroundColor: "#0077B6"
+  backgroundColor: "#005B65"
 
 threeTierProblems:
   title: "The Three Problems Worth Solving"
