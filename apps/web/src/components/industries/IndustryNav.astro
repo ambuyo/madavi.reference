@@ -27,7 +27,10 @@ const headerBaseClass = "fixed inset-x-0 top-0 z-50 transition-all duration-300"
   <Wrapper variant="standard" class="py-6">
     <div class="flex items-center justify-between gap-4">
       <a href="/" class="flex items-center gap-3 max-w-xs transition-colors text-white [.scrolled_&]:text-base-900">
-        <Logo variant="light" class="h-16 w-auto" />
+        <div class="logo-container">
+          <Logo variant="light" class="h-16 w-auto light-logo" />
+          <Logo variant="dark" class="h-16 w-auto dark-logo hidden" />
+        </div>
       </a>
       <nav class="hidden items-center lg:flex group peer" aria-label="Primary">
         <div class="flex items-center gap-8 px-8 py-4 rounded-full bg-white/10 backdrop-blur-md border border-white/20 group-hover:bg-white/20">
@@ -74,6 +77,9 @@ const headerBaseClass = "fixed inset-x-0 top-0 z-50 transition-all duration-300"
     const header = document.querySelector("header[data-navbar-variant='industry']");
     if (!header) return;
 
+    const lightLogo = header.querySelector(".light-logo");
+    const darkLogo = header.querySelector(".dark-logo");
+
     function updateNavbarStyle() {
       const isScrolled = window.scrollY > 10;
       if (isScrolled) {
@@ -83,6 +89,10 @@ const headerBaseClass = "fixed inset-x-0 top-0 z-50 transition-all duration-300"
         header.classList.add("border-base-200");
         header.classList.add("shadow-sm");
         header.classList.remove("bg-[#005B65]");
+
+        // Switch to dark logo when scrolled
+        if (lightLogo) lightLogo.classList.add("hidden");
+        if (darkLogo) darkLogo.classList.remove("hidden");
       } else {
         header.classList.remove("scrolled");
         header.classList.remove("bg-white");
@@ -90,6 +100,10 @@ const headerBaseClass = "fixed inset-x-0 top-0 z-50 transition-all duration-300"
         header.classList.remove("border-base-200");
         header.classList.remove("shadow-sm");
         header.classList.add("bg-[#005B65]");
+
+        // Switch to light logo when at top
+        if (lightLogo) lightLogo.classList.remove("hidden");
+        if (darkLogo) darkLogo.classList.add("hidden");
       }
     }
 
