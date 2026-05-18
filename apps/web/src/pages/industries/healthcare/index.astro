@@ -86,5 +86,9 @@ const seo = {
 
   <IndustryBlogPreview />
 
-  <IndustryFAQs />
+  <IndustryFAQs
+    title={industryData.faqs?.title}
+    description={industryData.faqs?.description}
+    faqSlug={industryData.faqs?.slug}
+  />
 </IndustryLayout>
