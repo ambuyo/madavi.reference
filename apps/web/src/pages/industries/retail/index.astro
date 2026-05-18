@@ -1,0 +1,94 @@
+---
+import { getCollection } from "astro:content";
+import IndustryLayout from "@/layouts/IndustryLayout.astro";
+import Text from "@/components/fundations/elements/Text.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+import ThreeTierProblems from "@/components/industries/3TierProblems.astro";
+import IndustryValueProposition from "@/components/industries/IndustryValueProposition.astro";
+import BenefitsSection from "@/components/industries/BenefitsSection.astro";
+import IndustryROI from "@/components/industries/IndustryROI.astro";
+import IndustryBlogPreview from "@/components/industries/IndustryBlogPreview.astro";
+import IndustryFAQs from "@/components/industries/IndustryFAQs.astro";
+
+// Fetch industry content from markdown
+const industries = await getCollection("industries");
+const industryContent = industries.find((ind: any) => ind.id === "retail");
+const industryData = industryContent?.data || {};
+
+const seo = {
+  title: industryData.seo?.title || "Retail AI Solutions",
+  description: industryData.seo?.description || "Specialized AI consulting and digital transformation for ecommerce and retail businesses.",
+  type: "website" as const,
+};
+---
+
+<IndustryLayout seo={seo}>
+  <section class="bg-[#005B65] text-white">
+    <Wrapper variant="standard" class="py-24 lg:py-32">
+      <div class="max-w-3xl">
+        <Text
+          tag="p"
+          variant="textXS"
+          class="text-white/80 tracking-wide uppercase"
+        >
+          {industryData.hero?.kicker || "AI FOR ECOMMERCE & RETAIL"}
+
+        </Text>
+        <Text
+          tag="h1"
+          variant="displayLG"
+          class="text-white font-display font-bold mt-2"
+        >{industryData.hero?.headline || "Scale Without Scaling Headcount"}</Text>
+        <Text
+          tag="p"
+          variant="textLG"
+          class="text-white/90 mt-6"
+        >{industryData.hero?.description || "AI systems that personalize customer experience at scale, optimize inventory, and automate support."}</Text>
+      </div>
+    </Wrapper>
+  </section>
+
+  <IndustryValueProposition
+    title={industryData.valueProposition?.title}
+    description={industryData.valueProposition?.description}
+    narrativeParagraphs={industryData.valueProposition?.narrativeParagraphs || []}
+  />
+
+  <ThreeTierProblems
+    title={industryData.threeTierProblems?.title}
+    description={industryData.threeTierProblems?.description}
+    tiers={industryData.threeTierProblems?.tiers || []}
+  />
+
+  <BenefitsSection
+    number={industryData.benefits?.number}
+    title={industryData.benefits?.title}
+    subtitle={industryData.benefits?.subtitle}
+    benefits={industryData.benefits?.benefitItems || []}
+    deliveryItems={industryData.benefits?.deliveryItems || []}
+  />
+
+  <IndustryROI
+    title={industryData.roi?.title}
+    before={{
+      title: industryData.roi?.beforeSection?.title,
+      stats: industryData.roi?.beforeSection?.stats || []
+    }}
+    after={{
+      title: industryData.roi?.afterSection?.title,
+      stats: industryData.roi?.afterSection?.stats || []
+    }}
+    investment={industryData.roi?.investment}
+    netBenefit={industryData.roi?.netBenefit}
+    roiPercentage={industryData.roi?.roiPercentage}
+    secondaryBenefits={industryData.roi?.secondaryBenefits || []}
+  />
+
+  <IndustryBlogPreview />
+
+  <IndustryFAQs
+    title={industryData.faqs?.title}
+    description={industryData.faqs?.description}
+    faqSlug={industryData.faqs?.slug}
+  />
+</IndustryLayout>
