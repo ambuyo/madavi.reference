@@ -1,0 +1,55 @@
+---
+import SingleBlogLayout from "@/layouts/SingleBlogLayout.astro";
+import { getPostBySlug } from "@/lib/data";
+import { readCachedPosts } from "@/lib/wordpress/cache";
+
+export async function getStaticPaths() {
+  try {
+    const cachedPosts = await readCachedPosts();
+
+    if (!cachedPosts || cachedPosts.length === 0) {
+      console.warn("No cached posts found for blog routes");
+      return [];
+    }
+
+    return cachedPosts.map((post) => ({
+      params: { slug: post.slug },
+    }));
+  } catch (error) {
+    console.error("Error generating blog post static paths:", error);
+    return [];
+  }
+}
+
+const { slug } = Astro.params;
+const post = await getPostBySlug(slug!);
+
+if (!post) {
+  return Astro.redirect("/404");
+}
+
+const imageUrl = typeof post.data.image === "string"
+  ? post.data.image
+  : post.data.image?.url || "";
+
+const categoryName = post.data.categories?.[0]?.name || "Blog";
+const wordCount = post.plainText?.trim().split(/\s+/).length || 0;
+const readingTimeMinutes = Math.ceil(wordCount / 200);
+const readingTime = readingTimeMinutes < 1 ? "1 min" : `${readingTimeMinutes} min`;
+const authorName = post.data.team || "";
+---
+
+<SingleBlogLayout
+  title={post.data.title}
+  category={categoryName}
+  date={post.data.pubDate || new Date()}
+  readingTime={readingTime}
+  image={imageUrl}
+  description={post.data.description}
+  seoTitle={post.data.title}
+  seoDescription={post.data.description}
+  seoImage={imageUrl}
+  compiledBy={authorName}
+>
+  {post.body && <div set:html={post.body} />}
+</SingleBlogLayout>
