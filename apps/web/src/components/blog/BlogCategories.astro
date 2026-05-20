@@ -1,0 +1,54 @@
+---
+import Text from "@/components/fundations/elements/Text.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+import { getAllCategories } from "@/lib/data";
+
+const categories = await getAllCategories();
+const sortedCategories = categories.sort((a, b) => a.name.localeCompare(b.name));
+---
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+<section class="bg-base-60">
+  <Wrapper variant="standard" class="py-24">
+    <div class="mb-12">
+      <Text
+        tag="span"
+        variant="textXS"
+        class="uppercase font-medium text-accent-700"
+      >
+        Guides & Articles
+      </Text>
+      <Text
+        tag="h2"
+        variant="displayLG"
+        class="text-base-900 mt-8 font-display text-balance"
+      >
+        Curated Content for Strategic Teams
+      </Text>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      {
+        sortedCategories.map((category) => (
+          <a
+            href={`/blog/cat/${category.slug}`}
+            class="border rounded-lg p-8 flex items-center justify-center min-h-32 hover:bg-accent-50 transition-colors"
+            style="border-color: #005761;"
+          >
+            <Text
+              tag="h3"
+              variant="textLG"
+              class="text-center text-[24px]"
+              style="font-family: 'Source Serif 4', serif; color: #005761; font-weight: 500; line-height: 26px;"
+            >
+              {category.name}
+            </Text>
+          </a>
+        ))
+      }
+    </div>
+  </Wrapper>
+</section>

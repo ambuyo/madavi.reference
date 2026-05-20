@@ -9,6 +9,7 @@ interface Props {
 const POSTS_PER_PAGE = 20;
 
 export async function getStaticPaths() {
+  const POSTS_PER_PAGE = 20;
   const posts = await getPosts();
 
   // Extract unique categories from all posts

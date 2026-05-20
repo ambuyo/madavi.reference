@@ -85,10 +85,12 @@ const seoData = {
               ← Back to all posts
             </Button>
           </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-24">
-            {posts.map((post) => (
-              <BlogCard post={post} />
-            ))}
+          <div class="bg-base-50 p-8 lg:p-12 rounded-lg">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-24">
+              {posts.map((post) => (
+                <BlogCard post={post} />
+              ))}
+            </div>
           </div>
 
           {pagination && pagination.totalPages > 1 && (

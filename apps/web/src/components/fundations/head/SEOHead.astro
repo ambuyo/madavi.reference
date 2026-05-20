@@ -1,0 +1,99 @@
+---
+import { createJsonLDScriptTag, generateArticleSchema, generateBreadcrumbSchema, generateOrganizationSchema } from "@/lib/jsonld";
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  url?: string;
+  type?: "article" | "website";
+  publishedDate?: string;
+  modifiedDate?: string;
+  author?: string;
+  breadcrumbs?: Array<{ name: string; url?: string }>;
+  includeOrgSchema?: boolean;
+  canonicalUrl?: string;
+}
+
+const {
+  title,
+  description,
+  image,
+  url,
+  type = "website",
+  publishedDate,
+  modifiedDate,
+  author,
+  breadcrumbs,
+  includeOrgSchema = true,
+  canonicalUrl,
+} = Astro.props;
+
+const siteName = "Madavi";
+const defaultDescription =
+  "AI consulting and digital transformation services for strategic growth.";
+const seoTitle = title || siteName;
+const seoDescription = description || defaultDescription;
+const seoImage = image || "https://madavi.agency/og-image.jpg";
+const fullUrl = url || Astro.url.href;
+
+// Generate JSON-LD schemas
+let articleSchema: string | null = null;
+let breadcrumbSchema: string | null = null;
+const orgSchema = includeOrgSchema
+  ? generateOrganizationSchema()
+  : null;
+
+if (type === "article" && publishedDate) {
+  articleSchema = generateArticleSchema(
+    seoTitle,
+    seoDescription,
+    publishedDate,
+    author || siteName,
+    seoImage,
+    modifiedDate
+  );
+}
+
+if (breadcrumbs && breadcrumbs.length > 0) {
+  breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs);
+}
+---
+
+<!-- Primary Meta Tags -->
+<meta name="title" content={seoTitle} />
+<meta name="description" content={seoDescription} />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="charset" content="UTF-8" />
+
+<!-- Open Graph / Facebook / LinkedIn / WhatsApp -->
+<meta property="og:type" content={type === "article" ? "article" : "website"} />
+<meta property="og:url" content={fullUrl} />
+<meta property="og:title" content={seoTitle} />
+<meta property="og:description" content={seoDescription} />
+<meta property="og:image" content={seoImage} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:site_name" content={siteName} />
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:url" content={fullUrl} />
+<meta property="twitter:title" content={seoTitle} />
+<meta property="twitter:description" content={seoDescription} />
+<meta property="twitter:image" content={seoImage} />
+
+<!-- Additional Meta Tags -->
+<meta name="theme-color" content="#ffffff" />
+<meta name="apple-mobile-web-app-capable" content="true" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+
+<!-- Canonical URL -->
+{canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+
+<!-- JSON-LD Structured Data -->
+{orgSchema && <Fragment set:html={createJsonLDScriptTag(orgSchema)} />}
+{articleSchema && <Fragment set:html={createJsonLDScriptTag(articleSchema)} />}
+{breadcrumbSchema && (
+  <Fragment set:html={createJsonLDScriptTag(breadcrumbSchema)} />
+)}

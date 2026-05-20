@@ -1,0 +1,77 @@
+---
+// Assets
+import { Image } from "astro:assets";
+import one from "@/images/about/Madavi 2016.png";
+import two from "@/images/about/Madavi 2018.png";
+import three from "@/images/about/Madavi-Team-2024.png";
+// Foundations
+import Text from "@/components/fundations/elements/Text.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+
+const content = [
+  "In 2025, Madavi Agency became Madavi Inc—an AI adoption advisory firm focused on helping organizations streamline, automate, and scale using AI agents and intelligent workflows.",
+
+  "Today, we help businesses move into the AI Age with real, working systems—not just buzzwords. We build automations, deploy AI agents, and create agentic workflows that eliminate repetitive, error-prone tasks.",
+
+  "Our practical approach focuses on understanding your business, delivering seamless solutions, and staying involved to optimize and evolve them over time.",
+
+  "We combine delivery, education, and long-term support so automation becomes an enduring capability, not a one-time project.",
+];
+---
+
+<section>
+  <Wrapper variant="standard" class="py-12 ">
+    <div
+      class="grid grid-cols-1 lg:grid-cols-2 gap-12 rounded-3xl p-8 lg:p-12"
+      style="background-color: #FF6B3D"
+    >
+      <div>
+        <Text
+          tag="h2"
+          variant="displayXL"
+          class="text-white tracking-tight font-display lg:col-span-2"
+        >
+          Our Pivot...
+        </Text>
+        <Text
+          tag="p"
+          variant="textLG"
+          class="text-white mt-4 text-balance font-bold"
+        >
+That's when it clicked. What if we didn't just help businesses grow—what if we helped them run better?
+        </Text>
+
+        <div class="mt-12 space-y-4 lg:columns-2">
+          {
+            content.map((paragraph) => (
+              <Text tag="p" variant="textBase" class="text-white">
+                {paragraph}
+              </Text>
+            ))
+          }
+        </div>
+      </div>
+      <div
+        class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:grid-rows-2 lg:auto-rows-fr"
+      >
+        <Image
+          src={one}
+          alt="Madavi 2016"
+          class="size-full object-cover lg:row-span-2 rounded-xl"
+        />
+
+        <Image
+          src={two}
+          alt="Madavi 2018"
+          class="size-full object-cover rounded-xl"
+        />
+
+        <Image
+          src={three}
+          alt="Madavi Team 2024"
+          class="size-full object-cover rounded-xl"
+        />
+      </div>
+    </div>
+  </Wrapper>
+</section>

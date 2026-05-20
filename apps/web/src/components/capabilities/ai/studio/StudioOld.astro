@@ -1,0 +1,70 @@
+---
+// Fundations
+import Text from "@/components/fundations/elements/Text.astro";
+
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+
+const paths = [
+  {
+    title: "What This Is",
+    description:
+      "The AI Studio is Madavi's technical execution arm. After strategy is defined, we design, build, and deploy the AI systems that make it operational. This is where advisory work becomes functional infrastructure.",
+  },
+  {
+    title: "The Gap We Fill",
+    description:
+      "Most organizations have AI strategies gathering dust. The bottleneck isn't vision—it's execution capacity. Your internal teams lack the specialized architecture knowledge. External vendors deliver generic solutions that don't integrate. The AI Studio exists because you need systems that actually work in your environment.",
+  },
+];
+---
+
+<section>
+  <Wrapper variant="standard" class="py-12">
+    <div class="p-8 lg:p-12" style="background-color: #FCF7F5;">
+      <div class="w-3/4">
+        <Text
+          tag="h2"
+          variant="displayMD"
+          class="text-base-900 text-balance font-display"
+        >
+The AI Studio is here.
+        </Text>
+        <Text
+          tag="p"
+          variant="textBase"
+          class="text-base-700 lg:text-pretty lg:col-span-2 mt-4"
+        >
+We build the systems your strategy requires.
+
+        </Text>
+      </div>
+
+      <div
+        class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-12"
+      >
+        {
+          paths.map((path) => (
+            <div class="relative group bg-white flex flex-col overflow-hidden p-8 gap-24 lg:gap-62 h-full justify-between">
+              <div>
+                <Text
+                  tag="h3"
+                  variant="textXL"
+                  class="mb-4 text-base-900 font-semibold"
+                >
+                  {path.title}
+                </Text>
+                <Text
+                  tag="p"
+                  variant="textBase"
+                  class="text-base-600 mt-4 text-pretty"
+                >
+                  {path.description}
+                </Text>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </Wrapper>
+</section>

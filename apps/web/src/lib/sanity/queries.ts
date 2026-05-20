@@ -281,6 +281,84 @@ const industryFields = groq`
   title,
   "slug": slug.current,
   summary,
+  description,
+  seo,
+  og,
+  twitter,
+  hero {
+    breadcrumb,
+    kicker,
+    headline,
+    description,
+    backgroundColor,
+    image {
+      url,
+      alt
+    }
+  },
+  threeTierProblems {
+    title,
+    description,
+    tiers[] {
+      title,
+      benefit,
+      description,
+      backgroundColor
+    }
+  },
+  benefits {
+    number,
+    title,
+    subtitle,
+    benefitItems[] {
+      title,
+      description
+    },
+    deliveryItems[] {
+      title,
+      description,
+      backgroundColor
+    }
+  },
+  valueProposition {
+    title,
+    description,
+    narrativeParagraphs[]
+  },
+  roi {
+    title,
+    beforeSection {
+      title,
+      stats[] {
+        label,
+        value
+      }
+    },
+    afterSection {
+      title,
+      stats[] {
+        label,
+        value
+      }
+    },
+    investment,
+    netBenefit,
+    roiPercentage,
+    secondaryBenefits[] {
+      title,
+      description
+    }
+  },
+  blog {
+    title,
+    description,
+    category
+  },
+  faqs {
+    slug,
+    title,
+    description
+  },
   painPoints,
   relevantServices,
   image {

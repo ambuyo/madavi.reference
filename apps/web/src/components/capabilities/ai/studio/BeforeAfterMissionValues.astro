@@ -1,0 +1,82 @@
+---
+// Fundations
+import Text from "@/components/fundations/elements/Text.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+
+const missions = [
+  {
+    kicker: "Core Value",
+    title: "Integrity First",
+    description:
+      "We maintain the highest standards of honesty and transparency in all our dealings, ensuring our clients can trust us completely.",
+  },
+  {
+    kicker: "Our Approach",
+    title: "Innovation",
+    description:
+      "We embrace cutting-edge technology and methodologies to provide efficient, forward-thinking accounting solutions.",
+  },
+  {
+    kicker: "Our Philosophy",
+    title: "Client Partnership",
+    description:
+      "We view our clients as partners, working collaboratively to understand their unique needs and deliver personalized solutions.",
+  },
+];
+---
+
+<section>
+  <Wrapper variant="standard" class="py-12">
+    <div class="max-w-xl">
+      <Text
+        tag="h2"
+        variant="displayMD"
+        class="text-base-900 text-balance font-display"
+      >
+        Our Mission & Values
+      </Text>
+      <Text
+        tag="p"
+        variant="textBase"
+        class="text-base-700 lg:text-pretty lg:col-span-2 mt-4"
+      >
+        We're driven by a commitment to excellence and a passion for helping
+        businesses succeed financially.
+      </Text>
+    </div>
+
+    <div
+      class="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-12 p-8 lg:p-12 bg-base-50"
+    >
+      {
+        missions.map((mission) => (
+          <div class="relative group bg-white flex flex-col overflow-hidden p-8 gap-24 lg:gap-62 h-full justify-between">
+            <Text
+              tag="p"
+              variant="textXS"
+              class="text-base-700 uppercase font-medium"
+            >
+              {mission.kicker}
+            </Text>
+            <div>
+              <Text
+                tag="h3"
+                variant="textXL"
+                class="mb-4 text-base-900 font-semibold"
+              >
+                {mission.title}
+              </Text>
+              <Text
+                tag="p"
+                variant="textBase"
+                class="text-base-600 mt-4 text-pretty"
+              >
+                {mission.description}
+              </Text>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </Wrapper>
+</section>

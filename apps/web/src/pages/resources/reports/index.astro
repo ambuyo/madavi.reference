@@ -4,8 +4,6 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import Text from "@/components/fundations/elements/Text.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 import Button from "@/components/fundations/elements/Button.astro";
-// Components
-import ReportCard from "@/components/documents/ReportCard.astro";
 // Sanity
 import { getReports } from "@/lib/sanity/reports";
 
@@ -48,10 +46,60 @@ if (currentPage < 1 || currentPage > totalPages) {
         </Text>
       </div>
 
-      <div class="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mt-12">
+      <div class="space-y-8 lg:space-y-24 mt-12 lg:mt-24">
         {
           reports.length > 0 ? (
-            reports.map((report) => <ReportCard post={report} />)
+            reports.map((report, index) => {
+              const pubDate = new Date(report.publicationDate).toLocaleDateString(
+                "en-US",
+                {
+                  year: "numeric",
+                  month: "short",
+                }
+              ).toUpperCase();
+              return (
+                <article class="relative group bg-base-50 grid grid-cols-1 lg:grid-cols-5 gap-x-4 items-start">
+                  {report.reportCoverImage?.asset?.url && (
+                    <div class="col-span-1 lg:col-span-2 w-full h-full">
+                      <img
+                        src={report.reportCoverImage.asset.url}
+                        alt={report.reportCoverImage.alt || report.name}
+                        loading="eager"
+                        decoding="async"
+                        class="w-full h-full object-contain"
+                      />
+                    </div>
+                  )}
+                  <div class="lg:col-span-3 p-[20px] flex flex-col gap-8">
+                    <div>
+                      <Text
+                        tag="p"
+                        variant="textXS"
+                        class="uppercase font-medium text-accent-700 tracking-wider"
+                      >
+                        {report.industry} <span class="mx-2">|</span> {pubDate}
+                      </Text>
+                      <a href={`/resources/reports/${report.slug.current}`} class="inline-block mt-4 hover:text-accent-700 transition-colors">
+                        <Text
+                          tag="h2"
+                          variant="displaySM"
+                          class="text-base-900 font-display text-[26px]"
+                        >
+                          {report.name}
+                        </Text>
+                      </a>
+                    </div>
+                    <Text
+                      tag="p"
+                      variant="textLG"
+                      class="text-base-900 leading-relaxed text-[16px]"
+                    >
+                      {report.summary}
+                    </Text>
+                  </div>
+                </article>
+              );
+            })
           ) : (
             <Text tag="p" variant="textBase" class="text-base-600">
               No reports available at the moment. Check back soon!
@@ -62,7 +110,7 @@ if (currentPage < 1 || currentPage > totalPages) {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div class="flex items-center justify-center gap-4 mt-16">
+        <div class="flex items-center justify-center gap-4 mt-20">
           {currentPage > 1 && (
             <Button
               isLink

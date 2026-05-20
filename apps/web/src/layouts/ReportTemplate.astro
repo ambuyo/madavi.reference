@@ -1,0 +1,224 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Text from "@/components/fundations/elements/Text.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+import Button from "@/components/fundations/elements/Button.astro";
+import ArrowRight from "@/components/fundations/icons/ArrowRight.astro";
+import Seo from "@/components/fundations/head/Seo.astro";
+
+interface Props {
+  title: string;
+  industry: string;
+  date: Date;
+  image?: string | any;
+  imageAlt?: string;
+  description?: string;
+  seoTitle?: string;
+  seoDescription?: string;
+  seoImage?: string | any;
+  fullSummary?: any[];
+  compiledBy?: string;
+  downloadUrl?: string;
+}
+
+const {
+  title,
+  industry,
+  date,
+  image,
+  imageAlt,
+  description,
+  seoTitle,
+  seoDescription,
+  seoImage,
+  fullSummary,
+  compiledBy,
+  downloadUrl,
+} = Astro.props;
+
+const formattedDate = date.toLocaleDateString("en-US", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+
+const seoImageUrl = typeof seoImage === "string" ? seoImage : seoImage?.url || seoImage?.src;
+const imageUrl = typeof image === "string" ? image : image?.url || image?.src;
+---
+
+<BaseLayout>
+  <Seo
+    title={seoTitle || title}
+    description={seoDescription || description}
+    image={seoImageUrl}
+    type="article"
+  />
+
+  <section>
+    <Wrapper variant="standard" class="py-24 lg:pt-48">
+      <div class="grid lg:grid-cols-3 gap-12">
+        {/* Left Column */}
+        <div>
+          <div class="lg:sticky lg:top-48">
+            {/* Cover Image */}
+            {imageUrl && (
+              <div class="relative overflow-hidden bg-base-100 mb-6 rounded-lg" style="aspect-ratio: 3/4; width: 50%;">
+                <img
+                  src={imageUrl}
+                  alt={imageAlt || title}
+                  class="w-full h-full object-cover"
+                />
+              </div>
+            )}
+
+            {/* Title */}
+            <Text
+              tag="h1"
+              variant="displaySM"
+              class="text-accent-800 font-display text-balance"
+            >
+              {title}
+            </Text>
+
+            {/* Industry & Publication Date */}
+            <div class="mt-4 space-y-2">
+              <Text tag="p" variant="textXS" class="text-base-600 uppercase font-medium">
+                {industry}
+              </Text>
+              <Text tag="p" variant="textXS" class="text-base-600">
+                Published on: {formattedDate}
+              </Text>
+            </div>
+
+            {/* Compiled By */}
+            {compiledBy && (
+              <div class="mt-8 pt-8 border-t border-base-200">
+                <Text tag="p" variant="textXS" class="text-base-600 uppercase font-medium mb-2">
+                  Report Compiled by
+                </Text>
+                <Text tag="p" variant="textBase" class="text-base-900 font-semibold">
+                  {compiledBy}
+                </Text>
+              </div>
+            )}
+
+            {/* Download Button */}
+            {downloadUrl && (
+              <div class="mt-12 space-y-3">
+                <Button
+                  isLink={true}
+                  href={downloadUrl}
+                  variant="default"
+                  size="sm"
+                  class="w-full flex items-center justify-center gap-2"
+                  download
+                >
+                  Download
+                  <ArrowRight class="size-4" />
+                </Button>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Right Column - Full Content */}
+        <div class="lg:col-span-2">
+          {description && (
+            <div class="mb-8">
+              <Text
+                tag="p"
+                variant="textLG"
+                class="text-base-900 leading-relaxed"
+              >
+                {description}
+              </Text>
+            </div>
+          )}
+
+          <div class="prose prose-lg max-w-none">
+            {fullSummary && (
+              <div class="text-base-900 leading-relaxed">
+                {fullSummary.map((block: any, idx: number) => {
+                  if (block._type === "block") {
+                    const style = block.style || "normal";
+                    const text = block.children
+                      ?.map((child: any) => {
+                        let content = child.text || "";
+                        if (child.marks?.includes("strong"))
+                          content = `<strong>${content}</strong>`;
+                        if (child.marks?.includes("em"))
+                          content = `<em>${content}</em>`;
+                        if (child.marks?.includes("code"))
+                          content = `<code>${content}</code>`;
+                        if (child.marks?.includes("underline"))
+                          content = `<u>${content}</u>`;
+                        return content;
+                      })
+                      .join("");
+
+                    if (style === "h1")
+                      return (
+                        <h1 key={idx} class="text-3xl font-bold mt-6 mb-4">
+                          <Fragment set:html={text} />
+                        </h1>
+                      );
+                    if (style === "h2")
+                      return (
+                        <h2 key={idx} class="text-2xl font-bold mt-5 mb-3">
+                          <Fragment set:html={text} />
+                        </h2>
+                      );
+                    if (style === "h3")
+                      return (
+                        <h3 key={idx} class="text-xl font-bold mt-4 mb-2">
+                          <Fragment set:html={text} />
+                        </h3>
+                      );
+                    if (style === "blockquote")
+                      return (
+                        <blockquote
+                          key={idx}
+                          class="border-l-4 border-accent-400 pl-4 py-2 my-4 italic text-base-700"
+                        >
+                          <Fragment set:html={text} />
+                        </blockquote>
+                      );
+                    return (
+                      <p key={idx} class="mb-4">
+                        <Fragment set:html={text} />
+                      </p>
+                    );
+                  }
+
+                  if (block._type === "block" && block.listItem) {
+                    const isOrdered = block.listItem === "number";
+                    const text = block.children
+                      ?.map((child: any) => {
+                        let content = child.text || "";
+                        if (child.marks?.includes("strong"))
+                          content = `<strong>${content}</strong>`;
+                        if (child.marks?.includes("em"))
+                          content = `<em>${content}</em>`;
+                        return content;
+                      })
+                      .join("");
+                    return (
+                      <li
+                        key={idx}
+                        class={`mb-2 ${isOrdered ? "list-decimal" : "list-disc"} list-inside`}
+                      >
+                        <Fragment set:html={text} />
+                      </li>
+                    );
+                  }
+
+                  return null;
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </Wrapper>
+  </section>
+</BaseLayout>

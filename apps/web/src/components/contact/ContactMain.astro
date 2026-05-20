@@ -8,9 +8,11 @@ import { ContactFormReact } from "@/components/contact/ContactFormReact";
 
 <section >
   <Wrapper variant="standard" class="py-12 lg:py-24">
-    <div class="grid lg:grid-cols-2 gap-8">
+    <div class="grid lg:grid-cols-3 gap-8">
       <ContactInfo />
-      <ContactFormReact client:load />
+      <div class="lg:col-span-2" style="border-radius: 25px">
+        <ContactFormReact client:load />
+      </div>
     </div>
   </Wrapper>
 </section>

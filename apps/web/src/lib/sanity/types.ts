@@ -378,6 +378,31 @@ export interface SanityIndustry {
   title: string;
   slug: string;
   summary: string;
+  description?: string;
+  seo?: any;
+  og?: any;
+  twitter?: any;
+  hero?: {
+    breadcrumb?: string;
+    kicker?: string;
+    headline?: string;
+    description?: string;
+    backgroundColor?: string;
+    image?: {
+      url?: string;
+      alt?: string;
+    };
+  };
+  threeTierProblems?: any;
+  benefits?: any;
+  valueProposition?: {
+    title?: string;
+    description?: string;
+    narrativeParagraphs?: string[];
+  };
+  roi?: any;
+  blog?: any;
+  faqs?: any;
   painPoints?: string[];
   relevantServices?: string[];
   image?: SanityImage;
@@ -392,6 +417,28 @@ export interface Industry {
   data: {
     title: string;
     summary: string;
+    description?: string;
+    seo?: any;
+    og?: any;
+    twitter?: any;
+    hero?: {
+      breadcrumb?: string;
+      kicker?: string;
+      headline?: string;
+      description?: string;
+      backgroundColor?: string;
+      image?: string | { url?: string; alt?: string };
+    };
+    threeTierProblems?: any;
+    benefits?: any;
+    valueProposition?: {
+      title?: string;
+      description?: string;
+      narrativeParagraphs?: string[];
+    };
+    roi?: any;
+    blog?: any;
+    faqs?: any;
     painPoints: string[];
     relevantServices: string[];
     image?: UnifiedImage;

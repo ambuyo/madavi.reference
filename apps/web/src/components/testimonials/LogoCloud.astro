@@ -7,7 +7,7 @@ import Text from "@/components/fundations/elements/Text.astro";
 // Sanity
 import { client } from "@/lib/sanity/client";
 
-const query = `*[_type == "clientLogo"] | order(order asc) [0...10] {
+const query = `*[_type == "clientLogo"] | order(order asc) {
   _id,
   company,
   logo {
@@ -43,6 +43,13 @@ const logos = await client.fetch(query);
   >
     Brands We Have Worked With
   </Text>
+        <Text
+        tag="p"
+        variant="textBase"
+        class="text-base-600 lg:text-balance mt-4"
+      >
+We’re proud to work with leaders and innovators across the globe and here in Kenya.
+      </Text>
 </div>
 
 <div

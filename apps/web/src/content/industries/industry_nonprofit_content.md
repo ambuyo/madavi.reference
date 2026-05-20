@@ -36,6 +36,7 @@ hero:
   headline: "When Mission Meets Innovation"
   description: "AI systems that free nonprofit staff from administrative burden, so they can focus on the mission work that attracted donors and volunteers in the first place."
   backgroundColor: "#005B65"
+  image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&h=600&fit=crop"
 
 threeTierProblems:
   title: "The Three Problems Worth Solving"

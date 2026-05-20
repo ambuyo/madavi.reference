@@ -1,0 +1,95 @@
+---
+import Text from "@/components/fundations/elements/Text.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+import Button from "@/components/fundations/elements/Button.astro";
+import PricingCards from "@/components/our-approach/PricingCards.astro";
+
+const pricingTiers = [
+  {
+    title: "Advisory Services",
+    subtitle: "Leadership AI Fluency Cohort",
+    description: "Per participant for 8-week cohort training. Private cohorts $25K-50K based on customization",
+    isBullet: true,
+    pricing: "$2.5K-3.5K",
+    price: "Custom",
+    period: "Per Participant",
+    features: [],
+    highlight: false,
+  },
+  {
+    title: "Implementation",
+    subtitle: "Discovery & Assessment",
+    description: "2-4 weeks technical mapping, scope definition, dependency analysis, and implementation roadmap",
+    isBullet: true,
+    pricing: "$3K-15K",
+    price: "Custom",
+    period: "Project",
+    features: [],
+    highlight: false,
+  },
+  {
+    title: "Implementation",
+    subtitle: "Automation & Integration",
+    description: "Simple workflows to complex agentic systems. Varies by scope, integration complexity, and timeline",
+    isBullet: true,
+    pricing: "$5K-75K",
+    price: "Custom",
+    period: "Project",
+    features: [],
+    highlight: true,
+  },
+  {
+    title: "Training",
+    subtitle: "Workshops & Training",
+    description: "Half-day workshops to multi-week training programs. Hands-on, practical skill-building",
+    isBullet: true,
+    pricing: "$2K-20K",
+    price: "Custom",
+    period: "Program",
+    features: [],
+    highlight: false,
+  },
+  {
+    title: "Ongoing Support",
+    subtitle: "Retainer Partnership",
+    description: "Maintenance, optimization, expansion planning, and strategic evolution support",
+    isBullet: true,
+    pricing: "$1.5K-12K/mo",
+    price: "Custom",
+    period: "Monthly",
+    features: [],
+    highlight: false,
+  },
+];
+---
+
+<section>
+  <Wrapper variant="standard" class="py-24">
+    <PricingCards client:load pricingTiers={pricingTiers} />
+
+    <div class="mt-16 p-8 lg:p-12 bg-base-50 rounded-lg border border-base-200">
+      <Text
+        tag="h3"
+        variant="textLG"
+        class="text-base-900 font-semibold mb-4"
+      >
+        Need a Custom Package?
+      </Text>
+      <Text
+        tag="p"
+        variant="textBase"
+        class="text-base-700 mb-6"
+      >
+        Every organization is different. We offer flexible engagement models combining advisory, implementation, and partnership components. Let's talk about what makes sense for your specific situation.
+      </Text>
+      <Button
+        isLink
+        href="/contact"
+        variant="default"
+        size="sm"
+      >
+        Schedule a Consultation
+      </Button>
+    </div>
+  </Wrapper>
+</section>

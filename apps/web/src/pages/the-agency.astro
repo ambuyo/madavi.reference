@@ -1,0 +1,29 @@
+---
+// Fundations
+import BaseLayout from "@/layouts/BaseLayout.astro";
+// Agency Components
+import AgencyHero from "@/components/capabilities/agency/the-agency/AgencyHero.astro";
+import AgencyOld from "@/components/capabilities/agency/the-agency/AgencyOld.astro";
+import ThreePillarEngagement from "@/components/capabilities/agency/the-agency/3PillarEngagement.astro";
+import AgencyServices from "@/components/capabilities/agency/the-agency/AgencyServices.astro";
+import BeforeAfter from "@/components/capabilities/agency/the-agency/BeforeAfterAgency.astro";
+import AgencyDeliverables from "@/components/capabilities/agency/the-agency/AgencyDeliverables.astro";
+
+const seo = {
+  title: "The Agency",
+  description: "Explore our Agency - innovative solutions for AI-powered transformation and digital innovation.",
+  type: "website" as const,
+};
+
+---
+
+<BaseLayout seo={seo}>
+  <div style="background-color: #F1F7FF;">
+    <AgencyHero />
+    <AgencyOld />
+    <ThreePillarEngagement />
+    <AgencyDeliverables />
+    <AgencyServices />
+    <BeforeAfter />
+  </div>
+</BaseLayout>

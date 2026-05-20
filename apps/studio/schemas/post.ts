@@ -126,6 +126,15 @@ export const post = defineType({
         },
       ],
     }),
+    defineField({
+      name: "seo",
+      title: "SEO Settings",
+      type: "seo",
+      options: {
+        collapsible: true,
+        collapsed: true,
+      },
+    }),
   ],
   preview: {
     select: {

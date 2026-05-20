@@ -2,62 +2,40 @@
 // Assets
 import { Image } from "astro:assets";
 import whiteLogo from "@/images/brand/logos/Madavi Logo - Full- white.png";
-import BigLogo from "@/components/assets/BigLogo.astro";
+import AIGrowthConsulting from "@/components/assets/AI. GROWTH. CONSULTING.svg";
 // Icons
 import ArrowRight from "@/components/fundations/icons/ArrowRight.astro";
 // Fundations
 import Text from "@/components/fundations/elements/Text.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
-// Data
-import { getInfoPages } from "@/lib/data";
-
-// Fetch info pages from Sanity
-const infoPages = await getInfoPages();
 
 // Footer link configurations
 const footerSections = [
   {
-    title: "Services",
+    title: "AI Services",
     links: [
-      { href: "/services", label: "All Services" },
-      {
-        href: "/services/bookkeeping-accounting",
-        label: "Bookkeeping & Accounting",
-      },
-      {
-        href: "/services/audit-support-assurance",
-        label: "Audit Support & Assurance",
-      },
-      {
-        href: "/services/business-formation-setup",
-        label: "Business Formation",
-      },
-      {
-        href: "/services/business-valuation-appraisal",
-        label: "Business Valuation",
-      },
-      {
-        href: "/services/bankruptcy-financial-restructuring-accounting",
-        label: "Bankruptcy & Restructuring",
-      },
-      {
-        href: "/services/agricultural-accounting-farm-management",
-        label: "Agricultural Accounting",
-      },
+      { href: "/capabilities/ai-readiness", label: "AI Readiness Assessment" },
+      { href: "/capabilities/executive-advisory", label: "Executive Advisory Retainer" },
+      { href: "/capabilities/leadership-ai-fluency", label: "Leadership AI Fluency Cohort" },
+      { href: "/capabilities/keynotes-licensing", label: "Keynotes & Licensing" },
     ],
   },
   {
-    title: "Resources",
+    title: "Agency Services",
     links: [
-      { href: "/industries", label: "Industries We Serve" },
+      { href: "/capabilities/brand-strategy", label: "Brand Strategy" },
+      { href: "/capabilities/brand-communications", label: "Brand Communications" },
+      { href: "/capabilities/brand-management", label: "Brand Management" },
+      { href: "/capabilities/website-design", label: "Website Design" },
+    ],
+  },
+  {
+    title: "Sitemap",
+    links: [
+      { href: "/blog", label: "Blog" },
+      { href: "/industries", label: "Industries" },
       { href: "/our-work", label: "Our Work" },
-      { href: "/blog", label: "Blog & Insights" },
-      { href: "/pricing", label: "Pricing" },
-      { href: "/faq", label: "FAQ" },
-      { href: "/about", label: "About Us" },
-      { href: "/team", label: "Our Team" },
-      { href: "/testimonials", label: "Testimonials" },
-      { href: "/contact", label: "Contact Us" },
+      { href: "/about", label: "Who We Are" },
     ],
   },
 ];
@@ -71,15 +49,14 @@ const footerSections = [
       <div class="col-span-full lg:col-span-1">
         <Image src={whiteLogo} alt="Madavi Logo" width={940} height={300} class="h-12 w-auto object-contain" />
         <Text tag="p" variant="textXS" class="text-base-300 mt-12">
-          Professional accounting and financial services tailored to your
-          business needs. Trusted expertise across all industries.
+          For nearly a decade, we built brands and drove growth. Now, we build the systems that make growth sustainable across critical industries.
         </Text>
         <Text
           tag="p"
           variant="textXS"
           class="text-base-300 border-t border-base-900 pt-4 mt-4"
         >
-          © <span id="current-year"></span> Mulberry Accounting. All rights reserved.
+          © <span id="current-year"></span> Madavi Global Inc. All rights reserved.
         </Text>
       </div>
       {
@@ -106,44 +83,29 @@ const footerSections = [
       }
       <div>
         <Text tag="h3" variant="textSM" class="text-white uppercase">
-          Contact Information
+          Contact Info
         </Text>
         <div class="mt-4 lg:mt-12">
           <address class="space-y-3 not-italic">
             <Text tag="p" variant="textXS" class="text-base-300">
-              <span class="block text-white uppercase">Phone:</span> (555) 123-4567
+              <span class="block text-white uppercase">Phone:</span> (254) 718-735-565
             </Text>
             <Text tag="p" variant="textXS" class="text-base-300">
-              <span class="block text-white uppercase">Email:</span> info@mulberry.com
+              <span class="block text-white uppercase">Email:</span> hi@madavi.co
             </Text>
             <Text tag="p" variant="textXS" class="text-base-300">
               <span class="block text-white uppercase">Address:</span>
-              123 Business Ave, Suite 100 New York, NY 10001
-            </Text>
+              1007 N Orange St., Wilmington, DE 19801, New Castle, US
+            </Text> 
           </address>
-          <div class="border-t border-base-900 pt-4 mt-4">
-            <Text tag="p" variant="textXS" class="text-base-300">
-              <span class="block text-white uppercase">Business Hours:</span>
-            </Text>
-            <Text tag="p" variant="textXS" class="text-base-300 mt-2">
-              <span class="block"
-                ><span class="text-white uppercase">Mon-Fri:</span> 8:00 AM - 6:00
-                PM</span
-              >
-              <span class="block">
-                <span class="text-white uppercase">Sat:</span> 9:00 AM - 2:00 PM</span
-              >
-              <span class="block"
-                ><span class="text-white uppercase">Sun:</span> Closed</span
-              >
-            </Text>
-          </div>
         </div>
       </div>
     </div>
 
     <div class="border-t border-white/20 pt-4 mt-12"></div>
-    <BigLogo class="text-white mt-24" />
+    <div class="flex justify-center mt-24">
+      <Image src={AIGrowthConsulting} alt="AI. Growth. Consulting." class="object-contain" />
+    </div>
   </Wrapper>
   </div>
 </footer>

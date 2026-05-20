@@ -1,0 +1,146 @@
+---
+// Fundations
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Text from "@/components/fundations/elements/Text.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+import Button from "@/components/fundations/elements/Button.astro";
+
+// Data
+import { getSolutions } from "@/lib/sanity/reports";
+
+// Fetch solutions data
+const allSolutions = await getSolutions();
+const solutionsPerPage = 8; // 2 rows of 4 columns
+const currentPage = parseInt(Astro.url.searchParams.get("page") || "1");
+const totalPages = Math.ceil(allSolutions.length / solutionsPerPage);
+const startIndex = (currentPage - 1) * solutionsPerPage;
+const endIndex = startIndex + solutionsPerPage;
+const solutions = allSolutions.slice(startIndex, endIndex);
+
+// Validate page number
+if (currentPage < 1 || currentPage > totalPages) {
+  return Astro.redirect("/solutions?page=1");
+}
+---
+
+<BaseLayout>
+  <section>
+    <Wrapper variant="standard" class="py-24 lg:pt-32">
+      <div class="max-w-xl">
+        <Text
+          tag="span"
+          variant="textXS"
+          class="uppercase font-medium text-accent-700"
+        >
+          Discover
+        </Text>
+
+        <Text
+          tag="h1"
+          variant="displayXL"
+          class="text-base-900 mt-12 tracking-tight font-display text-balance"
+        >
+          Our Solutions
+        </Text>
+
+        <Text tag="p" variant="textLG" class="text-base-600 mt-4 text-balance">
+          Discover the proprietary software, data, and talent solutions Madavi pairs with consulting capabilities to deliver faster insights and measurable impact.
+        </Text>
+      </div>
+
+      <div class="space-y-8 lg:space-y-24 mt-12 lg:mt-24">
+        {
+          solutions.length > 0 ? (
+            solutions.map((solution, index) => (
+              <article class="relative group grid grid-cols-1 lg:grid-cols-5 gap-x-4 items-start" style="background-color: #FDF8F1;">
+                {solution.featuredImage?.asset?.url && (
+                  <div class="col-span-1 lg:col-span-2 w-full h-full">
+                    <img
+                      src={solution.featuredImage.asset.url}
+                      alt={solution.featuredImage.alt || solution.name}
+                      loading="eager"
+                      decoding="async"
+                      class="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
+                <div class="lg:col-span-3 p-[20px] flex flex-col gap-8">
+                  <div>
+                    <Text
+                      tag="p"
+                      variant="textXS"
+                      class="uppercase font-medium text-accent-700 tracking-wider"
+                    >
+                      {solution.industry}
+                    </Text>
+                    <a href={`/solutions/${solution.slug.current}`} class="inline-block mt-4 hover:text-accent-700 transition-colors">
+                      <Text
+                        tag="h2"
+                        variant="displaySM"
+                        class="text-base-900 font-display text-[26px]"
+                      >
+                        {solution.name}
+                      </Text>
+                    </a>
+                  </div>
+                  <Text
+                    tag="p"
+                    variant="textLG"
+                    class="text-base-900 leading-relaxed text-[16px]"
+                  >
+                    {solution.summary}
+                  </Text>
+                </div>
+              </article>
+            ))
+          ) : (
+            <Text tag="p" variant="textBase" class="text-base-600">
+              Solutions coming soon. Check back for more information!
+            </Text>
+          )
+        }
+      </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div class="flex items-center justify-center gap-4 mt-20">
+          {currentPage > 1 && (
+            <Button
+              isLink
+              href={`/solutions?page=${currentPage - 1}`}
+              variant="muted"
+              size="sm"
+            >
+              ← Previous
+            </Button>
+          )}
+
+          <div class="flex items-center gap-2">
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              <Button
+                isLink
+                href={`/solutions?page=${page}`}
+                variant={page === currentPage ? "default" : "muted"}
+                size="xs"
+                class={page === currentPage ? "pointer-events-none" : ""}
+              >
+                {page}
+              </Button>
+            ))}
+          </div>
+
+          {currentPage < totalPages && (
+            <Button
+              isLink
+              href={`/solutions?page=${currentPage + 1}`}
+              variant="muted"
+              size="sm"
+            >
+              Next →
+            </Button>
+          )}
+        </div>
+      )}
+    </Wrapper>
+  </section>
+</BaseLayout>

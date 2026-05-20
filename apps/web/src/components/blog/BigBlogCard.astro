@@ -7,7 +7,7 @@ import Button from "@/components/fundations/elements/Button.astro";
 
 // Content
 const { title, description, image, pubDate, url } = {
-  url: "/" + Astro.props.post.slug,
+  url: "/blog/" + Astro.props.post.slug,
   title: Astro.props.post.data.title,
   description: Astro.props.post.data.description,
   image: Astro.props.post.data.image.url,

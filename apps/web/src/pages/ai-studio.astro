@@ -1,0 +1,29 @@
+---
+// Fundations
+import BaseLayout from "@/layouts/BaseLayout.astro";
+// AI Studio Components
+import StudioHero from "@/components/capabilities/ai/studio/StudioHero.astro";
+import StudioOld from "@/components/capabilities/ai/studio/StudioOld.astro";
+import ThreePillarEngagement from "@/components/capabilities/ai/studio/3PillarEngagement.astro";
+import StudioServices from "@/components/capabilities/ai/studio/StudioServices.astro";
+import BeforeAfter from "@/components/capabilities/ai/studio/BeforeAfterStudio.astro";
+import StudioDeliverables from "@/components/capabilities/ai/studio/StudioDeliverables.astro";
+
+const seo = {
+  title: "AI Studio",
+  description: "Explore our AI Studio - innovative solutions for AI-powered transformation and digital innovation.",
+  type: "website" as const,
+};
+
+---
+
+<BaseLayout seo={seo}>
+  <div style="background-color: #F1F2F6;">
+    <StudioHero /> 
+    <StudioOld />
+    <ThreePillarEngagement />
+    <StudioDeliverables />
+    <StudioServices />
+    <BeforeAfter />
+  </div>
+</BaseLayout>

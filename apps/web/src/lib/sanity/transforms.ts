@@ -204,6 +204,26 @@ export function transformIndustry(industry: SanityIndustry): Industry {
     data: {
       title: industry.title,
       summary: industry.summary,
+      description: industry.description,
+      seo: industry.seo,
+      og: industry.og,
+      twitter: industry.twitter,
+      hero: industry.hero
+        ? {
+            breadcrumb: industry.hero.breadcrumb,
+            kicker: industry.hero.kicker,
+            headline: industry.hero.headline,
+            description: industry.hero.description,
+            backgroundColor: industry.hero.backgroundColor,
+            image: industry.hero.image?.url || undefined,
+          }
+        : undefined,
+      threeTierProblems: industry.threeTierProblems,
+      benefits: industry.benefits,
+      valueProposition: industry.valueProposition,
+      roi: industry.roi,
+      blog: industry.blog,
+      faqs: industry.faqs,
       painPoints: industry.painPoints || [],
       relevantServices: industry.relevantServices || [],
       image: industry.image

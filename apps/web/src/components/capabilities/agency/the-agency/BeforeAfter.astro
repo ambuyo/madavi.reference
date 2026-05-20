@@ -1,0 +1,68 @@
+---
+// Fundations
+import Text from "@/components/fundations/elements/Text.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+
+const comparisons = [
+  {
+    title: "Process Efficiency",
+    before: "Manual handoffs between teams causing delays and errors",
+    after: "Automated workflows that complete in minutes, not days",
+  },
+  {
+    title: "Data Intelligence",
+    before: "Data locked in legacy systems, difficult to access or analyze",
+    after: "Real-time insights extracted and actionable instantly",
+  },
+  {
+    title: "Team Capacity",
+    before: "Teams spending 60% of time on repetitive tasks",
+    after: "Teams focused on strategic work that drives growth",
+  },
+];
+---
+
+<section>
+  <Wrapper variant="standard" class="py-24">
+    <div class="mb-12">
+      <Text
+        tag="h2"
+        variant="displayMD"
+        class="text-base-950 text-balance font-medium tracking-tight"
+      >
+        Before & After
+      </Text>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      {
+        comparisons.map(({ title, before, after }) => (
+          <div class="space-y-6">
+            <div class="p-8 bg-red-50 rounded">
+              <Text
+                tag="h3"
+                variant="textLG"
+                class="text-red-900 font-display mb-3"
+              >
+                {title}
+              </Text>
+              <Text tag="p" variant="textSM" class="text-red-700">
+                Before
+              </Text>
+              <Text tag="p" variant="textMD" class="text-red-900 mt-2">
+                {before}
+              </Text>
+            </div>
+            <div class="p-8 bg-green-50 rounded">
+              <Text tag="p" variant="textSM" class="text-green-700">
+                After
+              </Text>
+              <Text tag="p" variant="textMD" class="text-green-900 mt-2">
+                {after}
+              </Text>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </Wrapper>
+</section>

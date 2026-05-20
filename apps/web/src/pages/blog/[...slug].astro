@@ -36,7 +36,9 @@ const categoryName = post.data.categories?.[0]?.name || "Blog";
 const wordCount = post.plainText?.trim().split(/\s+/).length || 0;
 const readingTimeMinutes = Math.ceil(wordCount / 200);
 const readingTime = readingTimeMinutes < 1 ? "1 min" : `${readingTimeMinutes} min`;
-const authorName = post.data.team || "";
+
+// Get author name from team field or WordPress author data
+const authorName = post.data.team || (post.data as any)?._embedded?.author?.[0]?.name || "Madavi";
 ---
 
 <SingleBlogLayout

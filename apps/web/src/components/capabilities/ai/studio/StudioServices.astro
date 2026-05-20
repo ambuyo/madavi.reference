@@ -1,0 +1,65 @@
+---
+// Fundations
+import Text from "@/components/fundations/elements/Text.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+
+const services = [
+  {
+    title: "AI Process Automation",
+    description:
+      "End-to-end workflow mapping and automation using agentic frameworks. We eliminate manual handoffs and error-prone repetition.",
+  },
+  {
+    title: "Custom Agent Development",
+    description:
+      "Purpose-built AI agents for sales operations, data analysis, customer support, and internal processes. Deployed to work within your existing systems.",
+  },
+  {
+    title: "Legacy System Integration",
+    description:
+      "Connect your current infrastructure to modern AI capabilities. Extract intelligence from data that's been locked in outdated systems.",
+  },
+  {
+    title: "AI Readiness Audits",
+    description:
+      "Technical assessment of your organization's infrastructure, data quality, and process maturity. Clear roadmap for profitable AI deployment.",
+  },
+  {
+    title: "Deployment & Training",
+    description:
+      "Full implementation support and team training. We don't hand you documentation—we ensure your people can operate and maintain the systems we build.",
+  },
+];
+---
+
+<section>
+  <Wrapper variant="standard" class="py-24">
+    <div class="mb-12">
+      <Text
+        tag="h2"
+        variant="displayLG"
+        class="text-accent-900 font-medium"
+      >
+        AI Studio Services
+      </Text>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {
+        services.map(({ title, description }) => (
+          <div class="p-8 rounded-[25px] transition-shadow duration-300 hover:shadow-lg" style="background-color: #FCF7F5">
+            <Text
+              tag="h3"
+              variant="textXL"
+              class="text-accent-900 font-medium"
+            >
+              {title}
+            </Text>
+            <Text tag="p" variant="textMD" class="text-base-600 mt-3">
+              {description}
+            </Text>
+          </div>
+        ))
+      }
+    </div>
+  </Wrapper>
+</section>

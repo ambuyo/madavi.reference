@@ -7,9 +7,13 @@ import { infoPage } from "./infoPage";
 import { siteSettings } from "./siteSettings";
 import { clientLogo } from "./clientLogo";
 import { report } from "./report";
+import { solution } from "./solution";
 import { event } from "./event";
+import { seo } from "./seo";
 
 export const schemaTypes = [
+  // Objects
+  seo,
   // Documents
   post,
   teamMember,
@@ -20,5 +24,6 @@ export const schemaTypes = [
   siteSettings,
   clientLogo,
   report,
+  solution,
   event,
 ];

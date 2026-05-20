@@ -2,100 +2,79 @@
 import { getCollection } from "astro:content";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import Text from "@/components/fundations/elements/Text.astro";
-import Button from "@/components/fundations/elements/Button.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 
 // Fetch all FAQs
 const allFaqs = await getCollection("faqs");
 
-// Group FAQs by category
-const faqsByCategory = allFaqs.reduce((acc: any, faq) => {
-  const category = faq.data.slug?.includes("industry") ? "Industry FAQs" : "Capability FAQs";
-  if (!acc[category]) {
-    acc[category] = [];
+// Get unique slugs and categorize them
+const uniqueSlugs = new Map();
+const industryKeywords = ["nonprofit", "healthcare", "retail", "law-firm"];
+allFaqs.forEach((faq: any) => {
+  const slug = faq.data.slug;
+  if (!uniqueSlugs.has(slug)) {
+    const isIndustry = industryKeywords.some(keyword => slug.includes(keyword));
+    uniqueSlugs.set(slug, {
+      slug: slug,
+      title: faq.data.title,
+      category: isIndustry ? "Industry FAQs" : "Capability FAQs"
+    });
   }
-  acc[category].push(faq);
+});
+
+// Group by category
+const faqsByCategory = Array.from(uniqueSlugs.values()).reduce((acc: any, item) => {
+  if (!acc[item.category]) {
+    acc[item.category] = [];
+  }
+  acc[item.category].push(item);
   return acc;
 }, {});
 
-// Sort categories
 const categories = Object.keys(faqsByCategory).sort();
 ---
 
 <BaseLayout>
   <section>
     <Wrapper variant="standard" class="pb-12 pt-48">
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-y-8 gap-x-12">
-        {/* Left Sidebar */}
-        <div>
-          <div class="lg:sticky lg:top-48">
-            <Text
-              tag="h1"
-              variant="displayMD"
-              class="text-accent-800 font-display text-balance"
-            >
-              Frequently Asked Questions
-            </Text>
-            <Text tag="p" variant="textSM" class="text-base-700 mt-4">
-              Find answers to common questions about AI implementation, industry-specific solutions, and our approach to digital transformation.
-            </Text>
+      <div class="max-w-3xl">
+        <Text
+          tag="h1"
+          variant="displayMD"
+          class="text-accent-800 font-display text-balance"
+        >
+          Frequently Asked Questions
+        </Text>
+        <Text tag="p" variant="textLG" class="text-base-700 mt-6">
+          Find answers to common questions about AI implementation, industry-specific solutions, and our approach to digital transformation.
+        </Text>
 
-            {/* Category List */}
-            <div class="mt-12 space-y-4">
-              <Text tag="h3" variant="textXS" class="text-base-600 font-semibold uppercase tracking-wide">
-                Browse by Category
-              </Text>
-              <nav class="space-y-3">
-                {categories.map((category) => (
-                  <a
-                    href={`#${category.toLowerCase().replace(/\s+/g, '-')}`}
-                    class="block text-base text-accent-700 hover:text-accent-900 font-medium transition-colors"
-                  >
-                    {category}
-                  </a>
-                ))}
-              </nav>
-            </div>
-          </div>
-        </div>
-
-        {/* Right Content */}
-        <div class="lg:col-span-2 space-y-16">
+        {/* Category Links */}
+        <div class="mt-16 space-y-12">
           {categories.map((category) => (
-            <div id={category.toLowerCase().replace(/\s+/g, '-')}>
+            <div>
               <Text
                 tag="h2"
                 variant="displayXS"
-                class="text-accent-800 font-display mb-8"
+                class="text-accent-800 font-display mb-6"
               >
                 {category}
               </Text>
 
-              <div class="space-y-8">
-                {faqsByCategory[category].map((faq: any) => (
-                  <div class="bg-base-50 p-8 rounded-lg">
-                    <Text tag="h3" variant="textXS" class="text-secondary-500 font-semibold tracking-wide uppercase mb-4">
-                      {faq.data.title}
+              <div class="space-y-3">
+                {faqsByCategory[category].map((item: any) => (
+                  <a
+                    href={`/resources/faqs/${item.slug}`}
+                    class="block p-4 border border-base-300 rounded-lg hover:bg-base-50 hover:border-accent-600 transition-all group"
+                  >
+                    <Text
+                      tag="h3"
+                      variant="textBase"
+                      class="text-accent-800 font-semibold group-hover:text-accent-900"
+                    >
+                      {item.title}
                     </Text>
-
-                    <div class="space-y-6 max-w-3xl">
-                      {faq.data.faqs.map((item: any, index: number) => (
-                        <details key={index} class="group">
-                          <summary class="cursor-pointer flex items-start justify-between gap-4 py-3">
-                            <Text tag="h4" variant="textBase" class="text-accent-800 font-semibold text-left">
-                              {item.question}
-                            </Text>
-                            <span class="text-accent-700 text-xl group-open:rotate-180 transition-transform flex-shrink-0">
-                              +
-                            </span>
-                          </summary>
-                          <div class="pt-2 pb-4 text-base-700 space-y-4">
-                            <div set:html={item.fullAnswer} />
-                          </div>
-                        </details>
-                      ))}
-                    </div>
-                  </div>
+                  </a>
                 ))}
               </div>
             </div>

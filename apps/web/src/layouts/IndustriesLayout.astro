@@ -9,8 +9,9 @@ import Button from "@/components/fundations/elements/Button.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 // Components
 import IndustryCard from "@/components/industries/IndustryCard.astro";
+import IndustryValueProposition from "@/components/industries/IndustryValueProposition.astro";
 // Data
-import { getIndustries } from "@/lib/data";
+import { getIndustries, getPostsByCategory, getFAQsBySlug } from "@/lib/data";
 const allIndustries = await getIndustries();
 // Get the industry slug from the URL
 const industrySlug = Astro.url.pathname.split("/").filter(Boolean).pop();
@@ -24,6 +25,19 @@ const relatedIndustries = allIndustries
       ) && industry.slug !== industrySlug
   )
   .slice(0, 2);
+
+// Fetch blog posts by category if blog section has a category
+let blogPosts = [];
+if (frontmatter.blog?.category) {
+  blogPosts = await getPostsByCategory(frontmatter.blog.category);
+  blogPosts = blogPosts.slice(0, 3); // Limit to 3 posts
+}
+
+// Fetch FAQs by slug if faqs section has a slug
+let faqsData = null;
+if (frontmatter.faqs?.slug) {
+  faqsData = await getFAQsBySlug(frontmatter.faqs.slug);
+}
 ---
 
 <BaseLayout seo={seo}>
@@ -40,14 +54,12 @@ const relatedIndustries = allIndustries
       </div>
     </Wrapper>
     <Wrapper variant="paddingLess">
-      <Image
-        alt={frontmatter.image.alt}
-        src={frontmatter.image.url}
-        width={800}
-        height={600}
+      <img
+        alt={frontmatter.title}
+        src={frontmatter.hero?.image || frontmatter.image?.url}
+        class="w-full max-h-150 object-cover object-top"
         loading="lazy"
         decoding="async"
-        class="w-full max-h-150 object-cover object-top"
       />
     </Wrapper>
     <Wrapper variant="standard" class="py-12 lg:py-24">
@@ -147,6 +159,135 @@ const relatedIndustries = allIndustries
   </section>
 
   {
+    frontmatter.valueProposition && (
+      <IndustryValueProposition
+        title={frontmatter.valueProposition.title}
+        description={frontmatter.valueProposition.description}
+        narrativeParagraphs={frontmatter.valueProposition.narrativeParagraphs || []}
+        heroImage={frontmatter.hero?.image}
+      />
+    )
+  }
+
+  {
+    blogPosts.length > 0 && (
+      <section>
+        <Wrapper variant="standard" class="py-12 lg:py-24">
+          <div>
+            <Text
+              tag="h2"
+              variant="displayMD"
+              class="text-base-900 text-balance font-medium tracking-tight font-display"
+            >
+              {frontmatter.blog?.title || "Latest Insights"}
+            </Text>
+            <Text
+              tag="p"
+              variant="textBase"
+              class="text-base-600 lg:text-balance mt-4"
+            >
+              {frontmatter.blog?.description}
+            </Text>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+              {blogPosts.map((post) => (
+                <article class="flex flex-col">
+                  {post.data.image && (
+                    <div class="mb-4 overflow-hidden rounded-lg h-48">
+                      <img
+                        src={post.data.image}
+                        alt={post.data.title}
+                        class="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
+                  <a
+                    href={`/blog/${post.slug}`}
+                    class="group hover:text-accent-700 transition-colors"
+                  >
+                    <Text
+                      tag="h3"
+                      variant="displaySM"
+                      class="text-base-900 font-display text-lg mb-2"
+                    >
+                      {post.data.title}
+                    </Text>
+                  </a>
+                  <Text
+                    tag="p"
+                    variant="textBase"
+                    class="text-base-600 leading-relaxed mb-4 line-clamp-3"
+                  >
+                    {post.data.description}
+                  </Text>
+                  <div class="mt-auto">
+                    <a
+                      href={`/blog/${post.slug}`}
+                      class="text-accent-700 hover:text-accent-800 transition-colors font-medium text-sm"
+                    >
+                      Read article
+                    </a>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </Wrapper>
+      </section>
+    )
+  }
+
+  {
+    faqsData && faqsData.faqs && faqsData.faqs.length > 0 && (
+      <section>
+        <Wrapper variant="standard" class="py-12 lg:py-24">
+          <div>
+            <Text
+              tag="h2"
+              variant="displayMD"
+              class="text-base-900 text-balance font-medium tracking-tight font-display"
+            >
+              {faqsData.title || "Frequently Asked Questions"}
+            </Text>
+            <Text
+              tag="p"
+              variant="textBase"
+              class="text-base-600 lg:text-balance mt-4"
+            >
+              {faqsData.description}
+            </Text>
+            <div class="mt-8 space-y-4">
+              {faqsData.faqs.map((faq) => (
+                <details class="border border-base-200 rounded-lg p-6 cursor-pointer hover:bg-base-50 transition-colors group">
+                  <summary class="flex items-center justify-between font-medium text-base-900 cursor-pointer select-none">
+                    <span class="text-lg">{faq.question}</span>
+                    <span class="ml-4 text-accent-700 group-open:rotate-180 transition-transform">
+                      ▼
+                    </span>
+                  </summary>
+                  <div class="mt-4 pt-4 border-t border-base-200">
+                    <Text
+                      tag="p"
+                      variant="textBase"
+                      class="text-base-600 leading-relaxed"
+                    >
+                      {faq.shortAnswer}
+                    </Text>
+                    {faq.fullAnswer && (
+                      <div class="mt-4 pt-4 border-t border-base-200">
+                        <div class="prose prose-sm max-w-none" set:html={faq.fullAnswer} />
+                      </div>
+                    )}
+                  </div>
+                </details>
+              ))}
+            </div>
+          </div>
+        </Wrapper>
+      </section>
+    )
+  }
+
+  {
     relatedIndustries.length > 0 && (
       <section>
         <Wrapper variant="standard" class="py-12">
@@ -163,7 +304,7 @@ const relatedIndustries = allIndustries
               variant="textBase"
               class="text-base-600 lg:text-balance mt-4"
             >
-              Other industries we serve with specialized accounting expertise
+              Other industries we serve with specialized consulting expertise
             </Text>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-2 mt-4 p-8 lg:p-12 bg-base-50">
               {relatedIndustries.map((industry) => (

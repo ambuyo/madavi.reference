@@ -1,0 +1,67 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Text from "@/components/fundations/elements/Text.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+import Seo from "@/components/fundations/head/Seo.astro";
+
+interface Props {
+  question: string;
+  category?: string;
+  date?: Date;
+  answer: any;
+  seoTitle?: string;
+  seoDescription?: string;
+}
+
+const {
+  question,
+  category,
+  date,
+  answer,
+  seoTitle,
+  seoDescription,
+} = Astro.props;
+
+const formattedDate = date ? date.toLocaleDateString("en-US", {
+  year: "numeric",
+  month: "short",
+}).toUpperCase() : undefined;
+---
+
+<BaseLayout>
+  <Seo
+    title={seoTitle || question}
+    description={seoDescription || question}
+    type="article"
+  />
+
+  <section>
+    <Wrapper variant="standard" class="py-24">
+      <div class="max-w-3xl mx-auto">
+        {/* Header */}
+        <div class="mb-12">
+          {category && (
+            <Text
+              tag="p"
+              variant="textXS"
+              class="uppercase font-medium text-accent-700 tracking-wider"
+            >
+              {category} {formattedDate && (<><span class="mx-2">|</span> {formattedDate}</>)}
+            </Text>
+          )}
+          <h1 class="text-base-900 mt-4 text-3xl font-display font-medium">
+            {question}
+          </h1>
+        </div>
+
+        {/* Answer Content */}
+        <div class="prose prose-base max-w-none">
+          <div
+            class="text-base-700 leading-relaxed space-y-4"
+            set:html={answer}
+          />
+        </div>
+      </div>
+    </Wrapper>
+  </section>
+</BaseLayout>

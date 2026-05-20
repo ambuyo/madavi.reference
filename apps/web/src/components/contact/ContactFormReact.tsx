@@ -9,6 +9,7 @@ const contactSchema = z.object({
   phone: z.string().optional().default(""),
   company: z.string().optional().default(""),
   service: z.string().optional().default(""),
+  budget: z.string().optional().default(""),
   subject: z.string().min(1, "Subject is required"),
   message: z.string().min(10, "Message must be at least 10 characters"),
   privacy: z.boolean().refine((val) => val === true, {
@@ -68,91 +69,115 @@ export function ContactFormReact() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 bg-black p-8">
-      {/* Full Name */}
-      <div>
-        <label htmlFor="name" className="block text-sm font-medium text-base-300 mb-2">
-          Full Name *
-        </label>
-        <input
-          {...register("name")}
-          type="text"
-          id="name"
-          placeholder="Your full name"
-          className="w-full px-4 py-3 border-b border-base-800 placeholder-base-400 text-white border-x-0 border-t-0 focus:ring-0 focus:outline-none focus:border-base-800 transition-colors bg-white/5 focus:bg-white/10"
-        />
-        {errors.name && (
-          <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>
-        )}
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 bg-base-80 p-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Full Name */}
+        <div>
+          <label htmlFor="name" className="block text-sm font-medium text-white mb-2">
+            Full Name *
+          </label>
+          <input
+            {...register("name")}
+            type="text"
+            id="name"
+            placeholder="Your full name"
+            className="w-full px-4 py-3 border-b border-base-800 placeholder-white text-white border-x-0 border-t-0 focus:ring-0 focus:outline-none focus:border-base-800 transition-colors bg-white/5 focus:bg-white/10"
+          />
+          {errors.name && (
+            <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>
+          )}
+        </div>
+
+        {/* Email */}
+        <div>
+          <label htmlFor="email" className="block text-sm font-medium text-white mb-2">
+            Email Address *
+          </label>
+          <input
+            {...register("email")}
+            type="email"
+            id="email"
+            placeholder="your.email@example.com"
+            className="w-full px-4 py-3 border-b border-base-800 placeholder-white text-white border-x-0 border-t-0 focus:ring-0 focus:outline-none focus:border-base-800 transition-colors bg-white/5 focus:bg-white/10"
+          />
+          {errors.email && (
+            <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
+          )}
+        </div>
       </div>
 
-      {/* Email */}
-      <div>
-        <label htmlFor="email" className="block text-sm font-medium text-base-300 mb-2">
-          Email Address *
-        </label>
-        <input
-          {...register("email")}
-          type="email"
-          id="email"
-          placeholder="your.email@example.com"
-          className="w-full px-4 py-3 border-b border-base-800 placeholder-base-400 text-white border-x-0 border-t-0 focus:ring-0 focus:outline-none focus:border-base-800 transition-colors bg-white/5 focus:bg-white/10"
-        />
-        {errors.email && (
-          <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
-        )}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Phone */}
+        <div>
+          <label htmlFor="phone" className="block text-sm font-medium text-white mb-2">
+            Phone Number
+          </label>
+          <input
+            {...register("phone")}
+            type="tel"
+            id="phone"
+            placeholder="(555) 123-4567"
+            className="w-full px-4 py-3 border-b border-base-800 placeholder-white text-white border-x-0 border-t-0 focus:ring-0 focus:outline-none focus:border-base-800 transition-colors bg-white/5 focus:bg-white/10"
+          />
+        </div>
+
+        {/* Company */}
+        <div>
+          <label htmlFor="company" className="block text-sm font-medium text-white mb-2">
+            Company Name
+          </label>
+          <input
+            {...register("company")}
+            type="text"
+            id="company"
+            placeholder="Your company name"
+            className="w-full px-4 py-3 border-b border-base-800 placeholder-white text-white border-x-0 border-t-0 focus:ring-0 focus:outline-none focus:border-base-800 transition-colors bg-white/5 focus:bg-white/10"
+          />
+        </div>
       </div>
 
-      {/* Phone */}
-      <div>
-        <label htmlFor="phone" className="block text-sm font-medium text-base-300 mb-2">
-          Phone Number
-        </label>
-        <input
-          {...register("phone")}
-          type="tel"
-          id="phone"
-          placeholder="(555) 123-4567"
-          className="w-full px-4 py-3 border-b border-base-800 placeholder-base-400 text-white border-x-0 border-t-0 focus:ring-0 focus:outline-none focus:border-base-800 transition-colors bg-white/5 focus:bg-white/10"
-        />
-      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Service */}
+        <div>
+          <label htmlFor="service" className="block text-sm font-medium text-white mb-2">
+            Service Interested In
+          </label>
+          <select
+            {...register("service")}
+            id="service"
+            className="w-full px-4 py-3 border-b border-base-800 placeholder-white text-white border-x-0 border-t-0 focus:ring-0 focus:outline-none focus:border-base-800 transition-colors bg-white/5 focus:bg-white/10"
+          >
+            <option value="">Select a service</option>
+            <option value="ai-strategy">AI Strategy</option>
+            <option value="ai-readiness">AI Readiness Assessment</option>
+            <option value="implementation">AI Implementation</option>
+            <option value="training">Team Training</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
 
-      {/* Company */}
-      <div>
-        <label htmlFor="company" className="block text-sm font-medium text-base-300 mb-2">
-          Company Name
-        </label>
-        <input
-          {...register("company")}
-          type="text"
-          id="company"
-          placeholder="Your company name"
-          className="w-full px-4 py-3 border-b border-base-800 placeholder-base-400 text-white border-x-0 border-t-0 focus:ring-0 focus:outline-none focus:border-base-800 transition-colors bg-white/5 focus:bg-white/10"
-        />
-      </div>
-
-      {/* Service */}
-      <div>
-        <label htmlFor="service" className="block text-sm font-medium text-base-300 mb-2">
-          Service Interested In
-        </label>
-        <select
-          {...register("service")}
-          id="service"
-          className="w-full px-4 py-3 border-b border-base-800 placeholder-base-400 text-white border-x-0 border-t-0 focus:ring-0 focus:outline-none focus:border-base-800 transition-colors bg-white/5 focus:bg-white/10"
-        >
-          <option value="">Select a service</option>
-          <option value="ai-strategy">AI Strategy</option>
-          <option value="ai-readiness">AI Readiness Assessment</option>
-          <option value="implementation">AI Implementation</option>
-          <option value="training">Team Training</option>
-          <option value="other">Other</option>
-        </select>
+        {/* Budget */}
+        <div>
+          <label htmlFor="budget" className="block text-sm font-medium text-white mb-2">
+            Please Choose the Budget *
+          </label>
+          <select
+            {...register("budget")}
+            id="budget"
+            className="w-full px-4 py-3 border-b border-base-800 placeholder-white text-white border-x-0 border-t-0 focus:ring-0 focus:outline-none focus:border-base-800 transition-colors bg-white/5 focus:bg-white/10"
+          >
+            <option value="">Select your budget</option>
+            <option value="2k-5k">$2k to $5k</option>
+            <option value="5k-20k">$5k to $20k</option>
+            <option value="20k-50k">$20k to $50k</option>
+            <option value="50k-plus">$50k+</option>
+          </select>
+        </div>
       </div>
 
       {/* Subject */}
       <div>
-        <label htmlFor="subject" className="block text-sm font-medium text-base-300 mb-2">
+        <label htmlFor="subject" className="block text-sm font-medium text-white mb-2">
           Subject *
         </label>
         <input
@@ -160,7 +185,7 @@ export function ContactFormReact() {
           type="text"
           id="subject"
           placeholder="Brief description of your inquiry"
-          className="w-full px-4 py-3 border-b border-base-800 placeholder-base-400 text-white border-x-0 border-t-0 focus:ring-0 focus:outline-none focus:border-base-800 transition-colors bg-white/5 focus:bg-white/10"
+          className="w-full px-4 py-3 border-b border-base-800 placeholder-white text-white border-x-0 border-t-0 focus:ring-0 focus:outline-none focus:border-base-800 transition-colors bg-white/5 focus:bg-white/10"
         />
         {errors.subject && (
           <p className="text-red-500 text-xs mt-1">{errors.subject.message}</p>
@@ -169,7 +194,7 @@ export function ContactFormReact() {
 
       {/* Message */}
       <div>
-        <label htmlFor="message" className="block text-sm font-medium text-base-300 mb-2">
+        <label htmlFor="message" className="block text-sm font-medium text-white mb-2">
           Message *
         </label>
         <textarea
@@ -177,7 +202,7 @@ export function ContactFormReact() {
           id="message"
           rows={6}
           placeholder="Please provide details about your inquiry..."
-          className="w-full px-4 py-3 border-b border-base-800 placeholder-base-400 text-white border-x-0 border-t-0 focus:ring-0 focus:outline-none focus:border-base-800 transition-colors bg-white/5 focus:bg-white/10 resize-vertical"
+          className="w-full px-4 py-3 border-b border-base-800 placeholder-white text-white border-x-0 border-t-0 focus:ring-0 focus:outline-none focus:border-base-800 transition-colors bg-white/5 focus:bg-white/10 resize-vertical"
         />
         {errors.message && (
           <p className="text-red-500 text-xs mt-1">{errors.message.message}</p>
@@ -192,7 +217,7 @@ export function ContactFormReact() {
           id="privacy"
           className="mt-1 h-4 w-4 text-accent-600 focus:ring-accent-500 border-base-300 rounded"
         />
-        <label htmlFor="privacy" className="text-sm text-base-600">
+        <label htmlFor="privacy" className="text-sm text-white">
           I agree to the{" "}
           <a
             href="/legal/privacy"

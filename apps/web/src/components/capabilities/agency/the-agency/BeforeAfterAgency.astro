@@ -1,0 +1,81 @@
+---
+// Fundations
+import Text from "@/components/fundations/elements/Text.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+
+const beforeItems = [
+  "Marketing materials saying the same things as every competitor",
+  "Social accounts posting sporadically with no clear voice or strategy",
+  "Brand identity scattered—different logos, inconsistent colors, no guidelines",
+  "Content creation consuming time but generating no measurable leads or visibility",
+];
+
+const afterItems = [
+  "Clear positioning that differentiates you in competitive conversations",
+  "Consistent content calendar driving organic traffic and engagement",
+  "Professional brand identity with documented standards your entire team can apply",
+  "Communication systems generating qualified leads and building market authority",
+];
+---
+
+<section>
+  <Wrapper variant="standard" class="py-12">
+    <div class="mb-8">
+      <Text
+        tag="h2"
+        variant="displayMD"
+        class="text-base-900 text-balance font-display"
+      >
+      </Text>
+    </div>
+
+    <div
+      class="grid grid-cols-1 md:grid-cols-2 gap-8 p-8 lg:p-12"
+      style="background-color: #FCF7F5"
+    >
+      <div class="rounded p-12" style="background-color: #FFB300">
+        <Text
+          tag="h3"
+          variant="textXL"
+          class="text-white font-semibold mb-6"
+        >
+          Before
+        </Text>
+        <ul class="space-y-4">
+          {
+            beforeItems.map((item) => (
+              <li class="flex gap-3">
+                <span class="text-white flex-shrink-0">•</span>
+                <Text tag="p" variant="textBase" class="text-white">
+                  {item}
+                </Text>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div class="rounded p-12" style="background-color: #E65100">
+        <Text
+          tag="h3"
+          variant="textXL"
+          class="text-white font-semibold mb-6"
+        >
+          After
+        </Text>
+        <ul class="space-y-4">
+          {
+            afterItems.map((item) => (
+              <li class="flex gap-3">
+                <span class="text-white flex-shrink-0">•</span>
+                <Text tag="p" variant="textBase" class="text-white">
+                  {item}
+                </Text>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </Wrapper>
+</section>

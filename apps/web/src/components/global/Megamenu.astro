@@ -7,24 +7,27 @@ import Button from "@/components/fundations/elements/Button.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 // Icons
 import ArrowRight from "@/components/fundations/icons/ArrowRight.astro";
+// Data
+import { getSolutions } from "@/lib/sanity/reports";
+
+// Fetch solutions
+const solutions = await getSolutions();
+const solutionLinks = solutions.map((solution) => ({
+  href: `/solutions/${solution.slug.current}`,
+  label: solution.name,
+}));
+
 // Megamenu sections
 const megamenuSections = [
   {
-    title: "Overview",
-    href: "/system/overview",
-    links: [
-      { href: "/system/overview", label: "All Pages" },
-      { href: "/system/buttons", label: "Buttons" },
-      { href: "/system/colors", label: "Colors" },
-      { href: "/system/link", label: "Links" },
-      { href: "/system/typography", label: "Typography" },
-    ],
+    title: "Solutions",
+    href: "/solutions",
+    links: solutionLinks,
   },
   {
-    title: "AI Capabilities",
-    href: "/capabilities",
+    title: "The AI Studio",
+    href: "/ai-studio",
     links: [
-      { href: "/capabilities", label: "Explore All Capabilities" },
       {
         href: "/capabilities/ai-readiness",
         label: "AI Readiness Assessment",
@@ -44,8 +47,8 @@ const megamenuSections = [
     ],
   },
   {
-    title: "Agency Capabilities",
-    href: "/capabilities",
+    title: "The Agency",
+    href: "/the-agency",
     links: [
       {
         href: "/capabilities/brand-strategy",
@@ -69,7 +72,6 @@ const megamenuSections = [
     title: "Industries We Serve",
     href: "/industries",
     links: [
-      { href: "/industries", label: "All Industries" },
       {
         href: "/industries/legal",  label: "Legal Services",
       },

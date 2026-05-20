@@ -2,10 +2,7 @@
 // Fundations
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import Text from "@/components/fundations/elements/Text.astro";
-import Kicker from "@/components/fundations/elements/Kicker.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
-// Components
-import IndustryCard from "@/components/industries/IndustryCard.astro";
 // Data
 import { getIndustries } from "@/lib/data";
 const allIndustries = await getIndustries();
@@ -19,28 +16,67 @@ const seo = {
 
 <BaseLayout seo={seo}>
   <section>
-    <Wrapper variant="standard" class="py-12">
-      <div class="max-w-2xl">
-        <Kicker variant="default">Industries</Kicker>
+    <Wrapper variant="standard" class="py-24 lg:pt-32">
+      <div class="max-w-xl">
+        <Text
+          tag="span"
+          variant="textXS"
+          class="uppercase font-medium text-accent-700"
+        >
+          Explore
+        </Text>
+
         <Text
           tag="h1"
-          variant="displayLG"
-          class="text-base-900 text-balance font-medium tracking-tight mt-8 font-display"
-          >Industries We Serve</Text
+          variant="displayXL"
+          class="text-base-900 mt-12 tracking-tight font-display text-balance"
         >
-        <Text
-          tag="p"
-          variant="textBase"
-          class="text-base-600 lg:text-balance mt-4"
-        >
-          Specialized accounting expertise tailored to the unique needs of
-          different industries
+          Industries We Serve
+        </Text>
+
+        <Text tag="p" variant="textLG" class="text-base-600 mt-4 text-balance">
+          Specialized consulting and digital transformation solutions designed to accelerate growth across industries.
         </Text>
       </div>
-      <div
-        class="grid grid-cols-1 lg:grid-cols-2 mt-12 gap-2 p-8 lg:p-12 bg-base-50"
-      >
-        {allIndustries.map((industry) => <IndustryCard industry={industry} />)}
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12 lg:mt-24">
+        {
+          allIndustries.map((industry) => (
+            <div class="flex flex-col">
+              {industry.data.hero?.image && (
+                <div class="mb-4 overflow-hidden rounded-lg h-48">
+                  <img
+                    src={industry.data.hero.image}
+                    alt={industry.data.title}
+                    class="w-full h-full object-cover"
+                  />
+                </div>
+              )}
+              <a href={`/industries/${industry.slug}`} class="group hover:text-accent-700 transition-colors">
+                <Text
+                  tag="h2"
+                  variant="displaySM"
+                  class="text-base-900 font-display text-lg mb-2"
+                >
+                  {industry.data.title}
+                </Text>
+              </a>
+              <Text
+                tag="p"
+                variant="textBase"
+                class="text-base-600 leading-relaxed mb-4 line-clamp-3"
+              >
+                {industry.data.summary}
+              </Text>
+              <a
+                href={`/industries/${industry.slug}`}
+                class="text-accent-700 hover:text-accent-800 transition-colors font-medium text-sm"
+              >
+                Read further
+              </a>
+            </div>
+          ))
+        }
       </div>
     </Wrapper>
   </section>

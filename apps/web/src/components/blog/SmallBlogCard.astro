@@ -5,7 +5,7 @@ import Text from "@/components/fundations/elements/Text.astro";
 
 // Content
 const { title, description, image, pubDate } = {
-  url: "/" + Astro.props.post.slug,
+  url: "/blog/" + Astro.props.post.slug,
   title: Astro.props.post.data.title,
   description: Astro.props.post.data.description,
   image: Astro.props.post.data.image.url,
@@ -24,7 +24,7 @@ function formatDate(dateStr: string) {
 
 <article class="relative group">
   <a
-    href={`/${Astro.props.post.slug}`}
+    href={`/blog/${Astro.props.post.slug}`}
     title={`Read more: ${title}`}
     aria-label={`Read blog post: ${title}`}
     class="absolute inset-0 z-10"></a>

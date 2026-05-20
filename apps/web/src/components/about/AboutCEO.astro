@@ -4,26 +4,24 @@ import Text from "@/components/fundations/elements/Text.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 ---
 
-<sectio>
+<section>
   <Wrapper variant="standard" class="py-12">
     <Text
       tag="h2"
       variant="displayMD"
       class="text-base-900 text-balance font-display"
     >
-      A Message from Our CEO
+      Madavi's Foundation by Amukune Ambuyo
     </Text>
     <div
       class="relative group bg-base-50 grid grid-cols-1 lg:grid-cols-3 gap-8 mt-12 items-start"
     >
-      <div class="relative w-full aspect-square">
-        <iframe
-          src="https://player.vimeo.com/video/1141054297?fl=ip&fe=ec"
-          class="absolute inset-0 w-full h-full"
-          frameborder="0"
-          allow="autoplay; fullscreen; picture-in-picture"
-          allowfullscreen
-        ></iframe>
+      <div class="relative w-full aspect-[3/4]">
+        <video
+          src="https://images.madavi.co/videos/victor_ambuyo_founding_madavi_agency_-_a_journey_of_innovation_-_madavi_(1080p%2C_h264)_v1%20(1080p).mp4"
+          class="absolute inset-0 w-full h-full object-cover"
+          controls
+        ></video>
       </div>
       <div class="lg:col-span-2 p-4 lg:p-8">
         <div class="flex flex-col gap-6">
@@ -44,4 +42,4 @@ Since its founding in 2018, Madavi Agency has evolved from a brand-focused marke
       </div>
     </div>
   </Wrapper>
-</sectio>
+</section>

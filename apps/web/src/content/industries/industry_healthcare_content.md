@@ -36,6 +36,7 @@ hero:
   headline: "When Patient Safety Meets Innovation"
   description: "AI systems that free clinical staff from administrative burden, so they can focus on the patient care work they were trained to do—and actually want to do."
   backgroundColor: "#005B65"
+  image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=1200&h=600&fit=crop"
 
 threeTierProblems:
   title: "The Three Problems Worth Solving"

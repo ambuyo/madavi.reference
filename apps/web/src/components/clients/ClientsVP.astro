@@ -1,0 +1,60 @@
+---
+// Assets
+import { Image } from "astro:assets";
+import talk from "@/images/assets/talk.png";
+// Fundations
+import Text from "@/components/fundations/elements/Text.astro";
+import Kicker from "@/components/fundations/elements/Kicker.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+// Compoenents
+import LogoCloud from "@/components/testimonials/LogoCloud.astro";
+---
+
+<section style="background-color: #FCF7F5;">
+  <Wrapper variant="standard" class="py-12">
+    <div
+      class="grid md:grid-cols-2 lg:grid-cols-2 gap-8 bg-base-50"
+      style="padding-right: 15px;"
+    >
+      <Image
+        src={talk}
+        alt="Image"
+        width={500}
+        height={490}
+        loading="eager"
+        decoding="async"
+        class="w-full h-auto object-cover object-center"
+      />
+      <div class="flex flex-col">
+        <div>
+          <Text
+            tag="h2"
+            variant="displayMD"
+            class="text-base 950 text-balance font-medium tracking-tight font-display mt-8"
+          >
+Building Success, One Strategic Partnership at a Time          </Text>
+          <Text
+            tag="p"
+            variant="textBase"
+            class="text-base-700 mt-4 text-pretty"
+          >
+Whether you’re an ambitious startup or a multinational corporation, we focus on measurable impact: driving qualified leads, improving conversion rates, and positioning you as an authority in your market.
+          </Text>
+
+          <Text
+            tag="p"
+            variant="textBase"
+            class="text-base-700 mt-8 text-pretty"
+          >
+At Madavi, our mission is to scale brands with purpose and precision. Every logo on this page represents a client who trusted our integrated approach—combining strategic design, data-driven marketing, and scalable automation—to solve complex business challenges.
+          </Text>
+        </div>
+      </div>
+    </div>
+    <br/>
+     <div class="border-t border-base-200 pt-12 mt-12"></div>
+     <br/>
+     <div>
+      <LogoCloud />
+  </Wrapper>
+</section>

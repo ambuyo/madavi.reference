@@ -1,0 +1,70 @@
+---
+// Fundations
+import Text from "@/components/fundations/elements/Text.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+
+const services = [
+  {
+    title: "Brand Strategy",
+    description:
+      "Market research, competitive analysis, and positioning development. We define who you serve, what makes you different, and why customers should choose you. Deliverables: positioning statement, target audience profiles, value proposition framework, messaging architecture, implementation roadmap.",
+  },
+  {
+    title: "Brand Communication",
+    description:
+      "Content marketing, social media management, PR, and campaign development. We handle SEO-optimized blog posts, daily social content, media outreach, and coordinated campaigns. Your brand shows up consistently with content that drives business results.",
+  },
+  {
+    title: "Brand Management",
+    description:
+      "Visual identity development, brand guidelines, rebranding, and performance monitoring. We create professional logos and identity systems, document standards, manage strategic evolution, and track brand health over time. Your brand remains consistent and strengthens as you grow.",
+  },
+  {
+    title: "Content Foundation Package",
+    description:
+      "3-month engagement. Establish your content presence. SEO strategy, content calendar, social media setup, and consistent publishing. For businesses starting from minimal content presence.",
+  },
+  {
+    title: "Integrated Communication Program",
+    description:
+      "6-month engagement. Full-spectrum brand amplification. Content, social, PR, and campaigns working together. For established businesses scaling communication efforts.",
+  },
+  {
+    title: "Campaign-Focused Engagement",
+    description:
+      "Project-based. Concentrated execution for launches, events, or strategic initiatives. All campaign assets, social amplification, and PR support. For time-sensitive initiatives requiring coordinated communication.",
+  },
+];
+---
+
+<section>
+  <Wrapper variant="standard" class="py-24">
+    <div class="mb-12">
+      <Text
+        tag="h2"
+        variant="displayLG"
+        class="text-accent-900 font-medium"
+      >
+        AI Agency Services
+      </Text>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {
+        services.map(({ title, description }) => (
+          <div class="p-8 rounded-[25px] transition-shadow duration-300 hover:shadow-lg" style="background-color: #FCF7F5">
+            <Text
+              tag="h3"
+              variant="textXL"
+              class="text-accent-900 font-medium"
+            >
+              {title}
+            </Text>
+            <Text tag="p" variant="textMD" class="text-base-600 mt-3">
+              {description}
+            </Text>
+          </div>
+        ))
+      }
+    </div>
+  </Wrapper>
+</section>

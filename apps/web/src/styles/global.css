@@ -24,7 +24,10 @@
   --color-accent-950: oklch(0.184 0.059 38.68);
 
   /* Base */
-  --color-base-50: #F8F9F2;
+  --color-base-50: #F1F2F6;
+  --color-base-60: #F1F2F6;
+  --color-base-70: #FCF7F5;
+  --color-base-80: #058484;
   --color-base-100: oklch(0.939 0.005 106.28);
   --color-base-200: oklch(0.853 0.005 106.32);
   --color-base-300: #FFFFFF;
@@ -50,5 +53,21 @@
   :root {
     font-family: InterVariable, sans-serif;
   }
+}
+
+.bg-base-50 {
+  background-color: var(--color-base-50);
+}
+
+.bg-base-60 {
+  background-color: var(--color-base-60);
+}
+
+.bg-base-70 {
+  background-color: var(--color-base-70);
+}
+
+.bg-base-80 {
+  background-color: var(--color-base-80);
 }
 

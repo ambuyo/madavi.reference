@@ -1,0 +1,100 @@
+---
+// Assets
+import { Image } from "astro:assets";
+import talk from "@/images/assets/talk.png";
+// Fundations
+import Text from "@/components/fundations/elements/Text.astro";
+import Kicker from "@/components/fundations/elements/Kicker.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+const features = [
+  {
+    title: "Unclear Decision Authority",
+    description:
+      "Multiple stakeholders with competing priorities, no clear owner with power to make final calls.",
+  },
+  {
+    title: "Technology-First Thinking",
+    description:
+      "\"We need to implement ChatGPT\" without clear understanding of which problems it would solve or how it would integrate.",
+  },
+  {
+    title: "Resistance to Change",
+    description:
+      "Culture that punishes failure, resists new processes, or expects perfection without experimentation.",
+  },
+  {
+    title: "Resource Constraints",
+    description:
+      "No internal capacity to coordinate, test, provide feedback, or drive adoption. Expecting consultants to do everything.",
+  },
+  {
+    title: "Unrealistic Expectations",
+    description:
+      "Expecting transformation in 2 weeks, perfect systems without iteration, or magic solutions without organizational work.",
+  },
+  {
+    title: "Hidden Agendas",
+    description:
+      "Using consultants to validate pre-determined decisions, navigate internal politics, or avoid difficult conversations.",
+  },
+];
+---
+
+<section>
+  <Wrapper variant="standard" class="py-12">
+    <div
+      class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 p-8 lg:p-12 bg-base-50"
+    >
+      <Image
+        src={talk}
+        alt="Image"
+        width={800}
+        height={1440}
+        loading="eager"
+        decoding="async"
+        class="size-full object-cover object-center aspect-square"
+      />
+      <div class="flex flex-col lg:col-span-2">
+        <div>
+          <Text
+            tag="h2"
+            variant="displayMD"
+            class="text-base 950 text-balance font-medium tracking-tight font-display mt-8"
+          >
+What Sets Engagements Up For Failure?
+
+          </Text>
+          <Text
+            tag="p"
+            variant="textBase"
+            class="text-base-700 mt-2 text-pretty"
+          >
+We've seen what derails even well-intentioned projects. Watch for these warning signs:
+          </Text>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-y-12 gap-x-8 mt-12">
+          {
+            features.map((feature) => (
+              <div>
+                <Text
+                  tag="h3"
+                  variant="textLG"
+                  class="text-base-900 font-display"
+                >
+                  {feature.title}
+                </Text>
+                <Text
+                  tag="p"
+                  variant="textSM"
+                  class="text-base-600 mt-2 text-pretty"
+                >
+                  {feature.description}
+                </Text>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </Wrapper>
+</section>

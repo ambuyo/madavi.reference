@@ -1,0 +1,38 @@
+---
+// Fundations
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Text from "@/components/fundations/elements/Text.astro";
+import Kicker from "@/components/fundations/elements/Kicker.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+// Components
+import ClientsVP from "@/components/clients/ClientsVP.astro";
+
+const seo = {
+  title: "Our Clients",
+  description: "Explore the brands and companies we have worked with, showcasing our success across industries.",
+  type: "website" as const,
+};
+---
+
+<BaseLayout seo={seo}>
+  <section style="background-color: #FCF7F5;">
+    <Wrapper variant="standard" class="py-12">
+      <div class="max-w-2xl">
+        <Text
+          tag="h1"
+          variant="displayLG"
+          class="text-base-900 text-balance font-medium tracking-tight mt-8 font-display"
+          >Our Clients</Text
+        >
+        <Text
+          tag="p"
+          variant="textBase"
+          class="text-base-600 lg:text-balance mt-4"
+        >
+Building Success, One Strategic Partnership at a Time        </Text>
+      </div>
+    </Wrapper>
+  </section>
+
+  <ClientsVP />
+</BaseLayout>
