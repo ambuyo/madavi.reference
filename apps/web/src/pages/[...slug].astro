@@ -1,8 +1,7 @@
 ---
-import BlogLayout from "@/layouts/BlogLayout.astro";
+import SingleBlogLayout from "@/layouts/SingleBlogLayout.astro";
 import { getPostBySlug } from "@/lib/data";
 import { readCachedPosts } from "@/lib/wordpress/cache";
-import { transformWordPressPost } from "@/lib/wordpress/transforms";
 
 export async function getStaticPaths() {
   try {
@@ -24,26 +23,40 @@ export async function getStaticPaths() {
 }
 
 const { slug } = Astro.params;
-const post = await getPostBySlug(slug!);
+// slug is an array from [...slug], get the last segment which is the post slug
+const postSlug = Array.isArray(slug) ? slug[slug.length - 1] : slug;
+const post = await getPostBySlug(postSlug!);
 if (!post) {
   return Astro.redirect("/404");
 }
-const Content = post.render ? (await post.render()).Content : null;
 
-const seo = {
-  title: post.data.title,
-  description: post.data.description,
-  image: post.data.image,
-  type: "article" as const,
-  publishedTime: post.data.pubDate?.toISOString(),
-};
+const imageUrl = typeof post.data.image === "string"
+  ? post.data.image
+  : post.data.image || "";
+
+// Extract category name from categories array
+const categoryName = post.data.categories?.[0]?.name || "Blog";
+
+// Calculate reading time
+const wordCount = post.plainText?.trim().split(/\s+/).length || 0;
+const readingTimeMinutes = Math.ceil(wordCount / 200);
+const readingTime = readingTimeMinutes < 1 ? "1 min" : `${readingTimeMinutes} min`;
+
+// Extract author info from team field
+const authorName = post.data.team || "";
 ---
 
-<BlogLayout
-  frontmatter={post.data}
-  seo={seo}
-  plainText={post.plainText || ""}
-  wordCount={post.plainText?.trim().split(/\s+/).length || 0}
+<SingleBlogLayout
+  title={post.data.title}
+  category={categoryName}
+  date={post.data.pubDate || new Date()}
+  readingTime={readingTime}
+  image={imageUrl}
+  description={post.data.description}
+  seoTitle={post.data.title}
+  seoDescription={post.data.description}
+  seoImage={imageUrl}
+  compiledBy={authorName}
 >
-  {Content ? <Content /> : <div set:html={post.body} />}
-</BlogLayout>
+  {post.body && <div set:html={post.body} />}
+</SingleBlogLayout>
