@@ -44,7 +44,7 @@ export const USE_SANITY = true;
  * Toggle WordPress fetch for blog posts
  * Set to false to disable WordPress API calls during development
  */
-export const USE_WORDPRESS = false;
+export const USE_WORDPRESS = true;
 
 // =============================================================================
 // LAZY SANITY IMPORTS
@@ -121,8 +121,9 @@ async function getSanityModules() {
 // =============================================================================
 
 /**
- * Get all posts - fetches from WordPress if USE_WORDPRESS is true
- * Falls back to cached posts if API is unavailable
+ * Get all posts - uses cached posts for instant loading
+ * Posts are cached at build time, ensuring fast native-like performance
+ * New posts require a rebuild/redeploy to appear
  */
 export async function getPosts() {
   if (!USE_WORDPRESS) {
@@ -130,18 +131,6 @@ export async function getPosts() {
   }
 
   try {
-    const { fetchWordPressPosts } = await import("./wordpress/fetch");
-    const { transformWordPressPost } = await import("./wordpress/transforms");
-
-    const posts = await fetchWordPressPosts();
-    return posts.map(transformWordPressPost);
-  } catch (error) {
-    console.warn(
-      "Failed to fetch posts from WordPress API, falling back to cached posts.",
-      error
-    );
-
-    // Fallback to cached posts if API fails
     const { readCachedPosts } = await import("./wordpress/cache");
     const { transformWordPressPost } = await import("./wordpress/transforms");
 
@@ -150,12 +139,22 @@ export async function getPosts() {
       return cachedPosts.map(transformWordPressPost);
     }
 
+    // If no cache exists at all, try fetching fresh (first build)
+    const { fetchWordPressPosts } = await import("./wordpress/fetch");
+    const posts = await fetchWordPressPosts();
+    return posts.map(transformWordPressPost);
+  } catch (error) {
+    console.warn(
+      "Failed to load posts. Ensure cache-wordpress-posts.ts has been run.",
+      error
+    );
     return [];
   }
 }
 
 /**
- * Get a single post by slug from WordPress
+ * Get a single post by slug from cached posts
+ * Uses pre-cached posts for instant access, requires rebuild to show new posts
  */
 export async function getPostBySlug(slug: string) {
   if (!USE_WORDPRESS) {
@@ -163,20 +162,6 @@ export async function getPostBySlug(slug: string) {
   }
 
   try {
-    const { fetchWordPressPostBySlug } = await import("./wordpress/fetch");
-    const { transformWordPressPost } = await import("./wordpress/transforms");
-
-    const post = await fetchWordPressPostBySlug(slug);
-    if (post) {
-      return transformWordPressPost(post);
-    }
-  } catch (error) {
-    console.warn(
-      `Failed to fetch post "${slug}" from WordPress API, falling back to cached posts.`,
-      error
-    );
-
-    // Fallback to cached posts if API fails
     const { readCachedPosts } = await import("./wordpress/cache");
     const { transformWordPressPost } = await import("./wordpress/transforms");
 
@@ -187,6 +172,11 @@ export async function getPostBySlug(slug: string) {
         return transformWordPressPost(post);
       }
     }
+
+    // If not in cache, try fetching fresh (shouldn't happen in normal operation)
+    console.warn(`Post "${slug}" not found in cache`);
+  } catch (error) {
+    console.warn(`Failed to get post "${slug}":`, error);
   }
 
   return null;
@@ -220,7 +210,8 @@ export async function getPostsByTag(tag: string): Promise<Post[]> {
 }
 
 /**
- * Get posts by category (WordPress)
+ * Get posts by category (WordPress) from cached posts
+ * Uses pre-cached posts for instant access, requires rebuild to show new posts
  */
 export async function getPostsByCategory(categorySlug: string): Promise<Post[]> {
   if (!USE_WORDPRESS) {
@@ -228,21 +219,6 @@ export async function getPostsByCategory(categorySlug: string): Promise<Post[]> 
   }
 
   try {
-    const { fetchWordPressPostsByCategory } = await import(
-      "./wordpress/fetch"
-    );
-    const { transformWordPressPost } = await import(
-      "./wordpress/transforms"
-    );
-
-    const posts = await fetchWordPressPostsByCategory(categorySlug);
-    return posts.map(transformWordPressPost);
-  } catch (error) {
-    console.warn(
-      `Failed to fetch posts from category "${categorySlug}", falling back to cached posts.`,
-      error
-    );
-
     const { readCachedPosts } = await import("./wordpress/cache");
     const { transformWordPressPost } = await import(
       "./wordpress/transforms"
@@ -261,6 +237,12 @@ export async function getPostsByCategory(categorySlug: string): Promise<Post[]> 
       return filteredPosts.map(transformWordPressPost);
     }
 
+    return [];
+  } catch (error) {
+    console.warn(
+      `Failed to fetch posts from category "${categorySlug}":`,
+      error
+    );
     return [];
   }
 }
@@ -281,7 +263,8 @@ export async function getAllTags(): Promise<string[]> {
 }
 
 /**
- * Get all unique categories (WordPress)
+ * Get all unique categories (WordPress) from cached posts
+ * Categories are derived from cached posts for instant access
  */
 export async function getAllCategories(): Promise<
   Array<{ id: number; name: string; slug: string }>
@@ -290,20 +273,25 @@ export async function getAllCategories(): Promise<
     return [];
   }
 
-  const posts = await getPosts();
-  const categoryMap = new Map<string, { id: number; name: string; slug: string }>();
+  try {
+    const posts = await getPosts();
+    const categoryMap = new Map<string, { id: number; name: string; slug: string }>();
 
-  posts.forEach((post) => {
-    post.data.categories?.forEach((cat) => {
-      if (!categoryMap.has(cat.slug)) {
-        categoryMap.set(cat.slug, cat);
-      }
+    posts.forEach((post) => {
+      post.data.categories?.forEach((cat) => {
+        if (!categoryMap.has(cat.slug)) {
+          categoryMap.set(cat.slug, cat);
+        }
+      });
     });
-  });
 
-  return Array.from(categoryMap.values()).sort((a, b) =>
-    a.name.localeCompare(b.name)
-  );
+    return Array.from(categoryMap.values()).sort((a, b) =>
+      a.name.localeCompare(b.name)
+    );
+  } catch (error) {
+    console.warn("Failed to get categories:", error);
+    return [];
+  }
 }
 
 // Helper to clean WordPress editor attributes from HTML
@@ -478,15 +466,28 @@ export async function getIndustries(): Promise<Industry[]> {
   if (USE_SANITY) {
     const { sanityFetch, queries, transforms } = await getSanityModules();
     const industries = await sanityFetch<any[]>(queries.allIndustriesQuery);
-    return industries.map(transforms.transformIndustry);
+    return industries
+      .map(transforms.transformIndustry)
+      .filter(industry => industry.slug !== null && industry.slug !== undefined);
   }
 
   const industries = await getCollection("industries");
   return industries.map((industry) => ({
-    slug: industry.id,
+    slug: industry.data.slug || industry.id,
     data: {
       title: industry.data.title,
       summary: industry.data.summary,
+      description: industry.data.description,
+      seo: industry.data.seo,
+      og: industry.data.og,
+      twitter: industry.data.twitter,
+      hero: industry.data.hero,
+      threeTierProblems: industry.data.threeTierProblems,
+      benefits: industry.data.benefits,
+      valueProposition: industry.data.valueProposition,
+      roi: industry.data.roi,
+      blog: industry.data.blog,
+      faqs: industry.data.faqs,
       painPoints: industry.data.painPoints,
       relevantServices: industry.data.relevantServices,
       image: industry.data.image,
@@ -509,18 +510,32 @@ export async function getIndustryBySlug(
     return industry ? transforms.transformIndustry(industry) : null;
   }
 
-  const entry = await getEntry("industries", slug);
-  if (!entry) return null;
+  const industries = await getCollection("industries");
+  const industry = industries.find((ind) => ind.data.slug === slug || ind.id === slug);
+
+  if (!industry) return null;
+
   return {
-    slug: entry.id,
+    slug: industry.data.slug || industry.id,
     data: {
-      title: entry.data.title,
-      summary: entry.data.summary,
-      painPoints: entry.data.painPoints,
-      relevantServices: entry.data.relevantServices,
-      image: entry.data.image,
+      title: industry.data.title,
+      summary: industry.data.summary,
+      description: industry.data.description,
+      seo: industry.data.seo,
+      og: industry.data.og,
+      twitter: industry.data.twitter,
+      hero: industry.data.hero,
+      threeTierProblems: industry.data.threeTierProblems,
+      benefits: industry.data.benefits,
+      valueProposition: industry.data.valueProposition,
+      roi: industry.data.roi,
+      blog: industry.data.blog,
+      faqs: industry.data.faqs,
+      painPoints: industry.data.painPoints,
+      relevantServices: industry.data.relevantServices,
+      image: industry.data.image,
     },
-    render: () => render(entry),
+    render: () => render(industry),
   };
 }
 
@@ -651,6 +666,49 @@ export async function getInfoPageBySlug(
     },
     render: () => render(entry),
   };
+}
+
+// =============================================================================
+// FAQS
+// =============================================================================
+
+export interface FAQ {
+  id: string;
+  question: string;
+  shortTitle: string;
+  shortAnswer: string;
+  fullAnswer: string;
+}
+
+export interface FAQCollection {
+  title: string;
+  description: string;
+  slug: string;
+  faqs: FAQ[];
+}
+
+/**
+ * Get FAQs by slug (from content collections)
+ */
+export async function getFAQsBySlug(slug: string): Promise<FAQCollection | null> {
+  try {
+    // First, try to get from the faqs content collection root
+    const allFAQs = await getCollection("faqs");
+    const faqEntry = allFAQs.find((faq) => faq.data.slug === slug);
+
+    if (faqEntry) {
+      return {
+        title: faqEntry.data.title,
+        description: faqEntry.data.description,
+        slug: faqEntry.data.slug,
+        faqs: faqEntry.data.faqs || [],
+      };
+    }
+  } catch (error) {
+    console.warn(`Failed to fetch FAQs for slug "${slug}":`, error);
+  }
+
+  return null;
 }
 
 // =============================================================================

@@ -5,10 +5,13 @@ export async function GET() {
   try {
     const cachedPosts = await readCachedPosts();
 
-    if (!cachedPosts) {
-      return new Response(JSON.stringify({ posts: [], error: "No cached posts" }), {
+    if (!cachedPosts || cachedPosts.length === 0) {
+      return new Response(JSON.stringify({ posts: [], error: "No cached posts available" }), {
         status: 200,
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Cache-Control": "public, max-age=300", // Cache for 5 minutes if empty
+        },
       });
     }
 
@@ -18,14 +21,18 @@ export async function GET() {
       status: 200,
       headers: {
         "Content-Type": "application/json",
-        "Cache-Control": "public, max-age=3600", // Cache for 1 hour
+        // Cache for 24 hours (posts updated at deploy time)
+        "Cache-Control": "public, max-age=86400, stale-while-revalidate=604800",
       },
     });
   } catch (error) {
-    console.error("Error fetching posts:", error);
-    return new Response(JSON.stringify({ posts: [], error: "Failed to fetch posts" }), {
+    console.error("Error serving posts:", error);
+    return new Response(JSON.stringify({ posts: [], error: "Failed to serve posts" }), {
       status: 500,
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "public, max-age=300",
+      },
     });
   }
 }
