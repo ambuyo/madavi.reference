@@ -12,6 +12,17 @@ const postFields = groq`
   description,
   pubDate,
   tags,
+  "category": category->{
+    "_id": _id,
+    title,
+    "slug": slug.current
+  },
+  "subcategory": subcategory->{
+    "_id": _id,
+    title,
+    "slug": slug.current,
+    "categoryId": category->._id
+  },
   "team": team->slug.current,
   image {
     asset->,
@@ -51,6 +62,22 @@ export const allTagsQuery = groq`
 // Related posts (by tags, excluding current)
 export const relatedPostsQuery = groq`
   *[_type == "post" && slug.current != $slug && count((tags)[@ in $tags]) > 0] | order(pubDate desc) [0...3] {
+    ${postFields},
+    "body": pt::text(body)
+  }
+`;
+
+// Posts by category slug
+export const postsByCategorySlugQuery = groq`
+  *[_type == "post" && category->slug.current == $categorySlug] | order(pubDate desc) {
+    ${postFields},
+    "body": pt::text(body)
+  }
+`;
+
+// Posts by subcategory slug
+export const postsBySubcategorySlugQuery = groq`
+  *[_type == "post" && subcategory->slug.current == $subcategorySlug] | order(pubDate desc) {
     ${postFields},
     "body": pt::text(body)
   }
@@ -391,8 +418,9 @@ const caseStudyFields = groq`
   "slug": slug.current,
   client,
   industry,
-  services,
-  year,
+  imcServices,
+  aiStudioServices,
+  completionDate,
   tagline,
   aboutClient,
   ourProcess,
@@ -456,6 +484,30 @@ export const infoPageBySlugQuery = groq`
   *[_type == "infoPage" && slug.current == $slug][0] {
     ${infoPageFields},
     body
+  }
+`;
+
+// =============================================================================
+// CATEGORIES & SUBCATEGORIES
+// =============================================================================
+
+export const allCategoriesQuery = groq`
+  *[_type == "category"] | order(title asc) {
+    "_id": _id,
+    title,
+    "slug": slug.current,
+    description
+  }
+`;
+
+export const allSubcategoriesQuery = groq`
+  *[_type == "subcategory"] | order(title asc) {
+    "_id": _id,
+    title,
+    "slug": slug.current,
+    description,
+    "parentId": category->._id,
+    "parentSlug": category->slug.current
   }
 `;
 

@@ -28,6 +28,8 @@ import type {
   Industry,
   SingleWork,
   InfoPage,
+  Category,
+  Subcategory,
 } from "./sanity/types";
 
 // =============================================================================
@@ -62,6 +64,10 @@ async function getSanityModules() {
       postBySlugQuery,
       postsByTagQuery,
       allTagsQuery,
+      allCategoriesQuery,
+      allSubcategoriesQuery,
+      postsByCategorySlugQuery,
+      postsBySubcategorySlugQuery,
       allTeamMembersQuery,
       teamMemberBySlugQuery,
       allServicesQuery,
@@ -94,6 +100,10 @@ async function getSanityModules() {
       postBySlugQuery,
       postsByTagQuery,
       allTagsQuery,
+      allCategoriesQuery,
+      allSubcategoriesQuery,
+      postsByCategorySlugQuery,
+      postsBySubcategorySlugQuery,
       allTeamMembersQuery,
       teamMemberBySlugQuery,
       allServicesQuery,
@@ -210,39 +220,81 @@ export async function getPostsByTag(tag: string): Promise<Post[]> {
 }
 
 /**
- * Get posts by category (WordPress) from cached posts
- * Uses pre-cached posts for instant access, requires rebuild to show new posts
+ * Get posts by category slug — Sanity or WordPress
  */
 export async function getPostsByCategory(categorySlug: string): Promise<Post[]> {
+  if (USE_SANITY) {
+    const { sanityFetch, queries, transforms } = await getSanityModules();
+    const posts = await sanityFetch<any[]>(queries.postsByCategorySlugQuery, { categorySlug });
+    return posts.map(transforms.transformPost);
+  }
+
   if (!USE_WORDPRESS) {
     return [];
   }
 
   try {
     const { readCachedPosts } = await import("./wordpress/cache");
-    const { transformWordPressPost } = await import(
-      "./wordpress/transforms"
-    );
+    const { transformWordPressPost } = await import("./wordpress/transforms");
 
     const cachedPosts = await readCachedPosts();
     if (cachedPosts && cachedPosts.length > 0) {
-      const filteredPosts = cachedPosts.filter((post) => {
-        return post._embedded?.["wp:term"]?.some?.((termArray: any[]) =>
+      const filteredPosts = cachedPosts.filter((post) =>
+        post._embedded?.["wp:term"]?.some?.((termArray: any[]) =>
           termArray.some(
             (term: any) =>
-              term.taxonomy === "category" && term.slug === categorySlug
+              term.taxonomy === "category" &&
+              term.parent === 0 &&
+              term.slug === categorySlug
           )
-        );
-      });
+        )
+      );
       return filteredPosts.map(transformWordPressPost);
     }
 
     return [];
   } catch (error) {
-    console.warn(
-      `Failed to fetch posts from category "${categorySlug}":`,
-      error
-    );
+    console.warn(`Failed to fetch posts from category "${categorySlug}":`, error);
+    return [];
+  }
+}
+
+/**
+ * Get posts by subcategory slug — Sanity or WordPress
+ */
+export async function getPostsBySubcategory(subcategorySlug: string): Promise<Post[]> {
+  if (USE_SANITY) {
+    const { sanityFetch, queries, transforms } = await getSanityModules();
+    const posts = await sanityFetch<any[]>(queries.postsBySubcategorySlugQuery, { subcategorySlug });
+    return posts.map(transforms.transformPost);
+  }
+
+  if (!USE_WORDPRESS) {
+    return [];
+  }
+
+  try {
+    const { readCachedPosts } = await import("./wordpress/cache");
+    const { transformWordPressPost } = await import("./wordpress/transforms");
+
+    const cachedPosts = await readCachedPosts();
+    if (cachedPosts && cachedPosts.length > 0) {
+      const filteredPosts = cachedPosts.filter((post) =>
+        post._embedded?.["wp:term"]?.some?.((termArray: any[]) =>
+          termArray.some(
+            (term: any) =>
+              term.taxonomy === "category" &&
+              term.parent > 0 &&
+              term.slug === subcategorySlug
+          )
+        )
+      );
+      return filteredPosts.map(transformWordPressPost);
+    }
+
+    return [];
+  } catch (error) {
+    console.warn(`Failed to fetch posts from subcategory "${subcategorySlug}":`, error);
     return [];
   }
 }
@@ -263,33 +315,79 @@ export async function getAllTags(): Promise<string[]> {
 }
 
 /**
- * Get all unique categories (WordPress) from cached posts
- * Categories are derived from cached posts for instant access
+ * Get all categories — Sanity or WordPress
  */
-export async function getAllCategories(): Promise<
-  Array<{ id: number; name: string; slug: string }>
-> {
+export async function getAllCategories(): Promise<Category[]> {
+  if (USE_SANITY) {
+    const { sanityFetch, queries } = await getSanityModules();
+    const raw = await sanityFetch<any[]>(queries.allCategoriesQuery);
+    return raw.map((c) => ({ id: c._id, name: c.title, slug: c.slug, description: c.description }));
+  }
+
   if (!USE_WORDPRESS) {
     return [];
   }
 
   try {
     const posts = await getPosts();
-    const categoryMap = new Map<string, { id: number; name: string; slug: string }>();
+    const categoryMap = new Map<string, Category>();
 
     posts.forEach((post) => {
       post.data.categories?.forEach((cat) => {
         if (!categoryMap.has(cat.slug)) {
-          categoryMap.set(cat.slug, cat);
+          categoryMap.set(cat.slug, { id: cat.id, name: cat.name, slug: cat.slug });
         }
       });
     });
 
-    return Array.from(categoryMap.values()).sort((a, b) =>
-      a.name.localeCompare(b.name)
-    );
+    return Array.from(categoryMap.values()).sort((a, b) => a.name.localeCompare(b.name));
   } catch (error) {
     console.warn("Failed to get categories:", error);
+    return [];
+  }
+}
+
+/**
+ * Get all subcategories — Sanity or WordPress
+ */
+export async function getAllSubcategories(): Promise<Subcategory[]> {
+  if (USE_SANITY) {
+    const { sanityFetch, queries } = await getSanityModules();
+    const raw = await sanityFetch<any[]>(queries.allSubcategoriesQuery);
+    return raw.map((s) => ({
+      id: s._id,
+      name: s.title,
+      slug: s.slug,
+      description: s.description,
+      parentId: s.parentId,
+      parentSlug: s.parentSlug,
+    }));
+  }
+
+  if (!USE_WORDPRESS) {
+    return [];
+  }
+
+  try {
+    const posts = await getPosts();
+    const subcategoryMap = new Map<string, Subcategory>();
+
+    posts.forEach((post) => {
+      post.data.subcategories?.forEach((sub) => {
+        if (!subcategoryMap.has(sub.slug)) {
+          subcategoryMap.set(sub.slug, {
+            id: sub.id,
+            name: sub.name,
+            slug: sub.slug,
+            parentId: sub.parentId,
+          });
+        }
+      });
+    });
+
+    return Array.from(subcategoryMap.values()).sort((a, b) => a.name.localeCompare(b.name));
+  } catch (error) {
+    console.warn("Failed to get subcategories:", error);
     return [];
   }
 }
@@ -564,7 +662,10 @@ export async function getOurWork(): Promise<SingleWork[]> {
       data: {
         client: caseStudy.data.client,
         industry: caseStudy.data.industry,
-        services: caseStudy.data.services,
+        imcServices: caseStudy.data.imcServices || [],
+        aiStudioServices: caseStudy.data.aiStudioServices || [],
+        services: [...(caseStudy.data.imcServices || []), ...(caseStudy.data.aiStudioServices || [])],
+        completionDate: (caseStudy.data as any).completionDate,
         aboutClient: caseStudy.data.aboutClient,
         ourProcess: caseStudy.data.ourProcess,
         results: caseStudy.data.results,
@@ -602,7 +703,10 @@ export async function getSingleWorkBySlug(
     data: {
       client: entry.data.client,
       industry: entry.data.industry,
-      services: entry.data.services,
+      imcServices: (entry.data as any).imcServices || [],
+      aiStudioServices: (entry.data as any).aiStudioServices || [],
+      services: [...((entry.data as any).imcServices || []), ...((entry.data as any).aiStudioServices || [])],
+      completionDate: (entry.data as any).completionDate,
       aboutClient: entry.data.aboutClient,
       ourProcess: entry.data.ourProcess,
       results: entry.data.results,
@@ -722,4 +826,6 @@ export type {
   Industry,
   SingleWork,
   InfoPage,
+  Category,
+  Subcategory,
 } from "./sanity/types";

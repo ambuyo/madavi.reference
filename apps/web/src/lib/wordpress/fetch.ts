@@ -38,6 +38,7 @@ export interface WordPressCategory {
   name: string;
   slug: string;
   description?: string;
+  parent?: number;
 }
 
 export interface WordPressPost {
@@ -80,6 +81,7 @@ export interface WordPressPost {
       name: string;
       slug: string;
       taxonomy: string;
+      parent: number;
     }>>;
   };
 }

@@ -1,0 +1,131 @@
+---
+// Assets
+import Shield from "@/components/assets/Shield.astro";
+// Fundations
+import Text from "@/components/fundations/elements/Text.astro";
+import Kicker from "@/components/fundations/elements/Kicker.astro";
+import Button from "@/components/fundations/elements/Button.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+// Data
+import { getOurWork } from "@/lib/data";
+
+const allWork = await getOurWork();
+
+function byCompletionDesc(a: (typeof allWork)[number], b: (typeof allWork)[number]) {
+  const dateA = a.data.completionDate ? new Date(a.data.completionDate).getTime() : (a.data.year ?? 0) * 1000;
+  const dateB = b.data.completionDate ? new Date(b.data.completionDate).getTime() : (b.data.year ?? 0) * 1000;
+  return dateB - dateA;
+}
+
+// Prefer work that has IMC services; fall back to most recent with images
+const imcWork = allWork
+  .filter((w) => w.data.image?.url && (w.data.imcServices?.length ?? 0) > 0)
+  .sort(byCompletionDesc);
+
+const featuredWork = (imcWork.length >= 2 ? imcWork : allWork.filter((w) => w.data.image?.url).sort(byCompletionDesc)).slice(0, 2);
+---
+
+<section>
+  <Wrapper variant="standard" class="py-12 lg:py-24">
+    <div class="p-8 lg:p-12 bg-base-50">
+      <div class="max-w-xl">
+        <Kicker variant="default">Our Work</Kicker>
+        <Text
+          tag="h2"
+          variant="displayMD"
+          class="text-base-900 text-balance font-display lg:mt-8"
+        >
+          IMC in Action
+        </Text>
+        <Text
+          tag="p"
+          variant="textBase"
+          class="text-base-700 lg:text-balance mt-4"
+        >
+          Real campaigns, measurable results. A selection of integrated
+          marketing work across brand, media, content, and digital.
+        </Text>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 mt-12 gap-2">
+        {
+          featuredWork.map((work) => (
+            <article class="relative group overflow-hidden h-full min-h-80 flex flex-col justify-between p-8 lg:p-12">
+              {/* Background image */}
+              <div
+                class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
+                style={`background-image: url('${work.data.image!.url}')`}
+              />
+              {/* Overlay */}
+              <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/70" />
+
+              <a
+                href={`/our-work/${work.slug}`}
+                aria-label={`View case study: ${work.data.client}`}
+                class="absolute inset-0 z-10"
+              />
+
+              <div class="relative z-20">
+                {work.data.imcServices && work.data.imcServices.length > 0 && (
+                  <span class="inline-block text-xs font-medium uppercase tracking-widest text-white/70 mb-3">
+                    {work.data.imcServices.slice(0, 2).join(" · ")}
+                  </span>
+                )}
+                <Text
+                  tag="h3"
+                  variant="displaySM"
+                  class="text-white font-display font-semibold"
+                >
+                  {work.data.client}
+                </Text>
+                {work.data.tagline && (
+                  <Text tag="p" variant="textBase" class="text-white/90 mt-4 text-pretty">
+                    {work.data.tagline}
+                  </Text>
+                )}
+              </div>
+
+              <Text
+                tag="p"
+                variant="textSM"
+                class="uppercase font-medium text-white group-hover:text-accent-300 mt-4 relative z-20"
+              >
+                View case study →
+              </Text>
+            </article>
+          ))
+        }
+
+        <div class="bg-accent-400 p-8 flex flex-col h-full justify-between gap-8">
+          <div>
+            <Shield class="h-8 text-white" />
+            <Text
+              tag="h3"
+              variant="displaySM"
+              class="text-base text-white font-display font-medium mt-24"
+            >
+              Ready to see what we can do for you?
+            </Text>
+            <Text
+              tag="p"
+              variant="textBase"
+              class="text-white font-medium mt-2"
+            >
+              Browse the full portfolio of integrated marketing campaigns we've
+              delivered for clients across industries.
+            </Text>
+          </div>
+          <Button
+            size="sm"
+            variant="muted"
+            isLink={true}
+            href="/our-work"
+            class="w-fit"
+          >
+            Explore All Work
+          </Button>
+        </div>
+      </div>
+    </div>
+  </Wrapper>
+</section>

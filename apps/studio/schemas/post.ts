@@ -62,6 +62,19 @@ export const post = defineType({
       },
     }),
     defineField({
+      name: "category",
+      title: "Category",
+      type: "reference",
+      to: [{ type: "category" }],
+    }),
+    defineField({
+      name: "subcategory",
+      title: "Subcategory",
+      type: "reference",
+      to: [{ type: "subcategory" }],
+      description: "Optional — must belong to the selected category.",
+    }),
+    defineField({
       name: "team",
       title: "Author (Team Member)",
       type: "reference",

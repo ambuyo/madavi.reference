@@ -1,0 +1,63 @@
+---
+// Assets
+import { Image } from "astro:assets";
+import one from "@/images/services/IMC Banner 1.jpg";
+import two from "@/images/services/IMC Banner 2 .jpg";
+import three from "@/images/services/IMC Banner 3 .jpg";
+import whyBackground from "@/images/assets/WhyBackground.png";
+import AIGrowthConsulting from "@/components/assets/AI. GROWTH. CONSULTING.svg";
+// Foundations
+import Text from "@/components/fundations/elements/Text.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+
+interface Props {
+  heading: string;
+  subtitle: string;
+  paragraphs: string[];
+}
+const { heading, subtitle, paragraphs } = Astro.props;
+---
+
+<section>
+  <Wrapper variant="standard" class="py-12">
+    <div
+      class="relative rounded-3xl p-8 lg:p-12 overflow-hidden"
+      style={`background-image: url(${whyBackground.src}); background-size: cover; background-position: center; background-repeat: no-repeat;`}
+    >
+      <div class="absolute inset-0 rounded-3xl" style="background-color: #005B65; opacity: 0.5;"></div>
+      <div class="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div>
+          <Text
+            tag="h3"
+            variant="displayXL"
+            class="text-white tracking-tight font-display lg:col-span-2"
+          >
+            {heading}
+          </Text>
+          <Text
+            tag="p"
+            variant="textLG"
+            class="text-white mt-4 text-balance font-bold"
+          >
+            {subtitle}
+          </Text>
+          <div class="mt-12 space-y-4 lg:columns-2">
+            {paragraphs.map((paragraph) => (
+              <Text tag="p" variant="textBase" class="text-white mb-4">
+                {paragraph}
+              </Text>
+            ))}
+          </div>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:grid-rows-2 lg:auto-rows-fr">
+          <Image src={one} alt="IMC Banner 1" class="size-full object-cover lg:row-span-2 rounded-xl" />
+          <Image src={two} alt="IMC Banner 2" class="size-full object-cover rounded-xl" />
+          <Image src={three} alt="IMC Banner 3" class="size-full object-cover rounded-xl" />
+        </div>
+      </div>
+    </div>
+    <div class="flex justify-center mt-12">
+      <Image src={AIGrowthConsulting} alt="AI. Growth. Consulting." class="object-contain" />
+    </div>
+  </Wrapper>
+</section>

@@ -27,6 +27,12 @@ export function transformPost(post: SanityPost): Post {
       description: post.description,
       pubDate: new Date(post.pubDate),
       tags: post.tags || [],
+      category: post.category
+        ? { id: post.category._id, name: post.category.title, slug: post.category.slug }
+        : undefined,
+      subcategory: post.subcategory
+        ? { id: post.subcategory._id, name: post.subcategory.title, slug: post.subcategory.slug, parentId: post.subcategory.categoryId }
+        : undefined,
       team: post.team,
       image: {
         url: getImageUrl(post.image?.asset),
@@ -246,8 +252,11 @@ export function transformSingleWork(singleWork: SanitySingleWork): SingleWork {
     data: {
       client: singleWork.client,
       industry: singleWork.industry,
-      services: singleWork.services || [],
-      year: singleWork.year,
+      imcServices: singleWork.imcServices || [],
+      aiStudioServices: singleWork.aiStudioServices || [],
+      services: [...(singleWork.imcServices || []), ...(singleWork.aiStudioServices || [])],
+      completionDate: singleWork.completionDate,
+      year: singleWork.completionDate ? new Date(singleWork.completionDate).getFullYear() : undefined,
       tagline: singleWork.tagline,
       aboutClient: singleWork.aboutClient,
       ourProcess: singleWork.ourProcess,

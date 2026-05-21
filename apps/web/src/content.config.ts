@@ -520,6 +520,8 @@ const capabilities = defineCollection({
     seo: z.object({
       keywords: z.array(z.string()),
     }).optional(),
+
+    seoType: z.string().optional(),
   }),
 });
 

@@ -1,81 +1,106 @@
 ---
-// Assets
-import Shield from "@/components/assets/Shield.astro";
 // Fundations
 import Text from "@/components/fundations/elements/Text.astro";
-import Kicker from "@/components/fundations/elements/Kicker.astro";
 import Button from "@/components/fundations/elements/Button.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
-// Components
-import SingleWorkCard from "@/components/cases/SingleWorkCard.astro";
 // Data
 import { getOurWork } from "@/lib/data";
-const allOurWork = await getOurWork();
+
+const allWork = (await getOurWork())
+  .filter((work) => work.data.image?.url)
+  .sort((a, b) => {
+    const dateA = a.data.completionDate ? new Date(a.data.completionDate).getTime() : (a.data.year ?? 0) * 1000;
+    const dateB = b.data.completionDate ? new Date(b.data.completionDate).getTime() : (b.data.year ?? 0) * 1000;
+    return dateB - dateA;
+  });
+
+const recentWork = allWork.slice(0, 6);
+const leftColumn = recentWork.filter((_, i) => i % 2 === 0);
+const rightColumn = recentWork.filter((_, i) => i % 2 === 1);
 ---
 
-<section>
-  <Wrapper variant="standard" class="py-12">
-    <div class="p-8 lg:p-12 bg-base-50">
-      <div class="max-w-xl">
-        <Kicker variant="default">Cases</Kicker>
-        <Text
-          tag="h2"
-          variant="displayMD"
-          class="text-base-900 text-balance font-display lg:mt-8"
-        >
-          Case studies
-        </Text>
-        <Text
-          tag="p"
-          variant="textBase"
-          class="text-base-700 lg:text-pretty lg:col-span-2 mt-4"
-        >
-          See how we've helped businesses like yours achieve their financial
-          goals and overcome accounting challenges.
-        </Text>
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-3 mt-12 gap-2">
-        {
-          allOurWork.length > 0
-            ? allOurWork
-                .slice(0, 2)
-                .map((singleWork) => <SingleWorkCard post={singleWork} />)
-            : null
-        }
-        <div
-          class="bg-accent-400 p-8 flex flex-col h-full justify-between gap-8"
-        >
-          <div>
-            <Shield class="h-8 text-white" />
-            <Text
-              tag="h3"
-              variant="displaySM"
-              class="text-base text-white font-display font-medium mt-24"
-            >
-              Real results, real businesses
-            </Text>
+<section style="background-color: #F1F7FF;">
+  <Wrapper variant="standard" class="py-16 lg:py-24">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+      {/* Left Column */}
+      <div class="flex flex-col gap-24">
+        <div>
+          <Text
+            tag="h2"
+            variant="displayLG"
+            class="text-base-900 font-display font-bold leading-tight"
+          >
+            Insight.<br />
+            Inspiration.<br />
+            Innovation.
+          </Text>
+          <Text
+            tag="p"
+            variant="textBase"
+            class="text-base-700 mt-8"
+          >
+            We give shape to ideas that connect.
+          </Text>
+        </div>
+        {leftColumn.map((work) => (
+          <a href={`/our-work/${work.slug}`} class="group block">
+            <div class="overflow-hidden rounded-md">
+              <img
+                src={work.data.image!.url as string}
+                alt={work.data.client}
+                width={800}
+                height={500}
+                loading="lazy"
+                class="w-full h-auto object-cover aspect-video group-hover:scale-105 transition-transform duration-500"
+              />
+            </div>
             <Text
               tag="p"
-              variant="textBase"
-              class="text-white font-medium mt-2"
+              variant="textSM"
+              class="text-base-900 font-semibold mt-4 group-hover:underline"
             >
-              Discover how we've transformed financial challenges into success
-              stories for businesses across industries. See the numbers that
-              matter.
+              {work.data.tagline || work.data.client}
             </Text>
-          </div>
-          <Button
-            size="xs"
-            variant="muted"
-            isLink={true}
-            href="/our-work"
-            class="w-fit"
-          >
-            Explore Success Stories
-          </Button>
-        </div>
+          </a>
+        ))}
       </div>
+
+      {/* Right Column */}
+      <div class="flex flex-col gap-24 lg:pt-0">
+        {rightColumn.map((work) => (
+          <a href={`/our-work/${work.slug}`} class="group block">
+            <div class="overflow-hidden rounded-md">
+              <img
+                src={work.data.image!.url as string}
+                alt={work.data.client}
+                width={800}
+                height={500}
+                loading="lazy"
+                class="w-full h-auto object-cover aspect-video group-hover:scale-105 transition-transform duration-500"
+              />
+            </div>
+            <Text
+              tag="p"
+              variant="textSM"
+              class="text-base-900 font-semibold mt-4 group-hover:underline"
+            >
+              {work.data.tagline || work.data.client}
+            </Text>
+          </a>
+        ))}
+      </div>
+    </div>
+
+    <div class="flex justify-center mt-16">
+      <Button
+        variant="default"
+        size="md"
+        isLink={true}
+        href="/our-work"
+        class="w-fit"
+      >
+        See More Work
+      </Button>
     </div>
   </Wrapper>
 </section>

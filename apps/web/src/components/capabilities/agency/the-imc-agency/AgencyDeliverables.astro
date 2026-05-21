@@ -1,0 +1,58 @@
+---
+// Assets
+import { Image } from "astro:assets";
+import deliverables from "@/images/services/Agency Deliverables .png";
+// Fundations
+import Text from "@/components/fundations/elements/Text.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+
+interface Props {
+  heading: string;
+  features: Array<{ title: string; items: string[] }>;
+}
+const { heading, features } = Astro.props;
+---
+
+<section>
+  <Wrapper variant="standard" class="py-12">
+    <div class="grid grid-cols-1 md:grid-cols-2 bg-base-50 overflow-hidden">
+      <div class="p-8 lg:p-12 flex flex-col">
+        <Text
+          tag="h2"
+          variant="displayMD"
+          class="text-base-950 text-balance font-medium tracking-tight font-display mt-8"
+        >
+          {heading}
+        </Text>
+        <div class="grid grid-cols-1 gap-y-12 mt-12">
+          {features.map((feature) => (
+            <div>
+              <Text tag="h3" variant="textLG" class="text-base-900 font-display">
+                {feature.title}
+              </Text>
+              <ul class="mt-3 space-y-2">
+                {feature.items.map((item) => (
+                  <li class="flex gap-2">
+                    <span class="text-base-600 flex-shrink-0">•</span>
+                    <Text tag="p" variant="textSM" class="text-base-600 text-pretty">
+                      {item}
+                    </Text>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+      <Image
+        src={deliverables}
+        alt="Agency Deliverables"
+        width={800}
+        height={1440}
+        loading="eager"
+        decoding="async"
+        class="size-full object-cover object-center aspect-square"
+      />
+    </div>
+  </Wrapper>
+</section>

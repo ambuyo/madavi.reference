@@ -22,6 +22,26 @@ export interface UnifiedImage {
 }
 
 // =============================================================================
+// CATEGORY TYPES
+// =============================================================================
+
+export interface Category {
+  id: string | number;
+  name: string;
+  slug: string;
+  description?: string;
+}
+
+export interface Subcategory {
+  id: string | number;
+  name: string;
+  slug: string;
+  description?: string;
+  parentId: string | number;
+  parentSlug?: string;
+}
+
+// =============================================================================
 // POST TYPES
 // =============================================================================
 
@@ -35,6 +55,8 @@ export interface SanityPost {
   description: string;
   pubDate: string;
   tags: string[];
+  category?: { _id: string; title: string; slug: string };
+  subcategory?: { _id: string; title: string; slug: string; categoryId: string };
   team?: string; // Team member slug
   image: SanityImage;
   body: PortableTextBlock[] | string;
@@ -50,7 +72,12 @@ export interface Post {
     description: string;
     pubDate: Date;
     tags: string[];
+    // Sanity: single resolved reference
+    category?: { id: string; name: string; slug: string };
+    subcategory?: { id: string; name: string; slug: string; parentId: string };
+    // WordPress: flat arrays (parent === 0 → category, parent > 0 → subcategory)
     categories?: Array<{ id: number; name: string; slug: string }>;
+    subcategories?: Array<{ id: number; name: string; slug: string; parentId: number }>;
     team?: string;
     image: UnifiedImage;
   };
@@ -467,8 +494,11 @@ export interface SanitySingleWork {
   slug: string;
   client: string;
   industry: string;
-  services: string[];
-  year?: number;
+  imcServices?: string[];
+  aiStudioServices?: string[];
+  /** @deprecated use imcServices + aiStudioServices */
+  services?: string[];
+  completionDate?: string; // ISO date string e.g. "2024-03-15"
   tagline?: string;
   aboutClient?: string;
   ourProcess?: string;
@@ -490,7 +520,13 @@ export interface SingleWork {
   data: {
     client: string;
     industry: string;
+    imcServices: string[];
+    aiStudioServices: string[];
+    /** Flat merged list for backward-compatible display */
     services: string[];
+    /** Full ISO date string for sorting — display year via .getFullYear() */
+    completionDate?: string;
+    /** Year derived from completionDate, for display only */
     year?: number;
     tagline?: string;
     aboutClient?: string;

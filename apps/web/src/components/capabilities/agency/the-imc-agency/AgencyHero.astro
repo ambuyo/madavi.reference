@@ -1,0 +1,32 @@
+---
+// Fundations
+import Text from "@/components/fundations/elements/Text.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+
+interface Props {
+  heading: string;
+  description: string;
+}
+const { heading, description } = Astro.props;
+---
+
+<section>
+  <Wrapper variant="standard" class="pt-12">
+    <div class="max-w-2xl">
+      <Text
+        tag="h1"
+        variant="displayLG"
+        class="text-base-900 text-balance font-medium tracking-tight mt-8 font-display"
+      >
+        {heading}
+      </Text>
+      <Text
+        tag="p"
+        variant="textBase"
+        class="text-base-600 lg:text-balance mt-4"
+      >
+        {description}
+      </Text>
+    </div>
+  </Wrapper>
+</section>

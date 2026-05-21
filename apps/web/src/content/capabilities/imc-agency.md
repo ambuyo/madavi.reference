@@ -1,0 +1,181 @@
+---
+title: "The IMC Agency"
+description: "Explore our Agency - innovative solutions for AI-powered transformation and digital innovation."
+slug: "imc-agency"
+seoType: "website"
+
+hero:
+  heading: "The IMC Agency"
+  description: "Your marketing doesn't need more channels. It needs a unified strategy that makes every channel work together toward measurable business outcomes."
+
+intro:
+  part1: "The IMC Agency is "
+  part1Bold: "Madavi's integrated marketing communications practice."
+  part2: "We coordinate brand strategy, paid media, content, PR, digital experiences, and sales activation into campaigns that actually move revenue."
+  part3: "Not fragmented tactics—"
+  part3Bold: "coherent systems"
+  part3Suffix: " where every channel amplifies the others."
+
+whyUs:
+  heading: "Why Premium Brands Choose Us"
+  subtitle: "Most marketing agencies sell channel execution: run your ads, manage your social, build your website...."
+  paragraphs:
+    - "But channels don't work in isolation. A brand campaign that doesn't connect to web conversion infrastructure wastes budget. Content that ignores SEO gets buried. Social media disconnected from sales enablement generates vanity metrics, not pipeline."
+    - "The IMC Agency exists because mid-to-large enterprises need strategic coordination across channels—not just vendors executing isolated tasks."
+    - "We've delivered 50+ integrated campaigns across African and international markets where fragmented marketing means lost opportunity."
+
+targetAudiences:
+  heading: "Who This is For"
+  audiences:
+    - title: "Mid-to-large B2B enterprises"
+      subtitle: "launching new offerings or entering competitive markets"
+    - title: "Brands with multiple channels"
+      subtitle: "running independently without cohesive strategy"
+    - title: "Organizations where marketing generates activity"
+      subtitle: "but leadership can't connect it to revenue"
+    - title: "Companies expanding across markets"
+      subtitle: "requiring regionally adapted campaigns"
+    - title: "Businesses moving upmarket"
+      subtitle: "needing premium brand positioning to match"
+
+approach:
+  heading: "Our Approach"
+  pillars:
+    - title: "Strategic Foundation First"
+      content: "We don't start with tactics. Every campaign begins with strategic planning: brand positioning, audience research, competitive analysis, and omnichannel mapping. We define your single voice before we deploy it. You get clarity on who you're targeting, what differentiates you, and how each channel supports the buyer journey from awareness to conversion."
+      bgColor: "#1A3A52"
+    - title: "Integrated Execution Across All Touchpoints"
+      content: "We coordinate paid media, earned media, owned content, and digital experiences as one system. Your LinkedIn ads drive to landing pages optimized for conversion. Your PR placements reinforce messages from your content. Your website captures demand generated across all channels. Your sales team has assets supporting every stage of the funnel. Nothing exists in isolation."
+      bgColor: "#E65100"
+    - title: "Performance Measurement & Strategic Refinement"
+      content: "We track what matters: pipeline generated, cost per acquisition, conversion rates, campaign ROI. Monthly reporting shows which channels drive results and which need optimization. Quarterly strategy reviews ensure execution stays aligned with business goals. You get clear visibility into marketing's contribution to revenue—not just vanity metrics."
+      bgColor: "#2A7F62"
+
+deliverables:
+  heading: "What you get"
+  features:
+    - title: "Strategic Foundation"
+      items:
+        - "Brand positioning audit and competitive landscape analysis"
+        - "Target audience profiling with behavioral insights and decision criteria"
+        - "Omnichannel strategy mapping each touchpoint to buyer journey stage"
+        - "Campaign architecture defining themes, messaging hierarchy, and channel coordination"
+        - "Success metrics framework connecting activity to business outcomes"
+    - title: "Integrated Campaign Execution"
+      items:
+        - "Coordinated launch across all channels with consistent messaging and timing"
+        - "Real-time performance monitoring and rapid optimization"
+        - "Monthly reporting showing contribution to pipeline and revenue"
+        - "Stakeholder updates keeping leadership informed of campaign performance"
+    - title: "Long-Term Partnership"
+      items:
+        - "Quarterly strategy reviews refining approach based on market feedback"
+        - "Continuous optimization improving channel efficiency and ROI"
+        - "New campaign development as business priorities evolve"
+        - "Team training transferring marketing capability internally"
+
+engagementModels:
+  kicker: "Engagement Models"
+  heading: "How we work with you"
+  ctaText: "Not sure which engagement fits? Let's discuss your goals and find the model that aligns with your timeline, budget, and business priorities."
+  ctaHref: "/contact"
+  ctaButtonLabel: "Talk to Us"
+  models:
+    - title: "Full IMC Campaign"
+      duration: "Retainer, 3-6 months"
+      description: "Comprehensive integrated campaigns coordinating all channels toward specific business objectives—product launch, market entry, brand repositioning. Includes strategic planning, creative development, channel execution, performance tracking, and optimization. For organizations launching major initiatives requiring coordinated multi-channel execution."
+    - title: "Channel-Specific Services"
+      duration: "Retainer, 3+ months"
+      description: "Focus on individual services—brand strategy, content marketing, paid media, PR, or web development. Channel execution aligns with broader business goals but doesn't require full IMC coordination. For organizations with clear channel needs and existing marketing infrastructure."
+    - title: "Project-Based Work"
+      duration: "4-12 weeks"
+      description: "Defined-scope projects like website redesign, brand identity development, campaign creative production, or event execution. Clear deliverables, fixed timeline, upfront pricing. For organizations needing specific outputs without ongoing retainer relationship."
+    - title: "Strategic Consulting"
+      duration: "Monthly or Quarterly"
+      description: "Marketing leadership for organizations lacking CMO-level expertise. Strategic guidance on campaign planning, vendor management, budget allocation, and performance optimization. No execution—pure strategic counsel. For businesses needing senior marketing thinking without full-time hire."
+
+serviceGroups:
+  - heading: "Strategic Planning & Brand Architecture"
+    subheading: "Foundation work that defines your single voice before any channel execution begins. Without clear positioning, messaging, and audience understanding, marketing channels work against each other instead of amplifying a unified strategy."
+    bgColor: "#57A1A0"
+    accentColor: "#57A1A0"
+    services:
+      - title: "Brand Positioning & Identity"
+        description: "Stand out with a clear value proposition, distinct voice, and visual identity that commands attention across every touchpoint."
+      - title: "Audience Research & Persona Development"
+        description: "Reach the right buyers with data-driven personas that reveal what they want, how they decide, and where to find them."
+      - title: "Omnichannel Strategy & Messaging Framework"
+        description: "Turn fragmented channels into one coordinated system where every touchpoint reinforces your message and accelerates conversion."
+
+  - heading: "Advertising (Paid Media)"
+    subheading: "Strategic media buying that builds mass awareness and drives targeted actions. We buy based on where your audience actually is, not where agencies make the most margin—every placement justified by audience data and campaign objectives."
+    bgColor: "#008794"
+    accentColor: "#008794"
+    services:
+      - title: "Digital Advertising"
+        description: "Drive qualified traffic with precision-targeted PPC, paid social, and programmatic display campaigns optimized in real-time for conversion."
+      - title: "Traditional Advertising"
+        description: "Build mass brand awareness through strategic TV, radio, print, and out-of-home placements where your audience still consumes media."
+      - title: "Media Planning & Buying"
+        description: "Maximize ROI with optimal channel mix, negotiated rates, and coordinated campaign scheduling that amplifies every marketing dollar."
+
+  - heading: "Public Relations & Earned Media"
+    subheading: "Third-party validation that builds credibility and amplifies reach beyond what paid advertising can achieve. Strategic PR secures coverage that audiences trust more than branded content—journalists and publications vouching for your expertise and offerings."
+    bgColor: "#00827F"
+    accentColor: "#00827F"
+    services:
+      - title: "Media Relations"
+        description: "Secure trusted coverage through strategic press outreach, journalist relationships, and thought leadership placements that build authority."
+      - title: "Crisis Management"
+        description: "Protect your reputation with rapid response frameworks and stakeholder communication strategies that contain damage and rebuild trust."
+      - title: "Corporate Communications"
+        description: "Align employees, stakeholders, and executives with cohesive messaging that strengthens internal culture and external authority."
+
+  - heading: "Digital & Content Marketing (Owned Media)"
+    subheading: "High-value assets you fully control that engage, educate, and convert audiences over time. Content builds organic visibility, establishes authority, and supports sales conversations—while you own every piece instead of renting attention through paid channels."
+    bgColor: "#01796F"
+    accentColor: "#01796F"
+    services:
+      - title: "Content Strategy & Creation"
+        description: "Build owned assets—blogs, videos, case studies—that attract qualified buyers and move them through every stage of the journey."
+      - title: "Search Engine Optimization (SEO)"
+        description: "Capture high-intent traffic with technical optimization and content built around what your buyers actually search for."
+      - title: "Social Media Management"
+        description: "Grow engaged communities on the platforms your audience uses—with consistent posting, real engagement, and measurable conversions."
+
+  - heading: "Direct & Interactive Marketing"
+    subheading: "One-to-one communication speaking directly to individual consumers or specific business accounts. Personalized outreach at scale driving conversions through targeted messaging that speaks to each recipient's specific needs and stage in the buying journey."
+    bgColor: "#00637F"
+    accentColor: "#00637F"
+    services:
+      - title: "Email Marketing"
+        description: "Convert prospects with segmented nurture sequences and automated workflows that deliver the right message at the right moment."
+      - title: "SMS & WhatsApp Marketing"
+        description: "Reach customers where attention lives—on their phones—with conversational, high-response messaging that drives immediate action."
+      - title: "Account-Based Marketing (ABM)"
+        description: "Win high-value B2B accounts with personalized, multi-channel campaigns aligned across sales and marketing for maximum impact."
+
+  - heading: "Digital Experience & Web Design"
+    subheading: "The central hub where all marketing channels drive traffic and where conversion actually happens. Your website is the destination—everything else (ads, content, PR, social) exists to bring qualified visitors here and convert them into customers."
+    bgColor: "#005F5F"
+    accentColor: "#005F5F"
+    services:
+      - title: "Website Design & Development"
+        description: "Launch a conversion-focused flagship that loads fast, looks premium, and turns qualified visitors into customers across every device."
+      - title: "Landing Page Architecture"
+        description: "Maximize campaign ROI with targeted, A/B-tested landing pages built to convert paid traffic into qualified leads."
+      - title: "E-commerce & Web Applications"
+        description: "Build interactive tools, checkout flows, and WhatsApp-commerce integrations that turn engagement into transactions."
+
+  - heading: "Sales Promotion & Experiential Marketing"
+    subheading: "Tactical activations stimulating immediate demand and building deep brand affinity through immersive experiences. Short-term promotions drive urgency while experiential events create emotional connections that outlast any single campaign."
+    bgColor: "#29AB87"
+    accentColor: "#29AB87"
+    services:
+      - title: "Consumer & Trade Promotions"
+        description: "Drive immediate sales with coupons, loyalty programs, and trade incentives that create urgency and convert hesitant buyers."
+      - title: "Experiential & Event Marketing"
+        description: "Create lasting brand affinity through immersive product launches, trade shows, and activations that generate buzz and pipeline."
+      - title: "Retail & Field Marketing"
+        description: "Close sales at the point of decision with in-store merchandising, product sampling, and brand ambassador programs."
+---

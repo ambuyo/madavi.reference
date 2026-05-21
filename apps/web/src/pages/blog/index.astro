@@ -1,94 +1,50 @@
 ---
 // Fundations
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import Text from "@/components/fundations/elements/Text.astro";
-import Kicker from "@/components/fundations/elements/Kicker.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
-// Components
-import BlogCard from "@/components/blog/BlogCard.astro";
-import BigBlogCard from "@/components/blog/BigBlogCard.astro";
-import PostsCategoryCard from "@/components/blog/PostsCategoryCard.astro";
-import BlogCategories from "@/components/blog/BlogCategories.astro";
-// Data
-import { getPosts } from "@/lib/data";
-const allPosts = await getPosts();
-allPosts.sort((a, b) => {
-  const dateA = new Date(a.data.pubDate).getTime();
-  const dateB = new Date(b.data.pubDate).getTime();
-  return dateB - dateA;
-}); 
-
-const featuredPost = allPosts[0];
-const remainingPosts = allPosts.slice(1, 3);
+// Sections: In order of use
+import BlogHero1 from "@/components/blog/landingPages/index1/BlogHero1.astro";
+import Breaking1 from "@/components/blog/landingPages/index1/Breaking1.astro";
+import TopStories1 from "@/components/blog/landingPages/index1/TopStories1.astro";
+import Aside1 from "@/components/blog/landingPages/index1/Aside1.astro";
+import Briefs1 from "@/components/blog/landingPages/index1/Briefs1.astro";
+import TechHighlights from "@/components/blog/landingPages/index1/TechHighlights.astro";
+import Categories1 from "@/components/blog/landingPages/index1/Categories1.astro";
+// Adverts
+import AdvertAside from "@/components/advert/AdvertAside.astro";
+import AdvertInline from "@/components/advert/AdvertInline.astro";
 
 const seo = {
-  title: " Blog and Insights",
+  title: "Blog and Insights | Madavi",
   description: "Read insights and articles about AI consulting, digital transformation, and business strategy from Madavi.",
   type: "website" as const,
-};
-
-const blogSchema = {
-  "@context": "https://schema.org",
-  "@type": "Blog",
-  "name": "Madavi Blog",
-  "headline": "Honest AI Advice for Business Leaders",
-  "description": "Real AI implementation insights for business leaders. No hype, no vendor pitches—just honest advice from deploying AI in law firms, hospitals, and African enterprises.",
-  "url": "https://madavi.co/blog/",
-  "publisher": {
-    "@type": "Organization",
-    "name": "Madavi Inc.",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://madavi.co/images/madavi-logo.png"
-    }
-  },
-  "author": {
-    "@type": "Person",
-    "name": "Amukune"
-  },
-  "inLanguage": "en-US",
-  "keywords": "AI adoption, AI implementation, business AI, AI for law firms, AI for healthcare, AI for nonprofits, AI for retail, AI for African enterprises"
 };
 ---
 
 <BaseLayout seo={seo}>
   <section>
     <Wrapper variant="standard" class="py-12">
-      <div class="max-w-2xl">
-        <Kicker variant="default">Our Insights</Kicker>
-        <Text
-          tag="h1"
-          variant="displayLG"
-          class="text-base-900 text-balance font-medium tracking-tight mt-8 font-display"
-        >
-          Honest AI Advice for Business Leaders 
-        </Text>
-        <Text
-          tag="p"
-          variant="textBase"
-          class="text-base-600 lg:text-balance mt-4"
-        >
-Real AI implementation insights for business leaders. No hype, no vendor pitches—just honest advice from deploying AI in law firms, hospitals, and African enterprises.
-
-        </Text>
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 lg:gap-0">
+        <div class="lg:col-span-3 lg:pr-8">
+          <BlogHero1 />
+          <div class="flex flex-col gap-12 mt-8">
+            <Breaking1 />
+            <TopStories1 />
+            <AdvertInline />
+          </div>
+        </div>
+        <div class="lg:pl-8">
+          <div class="lg:sticky lg:top-10 lg:z-20">
+            <Aside1 />
+            <AdvertAside />
+          </div>
+        </div>
       </div>
-
-      {featuredPost && (
-        <div class="mt-12">
-          <BigBlogCard post={featuredPost} />
-        </div>
-      )}
-
-      {remainingPosts.length > 0 && (
-        <div class="grid grid-cols-1 md:grid-cols-2 mt-12 gap-2 p-8 lg:p-12 bg-base-50">
-          {remainingPosts.map((post) => <BlogCard post={post} />)}
-        </div>
-      )}
+      <div class="flex flex-col gap-4 mt-12">
+        <Briefs1 />
+        <div class="mt-12"><TechHighlights /></div>
+      </div>
     </Wrapper>
-
-
-    <BlogCategories />
   </section>
-
-  <script is:inline type="application/ld+json" set:html={JSON.stringify(blogSchema)} />
+  <Categories1 />
 </BaseLayout>

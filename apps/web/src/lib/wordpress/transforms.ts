@@ -7,7 +7,7 @@ import {
 import { htmlToMarkdown, extractPlainText } from "./markdown";
 import type { Post } from "../sanity/types";
 
-// Helper to extract categories from embedded data
+// Helper to extract top-level categories (parent === 0) from embedded data
 function extractCategories(wpPost: WordPressPost): WordPressCategory[] {
   if (!wpPost._embedded?.["wp:term"]) {
     return [];
@@ -16,17 +16,31 @@ function extractCategories(wpPost: WordPressPost): WordPressCategory[] {
   const categories: WordPressCategory[] = [];
   for (const termArray of wpPost._embedded["wp:term"]) {
     for (const term of termArray) {
-      if (term.taxonomy === "category") {
-        categories.push({
-          id: term.id,
-          name: term.name,
-          slug: term.slug,
-        });
+      if (term.taxonomy === "category" && term.parent === 0) {
+        categories.push({ id: term.id, name: term.name, slug: term.slug, parent: 0 });
       }
     }
   }
 
   return categories;
+}
+
+// Helper to extract subcategories (parent > 0) from embedded data
+function extractSubcategories(wpPost: WordPressPost): Array<{ id: number; name: string; slug: string; parentId: number }> {
+  if (!wpPost._embedded?.["wp:term"]) {
+    return [];
+  }
+
+  const subcategories: Array<{ id: number; name: string; slug: string; parentId: number }> = [];
+  for (const termArray of wpPost._embedded["wp:term"]) {
+    for (const term of termArray) {
+      if (term.taxonomy === "category" && term.parent > 0) {
+        subcategories.push({ id: term.id, name: term.name, slug: term.slug, parentId: term.parent });
+      }
+    }
+  }
+
+  return subcategories;
 }
 
 // Helper to decode HTML entities in content
@@ -73,6 +87,7 @@ export function transformWordPressPost(wpPost: WordPressPost): Post {
   const markdown = htmlToMarkdown(htmlContent);
   const plainText = extractPlainText(htmlContent);
   const categories = extractCategories(wpPost);
+  const subcategories = extractSubcategories(wpPost);
 
   return {
     slug: wpPost.slug,
@@ -80,8 +95,9 @@ export function transformWordPressPost(wpPost: WordPressPost): Post {
       title: stripHtml(wpPost.title.rendered),
       description: stripHtml(wpPost.excerpt.rendered),
       pubDate: new Date(wpPost.date),
-      tags: [], // WordPress tags would need separate API call if needed
-      categories: categories,
+      tags: [],
+      categories,
+      subcategories: subcategories.length > 0 ? subcategories : undefined,
       team: undefined,
       image: {
         url: featuredImage.url,

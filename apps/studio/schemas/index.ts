@@ -10,10 +10,15 @@ import { report } from "./report";
 import { solution } from "./solution";
 import { event } from "./event";
 import { seo } from "./seo";
+import { category } from "./category";
+import { subcategory } from "./subcategory";
 
 export const schemaTypes = [
   // Objects
   seo,
+  // Taxonomy
+  category,
+  subcategory,
   // Documents
   post,
   teamMember,

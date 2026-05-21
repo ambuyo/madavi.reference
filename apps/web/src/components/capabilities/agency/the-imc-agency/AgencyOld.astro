@@ -1,0 +1,31 @@
+---
+// Fundations
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+
+interface Props {
+  part1: string;
+  part1Bold: string;
+  part2: string;
+  part3: string;
+  part3Bold: string;
+  part3Suffix: string;
+}
+const { part1, part1Bold, part2, part3, part3Bold, part3Suffix } = Astro.props;
+---
+
+<section>
+  <Wrapper variant="standard" class="py-12">
+    <div class="p-8 lg:pr-4 lg:pl-12 lg:py-12" style="background-color: #F7F2E4;">
+      <p class="text-4xl leading-tight font-display" style="font-size: 2.5rem; line-height: 1.2;">
+        <span style="color: #343434;">{part1}</span>
+        <span class="font-bold" style="color: #343434;">{part1Bold}</span>
+        <br />
+        <span style="color: #343434;">{part2}</span>
+        <br />
+        <span style="color: #343434;">{part3}</span>
+        <span class="font-bold" style="color: #343434;">{part3Bold}</span>
+        <span style="color: #343434;">{part3Suffix}</span>
+      </p>
+    </div>
+  </Wrapper>
+</section>

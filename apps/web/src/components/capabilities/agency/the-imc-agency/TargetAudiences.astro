@@ -1,0 +1,33 @@
+---
+// Fundations
+import Text from "@/components/fundations/elements/Text.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+
+interface Props {
+  heading: string;
+  audiences: Array<{ title: string; subtitle: string }>;
+}
+const { heading, audiences } = Astro.props;
+---
+
+<section>
+  <Wrapper variant="standard" class="py-12">
+    <div class="mb-12">
+      <Text tag="h2" variant="displayMD" class="text-base-900 text-balance font-display">
+        {heading}
+      </Text>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+      {audiences.map(({ title, subtitle }) => (
+        <div class="p-8 rounded-[25px] transition-all duration-300 ease-out shadow-md hover:shadow-2xl hover:-translate-y-1" style="background-color: #F7F2E4">
+          <Text tag="h3" variant="textBase" class="text-base-900 font-semibold text-left">
+            {title}
+          </Text>
+          <Text tag="p" variant="textSM" class="text-base-600 mt-2 text-left">
+            {subtitle}
+          </Text>
+        </div>
+      ))}
+    </div>
+  </Wrapper>
+</section>
