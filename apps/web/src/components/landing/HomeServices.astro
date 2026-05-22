@@ -1,0 +1,124 @@
+---
+import Text from "@/components/fundations/elements/Text.astro";
+import Button from "@/components/fundations/elements/Button.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+import Kicker from "@/components/fundations/elements/Kicker.astro";
+
+const services = [
+  {
+    tag: "AI Studio",
+    title: "Corporate AI Readiness Diagnostic",
+    href: "/capabilities/ai-readiness",
+    value: "A comprehensive, cross-departmental analysis that exposes cultural resistance, workflow bottlenecks, and data gaps before you touch external vendors. Know exactly where your organization will break before you invest a single shilling in technology.",
+  },
+  {
+    tag: "AI Studio",
+    title: "Executive Strategic Advisory Retainer",
+    href: "/capabilities/executive-advisory",
+    value: "Independent, conflict-free counsel for CEOs, Boards, and CFOs managing high-stakes technology decisions, budgeting, and corporate governance. We have zero software partnerships, meaning our only loyalty is to your bottom line and vendor contract protection.",
+  },
+  {
+    tag: "AI Studio",
+    title: "Leadership AI Fluency Accelerator",
+    href: "/capabilities/leadership-cohort",
+    value: "An elite corporate training program designed to equip non-technical executive teams with decision-making authority. Turn your management from passive technology observers into confident evaluators of ROI, security, and deployment.",
+  },
+  {
+    tag: "AI Studio",
+    title: "Custom Workplace Automation Architecture",
+    href: "/capabilities/keynotes-licensing",
+    value: "End-to-end design and engineering of secure, bespoke automations built directly into your day-to-day operations. We handle the entire build, run rigorous quality tests, eliminate manual friction, and securely hand over full ownership to your staff.",
+  },
+  {
+    tag: "IMC Agency",
+    title: "Market Positioning & Brand Strategy",
+    href: "/capabilities/brand-strategy",
+    value: "Deep market research, competitor vulnerability auditing, and audience profiling. We engineer a razor-sharp market position that clearly differentiates your enterprise from competitors caught in the tech hype.",
+  },
+  {
+    tag: "IMC Agency",
+    title: "Corporate & Change Communications",
+    href: "/capabilities/brand-communication",
+    value: "High-impact message architecture, executive thought leadership, and PR frameworks. We control the narrative during your organizational evolution, building deep trust with clients, investors, and internal stakeholders.",
+  },
+  {
+    tag: "IMC Agency",
+    title: "Digital Infrastructure & Website Architecture",
+    href: "/capabilities/website-design",
+    value: "High-conversion, enterprise-grade web design and development. We build headless, modern web architectures that act as your primary revenue engine and visually project your new market authority.",
+  },
+  {
+    tag: "IMC Agency",
+    title: "Reputation & Brand Governance",
+    href: "/capabilities/brand-management",
+    value: "Long-term brand protection, consistency oversight, and strategic asset management. We guarantee your brand identity remains cohesive and commanding as your business capabilities expand.",
+  },
+];
+---
+
+<section>
+  <Wrapper variant="standard" class="py-24">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <!-- Left: Hero Section -->
+      <div
+        class="relative h-96 lg:h-full min-h-[500px] overflow-hidden"
+        style="background-color: #FF4500;"
+      >
+        <div class="p-8 lg:p-12 h-full flex flex-col justify-between">
+          <div>
+            <Kicker class="text-white/70">Our Services</Kicker>
+            <Text
+              tag="h2"
+              variant="displayMD"
+              class="text-white text-balance font-medium tracking-tight font-display mt-6"
+            >
+              AI changes how your business operates, but it also changes how your market perceives you.
+            </Text>
+            <Text tag="p" variant="textBase" class="text-white/80 mt-6 text-pretty">
+              We run two specialized studios to manage both sides of this transition:
+            </Text>
+            <div class="mt-6 flex flex-col gap-4">
+              <div class="border-l-2 border-white/40 pl-4">
+                <Text tag="p" variant="textBase" class="text-white font-semibold">The AI Studio</Text>
+                <Text tag="p" variant="textSM" class="text-white/75 mt-1">Aligns your leadership and builds your automation infrastructure.</Text>
+              </div>
+              <div class="border-l-2 border-white/40 pl-4">
+                <Text tag="p" variant="textBase" class="text-white font-semibold">The IMC Agency</Text>
+                <Text tag="p" variant="textSM" class="text-white/75 mt-1">Evolves your brand positioning so you dominate your market as an industry leader.</Text>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Services (scrollable) -->
+      <div class="flex flex-col gap-4 max-h-[580px] overflow-y-auto pr-4">
+        {services.map((service) => (
+          <div class="p-6 lg:p-8 bg-base-50 hover:bg-base-100 transition-colors">
+            {service.tag && (
+              <span style={`background-color: ${service.tag === "IMC Agency" ? "#008080" : "#F06105"};`} class="inline-block text-xs font-medium uppercase tracking-wide text-white px-2.5 py-1 mb-3">
+                {service.tag}
+              </span>
+            )}
+            <a href={service.href} class="group/title">
+              <Text
+                tag="h3"
+                variant="textLG"
+                class="text-base-900 font-display font-semibold group-hover/title:underline"
+              >
+                {service.title} →
+              </Text>
+            </a>
+            <Text
+              tag="p"
+              variant="textSM"
+              class="text-base-600 mt-3 text-pretty"
+            >
+              {service.value}
+            </Text>
+          </div>
+        ))}
+      </div>
+    </div>
+  </Wrapper>
+</section>

@@ -1,0 +1,74 @@
+---
+import Text from "@/components/fundations/elements/Text.astro";
+import Kicker from "@/components/fundations/elements/Kicker.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+
+const stats = [
+  { value: "50+", label: "Engagements delivered" },
+  { value: "12+", label: "African markets" },
+  { value: "C-suite", label: "Leadership focus" },
+  { value: "100%", label: "Advisory-led" },
+];
+---
+
+<section class="relative min-h-[100dvh] flex flex-col -mt-24">
+  <div class="absolute inset-0 z-0">
+    <video
+      autoplay
+      muted
+      loop
+      playsinline
+      poster="https://images.madavi.co/website%20images/Madavi%20Hero%20Home%20.png"
+      class="size-full object-cover"
+    >
+      <source src="https://images.madavi.co/videos/madavi_site_reel_2025_v1%20(2160p).mp4" type="video/mp4" />
+    </video>
+    <div
+      aria-hidden="true"
+      style="background-color: #1B1B1BCC;" class="absolute pointer-events-none inset-0"
+    >
+    </div> 
+  </div>
+  <div class="relative z-10 flex-1 flex flex-col">
+    <Wrapper
+      variant="standard"
+      class="flex-1 flex flex-col justify-start pt-56 pb-12 lg:border-x lg:border-white/10"
+    >
+      <div class="w-full lg:w-3/5 text-balance">
+        <Text
+          tag="h1"
+          variant="displayLG"
+          class="text-white font-medium tracking-tight mt-12"
+        >
+Most AI consultants sell tools. We prepare your people.       </Text>
+        <Text tag="h3" variant="displayXS" class="text-white/80 font-light tracking-tight mt-8 !lg:text-xl">
+          Technology fails without adoption. Our Human-Centric Integration Framework ensures your team is ready before a single tool is deployed.
+        </Text>
+      </div>
+    </Wrapper>
+    <div class="relative z-10 border-t border-white/10">
+      <Wrapper variant="standard" class="py-8 lg:border-x lg:border-white/10">
+        <div
+          class="grid grid-cols-2 md:grid-cols-4 gap-y-4 gap-x-8 lg:max-w-3xl lg:ml-auto"
+        >
+          {
+            stats.map((stat) => (
+              <div>
+                <Text
+                  tag="p"
+                  variant="displayLG"
+                  class="text-white italic font-medium"
+                >
+                  {stat.value}
+                </Text>
+                <Text tag="p" variant="textSM" class="text-base-400 mt-1">
+                  {stat.label}
+                </Text>
+              </div>
+            ))
+          }
+        </div>
+      </Wrapper>
+    </div>
+  </div>
+</section>

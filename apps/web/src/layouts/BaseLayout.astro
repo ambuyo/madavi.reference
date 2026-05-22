@@ -122,7 +122,7 @@ const seoPublishedTime = publishDate || (seo?.publishedTime ? new Date(seo.publi
     <LLMAnalytics />
   </head>
 
-  <body class="flex flex-col bg-white min-h-svh pt-24">
+  <body class={`flex flex-col bg-white min-h-svh ${navVariant === "transparent" ? "" : "pt-24"}`}>
     {!hideNavigation && <Navigation variant={navVariant} />}
     <main class="grow"><slot /></main>
     {!hideMainCta && <MainCta />}

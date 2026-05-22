@@ -29,26 +29,48 @@ const navLinks = [
 const headerBaseClass = "fixed inset-x-0 top-0 z-50 transition-all duration-300";
 const headerClass = variant === "transparent"
   ? "bg-transparent [&.scrolled]:bg-white [&.scrolled]:border-b [&.scrolled]:border-base-200 [&.scrolled]:shadow-sm"
-  : "bg-white";
+  : "bg-white border-b border-base-200";
 ---
 
 <header class={`${headerBaseClass} ${headerClass}`} data-navbar-variant={variant}>
-  <Wrapper variant="standard" class="py-6">
+  <Wrapper variant="standard" class="py-4">
     <div class="flex items-center justify-between gap-4">
-      <a href="/" class={`flex items-center gap-3 max-w-xs transition-colors ${variant === "transparent" ? "text-white [.scrolled_&]:text-base-900" : "text-base-900"}`}>
-        <Logo variant={variant === "transparent" ? "light" : "dark"} class="h-16 w-auto" />
+      <!-- Logo -->
+      <a
+        href="/"
+        class={`flex items-center gap-3 shrink-0 transition-colors ${variant === "transparent" ? "text-white [.scrolled_&]:text-base-900" : "text-base-900"}`}
+      >
+        <Logo
+          variant={variant === "transparent" ? "light" : "dark"}
+          class="h-13 w-auto [.scrolled_&]:hidden"
+          id="logo-light"
+        />
+
+        <Logo
+          variant="dark"
+          class={`h-12 w-auto ${variant === "transparent" ? "hidden [.scrolled_&]:block" : "hidden"}`}
+          id="logo-dark"
+        />
       </a>
-      <nav class="hidden items-center gap-8 lg:flex group" aria-label="Primary">
+      <!-- Pill nav (transparent) / flat nav (default or scrolled) -->
+      <nav
+        class={`hidden lg:flex items-center transition-all duration-300 ${
+          variant === "transparent"
+            ? "gap-0.5 rounded-full border border-white/20 bg-white/10 backdrop-blur-md px-2 py-1.5 shadow-sm [.scrolled_&]:gap-8 [.scrolled_&]:rounded-none [.scrolled_&]:border-transparent [.scrolled_&]:bg-transparent [.scrolled_&]:backdrop-blur-none [.scrolled_&]:px-0 [.scrolled_&]:py-0 [.scrolled_&]:shadow-none"
+            : "gap-8"
+        }`}
+        aria-label="Primary"
+      >
         {
           navLinks.map((link) => {
             const hasMegamenu = link.hasMegamenu;
             const linkClass = variant === "transparent"
-              ? "text-white/80 hover:text-white [.scrolled_&]:text-base-700 [.scrolled_&]:hover:text-base-950"
+              ? "px-4 py-2 rounded-full text-white/90 hover:text-white hover:bg-white/15 [.scrolled_&]:px-0 [.scrolled_&]:py-0 [.scrolled_&]:rounded-none [.scrolled_&]:text-base-700 [.scrolled_&]:hover:text-base-950 [.scrolled_&]:hover:bg-transparent"
               : "text-base-700 hover:text-base-950";
             return (
               <a
                 href={link.href}
-                data-megamenu={link.label.toLowerCase()}
+                data-megamenu={hasMegamenu ? link.label.toLowerCase() : undefined}
                 class={`text-sm font-medium transition-colors ${linkClass} ${hasMegamenu ? "has-megamenu" : ""}`}
               >
                 {link.label}
@@ -57,17 +79,23 @@ const headerClass = variant === "transparent"
           })
         }
       </nav>
-      <div class="flex items-center gap-2">
+      <!-- Actions -->
+      <div class="flex items-center gap-2 shrink-0">
         <Search variant={variant} />
-        <Button
-          isLink
-          size="xs"
-          variant={variant === "transparent" ? "light" : "default"}
-          href="/contact"
-          class={`hidden lg:flex ${variant === "transparent" ? "[.scrolled_&]:variant-default" : ""}`}
-        >
-          Get My AI Audit
-        </Button>
+        {variant === "transparent" ? (
+          <>
+            <Button isLink size="base" variant="orange" href="/contact" class="hidden lg:flex rounded-[15px] [.scrolled_&]:!hidden">
+              Get My AI Audit
+            </Button>
+            <Button isLink size="base" variant="orange" href="/contact" class="hidden rounded-[15px] [.scrolled_&]:!flex">
+              Get My AI Audit
+            </Button>
+          </>
+        ) : (
+          <Button isLink size="base" variant="orange" href="/contact" class="hidden lg:flex rounded-[15px]">
+            Get My AI Audit
+          </Button>
+        )}
         <MobileNav links={navLinks} variant={variant} />
       </div>
     </div>
@@ -87,22 +115,12 @@ const headerClass = variant === "transparent"
     const variant = header.getAttribute("data-navbar-variant");
     if (variant !== "transparent") return;
 
-    const logo = header.querySelector("a img");
-    const lightLogoUrl = logo?.src;
-    const darkLogoUrl = lightLogoUrl?.replace("white.png", "Full.png");
-
     function updateNavbarStyle() {
       const isScrolled = window.scrollY > 10;
       if (isScrolled) {
         header.classList.add("scrolled");
-        if (logo && darkLogoUrl) {
-          logo.src = darkLogoUrl;
-        }
       } else {
         header.classList.remove("scrolled");
-        if (logo && lightLogoUrl) {
-          logo.src = lightLogoUrl;
-        }
       }
     }
 

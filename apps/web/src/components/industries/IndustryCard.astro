@@ -2,42 +2,50 @@
 // Fundations
 import Text from "@/components/fundations/elements/Text.astro";
 // Content
-const { title, summary, url, image } = {
+const { titleOnly = false, overrideBg } = Astro.props;
+const { title, summary, url, image, heroImage } = {
   url: "/industries/" + Astro.props.industry.slug,
   title: Astro.props.industry.data.title,
   summary: Astro.props.industry.data.summary,
   image: Astro.props.industry.data.image,
+  heroImage: Astro.props.industry.data.hero?.image,
 };
 
-const bgImage = image?.url ? `url('${image.url}')` : "";
+const resolvedBg = overrideBg || image?.url || heroImage || "";
+const bgImage = resolvedBg ? `url('${resolvedBg}')` : "";
 ---
 
 <article
-  class="relative group overflow-hidden h-full min-h-80 flex flex-col justify-between p-8 lg:p-12"
+  class="relative group overflow-hidden h-full min-h-80 flex flex-col justify-end p-8 lg:p-12"
   style={bgImage ? `background-image: ${bgImage}; background-size: cover; background-position: center;` : ""}
 >
-  {/* Dark overlay for text readability */}
-  <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/60 z-0"></div>
+  {/* Bottom dark gradient for text readability */}
+  <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent z-0"></div>
 
   <a
     href={url}
     title={`Learn more: ${title}`}
     aria-label={`Learn more about: ${title}`}
-    class="absolute inset-0 z-10"></a> 
+    class="absolute inset-0 z-30"
+  ></a>
 
-  <div class="relative z-20">
+  <div class="relative z-20 self-start">
     <Text tag="h3" variant="displaySM" class="text-white font-display font-semibold"
       >{title}</Text
     >
-    <Text tag="p" variant="textBase" class="text-white/90 mt-4 text-pretty"
-      >{summary}</Text
-    >
+    {!titleOnly && (
+      <Text tag="p" variant="textBase" class="text-white/90 mt-4 text-pretty"
+        >{summary}</Text
+      >
+    )}
   </div>
 
-  <Text
-    tag="p"
-    variant="textSM"
-    class="uppercase font-medium text-white group-hover:text-accent-300 mt-4 relative z-20"
-    >Read further →</Text
-  >
+  {!titleOnly && (
+    <Text
+      tag="p"
+      variant="textSM"
+      class="uppercase font-medium text-white group-hover:text-accent-300 mt-4 relative z-20"
+      >Read further →</Text
+    >
+  )}
 </article>

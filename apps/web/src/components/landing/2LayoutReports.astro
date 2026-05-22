@@ -1,0 +1,66 @@
+---
+import Text from "@/components/fundations/elements/Text.astro";
+import Button from "@/components/fundations/elements/Button.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+import Kicker from "@/components/fundations/elements/Kicker.astro";
+---
+
+<section>
+  <Wrapper variant="standard" class="py-24">
+    <div class="max-w-3xl mb-16">
+      <Kicker variant="default">Our Services</Kicker>
+      <Text
+        tag="h2"
+        variant="displayMD"
+        class="text-base-950 font-medium tracking-tight font-display mt-4 text-balance"
+      >
+        AI changes how your business operates, but it also changes how your market perceives you.
+      </Text>
+      <Text tag="p" variant="textLG" class="text-base-600 mt-4 text-pretty">
+        We run two specialized studios to manage both sides of this transition.
+      </Text>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- AI Studio -->
+      <div class="p-8 lg:p-12 bg-base-900 flex flex-col justify-between gap-12">
+        <div>
+          <Kicker class="text-base-400">AI Studio</Kicker>
+          <Text
+            tag="h3"
+            variant="displaySM"
+            class="text-white font-display font-medium tracking-tight mt-6"
+          >
+            The AI Studio
+          </Text>
+          <Text tag="p" variant="textBase" class="text-base-300 mt-4 text-pretty">
+            Aligns your leadership and builds your automation infrastructure.
+          </Text>
+        </div>
+        <Button isLink size="sm" variant="none" href="/capabilities/ai-studio" class="text-white border border-white/20 hover:bg-white/10 w-fit">
+          Explore AI Studio →
+        </Button>
+      </div>
+
+      <!-- IMC Agency -->
+      <div class="p-8 lg:p-12 bg-accent-700 flex flex-col justify-between gap-12">
+        <div>
+          <Kicker class="text-white/60">IMC Agency</Kicker>
+          <Text
+            tag="h3"
+            variant="displaySM"
+            class="text-white font-display font-medium tracking-tight mt-6"
+          >
+            The Integrated Marketing & Communications Agency
+          </Text>
+          <Text tag="p" variant="textBase" class="text-white/80 mt-4 text-pretty">
+            Evolves your brand positioning so you dominate your market as an industry leader.
+          </Text>
+        </div>
+        <Button isLink size="sm" variant="none" href="/capabilities/imc-agency" class="text-white border border-white/20 hover:bg-white/10 w-fit">
+          Explore IMC Agency →
+        </Button>
+      </div>
+    </div>
+  </Wrapper>
+</section>

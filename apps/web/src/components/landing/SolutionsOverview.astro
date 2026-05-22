@@ -1,0 +1,72 @@
+---
+import Shield from "@/components/assets/Shield.astro";
+import Text from "@/components/fundations/elements/Text.astro";
+import Kicker from "@/components/fundations/elements/Kicker.astro";
+import Button from "@/components/fundations/elements/Button.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+import { getSolutions } from "@/lib/sanity/reports";
+
+const solutions = await getSolutions();
+---
+
+<section>
+  <Wrapper variant="standard" class="py-12 lg:py-24">
+    <div class="p-8 lg:p-12 relative">
+      <div aria-hidden="true" class="absolute inset-0 pointer-events-none" style="background-image: url('/Solutions BG.png'); background-size: cover; background-position: center; opacity: 0.5;"></div>
+      <div class="relative z-10 w-full lg:w-3/5">
+        <Kicker variant="default">AI Agents</Kicker>
+        <Text
+          tag="h2"
+          variant="displayMD"
+          class="text-base-900 text-balance font-display lg:mt-8"
+        >
+          AI Agents Built for Real Work
+        </Text>
+        <Text tag="p" variant="textBase" class="text-base-700 lg:text-balance mt-4">
+          Most artificial intelligence is built to look impressive in presentations, not to survive day-to-day operations. We engineer secure, highly customized AI assistants that solve immediate operational bottlenecks across specialized sectors.
+        </Text>
+      </div>
+      <div class="relative z-10 grid grid-cols-1 lg:grid-cols-3 mt-12 gap-2">
+        {solutions.slice(0, 2).map((solution) => (
+          <a
+            href={`/solutions/${solution.slug.current}`}
+            class="group relative overflow-hidden min-h-80 flex flex-col justify-end p-8 lg:p-12"
+            style={solution.featuredImage?.asset?.url
+              ? `background-image: url('${solution.featuredImage.asset.url}'); background-size: cover; background-position: center;`
+              : "background-color: #1B1B1B;"}
+          >
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+            <div class="relative z-10">
+              <Text tag="h3" variant="displaySM" class="text-white font-display font-semibold">
+                {solution.name}
+              </Text>
+              {solution.industry && (
+                <Text tag="p" variant="textXS" class="text-white/60 uppercase font-medium tracking-wide mt-1">
+                  {solution.industry}
+                </Text>
+              )}
+            </div>
+          </a>
+        ))}
+        <div class="bg-accent-400 p-8 flex flex-col h-full justify-between gap-8">
+          <div>
+            <Shield class="h-8 text-white" />
+            <Text
+              tag="h3"
+              variant="displaySM"
+              class="text-base text-white font-display font-medium mt-24"
+            >
+              Ready to get started?
+            </Text>
+            <Text tag="p" variant="textBase" class="text-white font-medium mt-2">
+              Explore all our AI solutions built for real operational work.
+            </Text>
+          </div>
+          <Button size="sm" variant="muted" isLink={true} href="/solutions" class="w-fit">
+            Explore All Solutions
+          </Button>
+        </div>
+      </div>
+    </div>
+  </Wrapper>
+</section>

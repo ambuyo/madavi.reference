@@ -2,10 +2,123 @@
 @plugin "@tailwindcss/typography";
 @plugin "@tailwindcss/forms";
 @plugin "tailwind-scrollbar-hide";
+
+/* ── Tiempos – display / headings ── */
+@font-face {
+  font-family: "Tiempos";
+  src: url("/fonts/tiempos/TestTiemposHeadline-Light-BF66457a50df5a0.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Tiempos";
+  src: url("/fonts/tiempos/TestTiemposHeadline-Medium-BF66457a509b4ec.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Tiempos";
+  src: url("/fonts/tiempos/TestTiemposHeadline-Semibold-BF66457a509040b.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Tiempos";
+  src: url("/fonts/tiempos/TestTiemposFine-Bold-BF66457a510211b.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Tiempos";
+  src: url("/fonts/tiempos/TestTiemposFine-Black-BF66457a508fe8f.woff2") format("woff2");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ── DM Sans – body / UI ── */
+@font-face {
+  font-family: "DM Sans";
+  src: url("/fonts/DMSans/DMSans_18pt-ExtraLight.woff2") format("woff2");
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "DM Sans";
+  src: url("/fonts/DMSans/DMSans_18pt-ExtraLightItalic.woff2") format("woff2");
+  font-weight: 200;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "DM Sans";
+  src: url("/fonts/DMSans/DMSans_18pt-Light.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "DM Sans";
+  src: url("/fonts/DMSans/DMSans_18pt-Italic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "DM Sans";
+  src: url("/fonts/DMSans/DMSans_36pt-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ── Geom – accent / quotes / testimonials ── */
+@font-face {
+  font-family: "Geom";
+  src: url("/fonts/geom/Geom-Light.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Geom";
+  src: url("/fonts/geom/Geom-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Geom";
+  src: url("/fonts/geom/Geom-Italic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Geom";
+  src: url("/fonts/geom/Geom-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Geom";
+  src: url("/fonts/geom/Geom-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
   /* Typography */
-  --font-display: "Josefin Sans", sans-serif;
-  --font-sans: "Inter", sans-serif;
+  --font-display: "Tiempos", serif;
+  --font-sans: "DM Sans", sans-serif;
+  --font-alt: "Geom", sans-serif;
 
   /* Colors */
 
@@ -47,12 +160,6 @@
   font-feature-settings:
     "liga" 1,
     "calt" 1;
-}
-@supports (font-variation-settings: normal) {
-  /* Use variable font if supported */
-  :root {
-    font-family: InterVariable, sans-serif;
-  }
 }
 
 .bg-base-50 {

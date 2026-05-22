@@ -35,6 +35,13 @@ const mutedDarkClass = [
   "focus:outline-base-700",
 ];
 
+const orangeClass = [
+  "text-white",
+  "bg-[#FF5000]",
+  "hover:bg-[#e64800]",
+  "focus:outline-[#FF5000]",
+];
+
 // Size
 const sizes = {
   xxs: ["h-7.5", "px-4", "py-2", "text-xs", "rounded-sm"],
@@ -68,6 +75,7 @@ const variantClass = {
   accent: accentClass,
   muted: mutedClass,
   mutedDark: mutedDarkClass,
+  orange: orangeClass,
   none: [],
 };
 const sizeClass = iconOnly ? iconSizes[size] : sizes[size] || [];

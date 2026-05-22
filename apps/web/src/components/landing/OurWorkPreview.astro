@@ -1,6 +1,7 @@
 ---
 // Fundations
 import Text from "@/components/fundations/elements/Text.astro";
+import Kicker from "@/components/fundations/elements/Kicker.astro";
 import Button from "@/components/fundations/elements/Button.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 // Data
@@ -25,22 +26,22 @@ const rightColumn = recentWork.filter((_, i) => i % 2 === 1);
       {/* Left Column */}
       <div class="flex flex-col gap-24">
         <div>
+          <Kicker variant="default">Our Work</Kicker>
           <Text
             tag="h2"
             variant="displayLG"
-            class="text-base-900 font-display font-bold leading-tight"
+            class="text-base-900 font-display font-bold leading-tight mt-4"
           >
-            Insight.<br />
-            Inspiration.<br />
-            Innovation.
+            Real Organizations. <br />
+Real Transformation.
+
           </Text>
           <Text
             tag="p"
             variant="textBase"
             class="text-base-700 mt-8"
           >
-            We give shape to ideas that connect.
-          </Text>
+Brands we are proud to have partnered with on their digital journey.          </Text>
         </div>
         {leftColumn.map((work) => (
           <a href={`/our-work/${work.slug}`} class="group block">
@@ -57,10 +58,15 @@ const rightColumn = recentWork.filter((_, i) => i % 2 === 1);
             <Text
               tag="p"
               variant="textSM"
-              class="text-base-900 font-semibold mt-4 group-hover:underline"
+              class="text-base-900 font-display font-semibold mt-4 group-hover:underline text-[26px]"
             >
               {work.data.tagline || work.data.client}
             </Text>
+            {work.data.industry && (
+              <Text tag="p" variant="textXS" class="text-base-500 uppercase font-medium mt-1 tracking-wide">
+                {work.data.industry}
+              </Text>
+            )}
           </a>
         ))}
       </div>
@@ -82,10 +88,15 @@ const rightColumn = recentWork.filter((_, i) => i % 2 === 1);
             <Text
               tag="p"
               variant="textSM"
-              class="text-base-900 font-semibold mt-4 group-hover:underline"
+              class="text-base-900 font-display font-semibold mt-4 group-hover:underline text-[26px]"
             >
               {work.data.tagline || work.data.client}
             </Text>
+            {work.data.industry && (
+              <Text tag="p" variant="textXS" class="text-base-500 uppercase font-medium mt-1 tracking-wide">
+                {work.data.industry}
+              </Text>
+            )}
           </a>
         ))}
       </div>

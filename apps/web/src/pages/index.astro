@@ -2,18 +2,16 @@
 // Fundations
 import BaseLayout from "@/layouts/BaseLayout.astro";
 // Landing Components
-import HOAHero from "@/components/landing/HOAHero.astro";
-import HeroVT2 from "@/components/landing/HeroVT2.astro";
+import MainHomeHeroAlt from "@/components/landing/MainHomeHeroAlt.astro";
 import Stats1 from "@/components/stats/Stats1.astro";
-import ValueStatement from "@/components/landing/ValueStatement.astro";
-import ServicesOverview from "@/components/landing/ServicesPreview.astro";
+import HomeServices from "@/components/landing/HomeServices.astro";
 import IndustriesOverview from "@/components/landing/IndustriesPreview.astro";
 import MadaviStats from "@/components/landing/MadaviStats.astro";
 import OurWorkPreview from "@/components/landing/OurWorkPreview.astro";
-import Why from "@/components/landing/Why.astro";
+import ProblemSection from "@/components/landing/ProblemSection.astro";
 import TestimonialsPreview from "@/components/landing/TestimonialsPreview.astro";
+import SolutionsOverview from "@/components/landing/SolutionsOverview.astro";
 
-import LatestReports from "@/components/landing/LatestReports.astro";
 import BlogPreview from "@/components/landing/BlogPreview.astro";
 
 const seo = {
@@ -23,17 +21,16 @@ const seo = {
 };
 ---
 
-<BaseLayout seo={seo}>
-  <HOAHero />
-  <HeroVT2 />
+<BaseLayout seo={seo} navVariant="transparent">
+  <MainHomeHeroAlt />
   <Stats1 />
-  <ValueStatement />
-  <ServicesOverview />
-  <Why />
-  <IndustriesOverview />
-  <MadaviStats />
+  <ProblemSection />
+    <MadaviStats />
+  <HomeServices />
   <OurWorkPreview />
+  <IndustriesOverview />
+
   <TestimonialsPreview />
-  <LatestReports />
+  <SolutionsOverview />
   <BlogPreview />
-</BaseLayout>
+</BaseLayout> 
