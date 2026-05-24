@@ -40,6 +40,7 @@ export const singleWork = defineType({
           { title: "Real Estate", value: "real-estate" },
           { title: "Retail & Ecommerce", value: "retail-ecommerce" },
           { title: "Technology", value: "technology" },
+          { title: "Services", value: "services" },
           { title: "Venture Capital", value: "venture-capital" },
         ],
       },

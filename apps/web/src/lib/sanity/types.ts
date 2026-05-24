@@ -79,6 +79,7 @@ export interface Post {
     categories?: Array<{ id: number; name: string; slug: string }>;
     subcategories?: Array<{ id: number; name: string; slug: string; parentId: number }>;
     team?: string;
+    author?: { name: string; slug: string; avatar: string };
     image: UnifiedImage;
   };
   body?: string;

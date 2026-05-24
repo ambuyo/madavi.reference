@@ -58,6 +58,10 @@ export default defineConfig({
         protocol: "https",
         hostname: "cdn.madavi.co",
       },
+      {
+        protocol: "https",
+        hostname: "secure.gravatar.com",
+      },
     ],
     // Optimize image formats and caching
     service: {

@@ -10,6 +10,7 @@ export const industryMap: Record<string, string> = {
   "non-profits": "Non Profits",
   "real-estate": "Real Estate",
   "retail-ecommerce": "Retail & Ecommerce",
+  services: "Services",
   technology: "Technology",
   "venture-capital": "Venture Capital",
 };

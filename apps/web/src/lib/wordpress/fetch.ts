@@ -75,6 +75,7 @@ export interface WordPressPost {
     author?: Array<{
       name: string;
       slug: string;
+      avatar_urls?: { "24"?: string; "48"?: string; "96"?: string };
     }>;
     "wp:term"?: Array<Array<{
       id: number;
@@ -93,10 +94,22 @@ export interface WordPressImage {
 }
 
 // Fetch all blog posts from WordPress
-export async function fetchWordPressPosts(): Promise<WordPressPost[]> {
-  return wpFetch<WordPressPost[]>(
-    "/posts?_embed&per_page=100&orderby=date&order=desc"
-  );
+export async function fetchWordPressPosts(limit = 400): Promise<WordPressPost[]> {
+  const PAGE_SIZE = 100;
+  const allPosts: WordPressPost[] = [];
+  let page = 1;
+
+  while (allPosts.length < limit) {
+    const batch = await wpFetch<WordPressPost[]>(
+      `/posts?_embed&per_page=${PAGE_SIZE}&page=${page}&orderby=date&order=desc`
+    );
+    if (batch.length === 0) break;
+    allPosts.push(...batch);
+    if (batch.length < PAGE_SIZE) break;
+    page++;
+  }
+
+  return allPosts.slice(0, limit);
 }
 
 // Map category slugs to WordPress category IDs

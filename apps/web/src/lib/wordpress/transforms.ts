@@ -16,7 +16,7 @@ function extractCategories(wpPost: WordPressPost): WordPressCategory[] {
   const categories: WordPressCategory[] = [];
   for (const termArray of wpPost._embedded["wp:term"]) {
     for (const term of termArray) {
-      if (term.taxonomy === "category" && term.parent === 0) {
+      if (term.taxonomy === "category") {
         categories.push({ id: term.id, name: term.name, slug: term.slug, parent: 0 });
       }
     }
@@ -89,6 +89,15 @@ export function transformWordPressPost(wpPost: WordPressPost): Post {
   const categories = extractCategories(wpPost);
   const subcategories = extractSubcategories(wpPost);
 
+  const wpAuthor = wpPost._embedded?.author?.[0];
+  const author = wpAuthor
+    ? {
+        name: wpAuthor.name,
+        slug: wpAuthor.slug,
+        avatar: wpAuthor.avatar_urls?.["96"] || wpAuthor.avatar_urls?.["48"] || wpAuthor.avatar_urls?.["24"] || "",
+      }
+    : undefined;
+
   return {
     slug: wpPost.slug,
     data: {
@@ -99,6 +108,7 @@ export function transformWordPressPost(wpPost: WordPressPost): Post {
       categories,
       subcategories: subcategories.length > 0 ? subcategories : undefined,
       team: undefined,
+      author,
       image: {
         url: featuredImage.url,
         alt: featuredImage.alt,

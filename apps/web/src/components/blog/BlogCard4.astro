@@ -3,33 +3,28 @@ import { Image } from "astro:assets";
 import Text from "@/components/fundations/elements/Text.astro";
 import readingTime from "reading-time";
 
+const post = Astro.props.post;
 const { url, title, pubDate, image } = {
-  url: "/blog/posts/" + Astro.props.post.id,
-  title: Astro.props.post.data.title,
-  image: Astro.props.post.data.image.url,
-  pubDate: new Date(Astro.props.post.data.pubDate).toLocaleDateString("en-US", {
+  url: "/blog/" + (post.slug || post.id),
+  title: post.data.title,
+  image: post.data.image?.url || null,
+  pubDate: new Date(post.data.pubDate).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
     day: "2-digit",
   }),
 };
 
-// Calculate reading time
-const stats = readingTime(Astro.props.post.body);
+const stats = readingTime(post.body ?? "");
 ---
 
 <article class="relative flex flex-col group overflow-hidden rounded-xl">
   <a href={url} title={title} class="absolute inset-0 z-30"></a>
 
-  <Image
-    src={image}
-    alt={title}
-    width={800}
-    height={800}
-    loading="eager"
-    decoding="async"
-    class="object-cover w-full aspect-12/8"
-  />
+  {image
+    ? <Image src={image} alt={title} width={800} height={800} loading="eager" decoding="async" class="object-cover w-full aspect-12/8" />
+    : <div class="w-full aspect-12/8 bg-base-800" />
+  }
 
   <div
     class="absolute inset-0 bg-gradient-to-t from-base-950/80 to-transparent z-10"

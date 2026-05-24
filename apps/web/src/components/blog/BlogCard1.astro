@@ -3,38 +3,34 @@ import { Image } from "astro:assets";
 import Text from "@/components/fundations/elements/Text.astro";
 import readingTime from "reading-time";
 
+const post = Astro.props.post;
+const compact = Astro.props.compact ?? false;
 const { url, title, image, pubDate, tags } = {
-  url: "/blog/posts/" + Astro.props.post.id,
-  tags: Astro.props.post.data.tags,
-  title: Astro.props.post.data.title,
-  image: Astro.props.post.data.image.url,
-  pubDate: new Date(Astro.props.post.data.pubDate).toLocaleDateString("en-US", {
+  url: "/blog/" + (post.slug || post.id),
+  tags: post.data.tags ?? [],
+  title: post.data.title,
+  image: post.data.image?.url || null,
+  pubDate: new Date(post.data.pubDate).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
     day: "2-digit",
   }),
 };
 
-// Calculate reading time
-const stats = readingTime(Astro.props.post.body);
+const stats = readingTime(post.body ?? "");
 ---
 
 <article class="relative group">
   <a href={url} title={title} class="absolute inset-0 z-10"> </a>
-  <div class="grid grid-cols-3 gap-4">
-    <Image
-      src={image}
-      alt={title}
-      width={800}
-      height={800}
-      loading="eager"
-      decoding="async"
-      class="object-cover aspect-12/8 w-full rounded-lg object-top"
-    />
-    <div class="col-span-2 flex flex-col justify-between h-full">
+  <div class="flex flex-col gap-3">
+    {image
+      ? <Image src={image} alt={title} width={800} height={800} loading="eager" decoding="async" class={`object-cover w-full rounded-lg object-top ${compact ? "aspect-[5/2]" : "aspect-12/8"}`} />
+      : <div class={`w-full rounded-lg bg-base-100 ${compact ? "aspect-[5/2]" : "aspect-12/8"}`} />
+    }
+    <div class="flex flex-col justify-between h-full">
       <Text
         tag="h3"
-        variant="textBase"
+        variant={compact ? "textSM" : "textBase"}
         class="text-base-900 font-display group-hover:underline"
       >
         {title}

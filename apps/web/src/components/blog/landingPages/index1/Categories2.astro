@@ -10,17 +10,17 @@ import BlogCard5 from "@/components/blog/BlogCard5.astro";
 import { getPostsByCategory } from "@/lib/data";
 
 const categories = [
-  { name: "Marketing for Healthcare", slug: "healthcare" },
-  { name: "Marketing for Legal Firms", slug: "legal" },
-  { name: "Marketing for Nonprofits", slug: "nonprofits" },
+  { name: "Marketing for Accelerators", slug: "accelerators" },
+  { name: "Marketing for Ecommerce", slug: "ecommerce" },
+  { name: "Marketing for EdTech", slug: "edtech" },
 ];
 
 const categoryPosts = await Promise.all(
   categories.map((cat) => getPostsByCategory(cat.slug))
 );
---- 
+---
 
-<section>
+<section> 
   <Wrapper variant="standard" class="py-8">
     <div
       class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-24"

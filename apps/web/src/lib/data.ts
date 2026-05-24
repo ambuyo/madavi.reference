@@ -46,7 +46,7 @@ export const USE_SANITY = true;
  * Toggle WordPress fetch for blog posts
  * Set to false to disable WordPress API calls during development
  */
-export const USE_WORDPRESS = false;
+export const USE_WORDPRESS = true;
 
 // =============================================================================
 // LAZY SANITY IMPORTS
@@ -193,66 +193,40 @@ export async function getPostBySlug(slug: string) {
 }
 
 /**
- * Get posts by tag
+ * Get posts by tag — WordPress only
  */
 export async function getPostsByTag(tag: string): Promise<Post[]> {
-  if (USE_SANITY) {
-    const { sanityFetch, queries, transforms } = await getSanityModules();
-    const posts = await sanityFetch<any[]>(queries.postsByTagQuery, { tag });
-    return posts.map(transforms.transformPost);
+  try {
+    const { readCachedPosts } = await import("./wordpress/cache");
+    const { transformWordPressPost } = await import("./wordpress/transforms");
+    const cachedPosts = await readCachedPosts();
+    if (!cachedPosts) return [];
+    return cachedPosts
+      .filter((p) => p._embedded?.["wp:term"]?.flat()?.some((t: any) => t.taxonomy === "post_tag" && t.slug === tag))
+      .map(transformWordPressPost);
+  } catch {
+    return [];
   }
-
-  const posts = await getCollection("posts", ({ data }) =>
-    data.tags.includes(tag)
-  );
-  return posts.map((post) => ({
-    slug: post.id,
-    data: {
-      title: post.data.title,
-      description: post.data.description,
-      pubDate: post.data.pubDate,
-      tags: post.data.tags,
-      team: post.data.team,
-      image: post.data.image,
-    },
-    render: () => render(post),
-  }));
 }
 
 /**
- * Get posts by category slug — Sanity or WordPress
+ * Get posts by category slug — WordPress only
  */
 export async function getPostsByCategory(categorySlug: string): Promise<Post[]> {
-  if (USE_SANITY) {
-    const { sanityFetch, queries, transforms } = await getSanityModules();
-    const posts = await sanityFetch<any[]>(queries.postsByCategorySlugQuery, { categorySlug });
-    return posts.map(transforms.transformPost);
-  }
-
-  if (!USE_WORDPRESS) {
-    return [];
-  }
-
   try {
     const { readCachedPosts } = await import("./wordpress/cache");
     const { transformWordPressPost } = await import("./wordpress/transforms");
 
     const cachedPosts = await readCachedPosts();
-    if (cachedPosts && cachedPosts.length > 0) {
-      const filteredPosts = cachedPosts.filter((post) =>
-        post._embedded?.["wp:term"]?.some?.((termArray: any[]) =>
-          termArray.some(
-            (term: any) =>
-              term.taxonomy === "category" &&
-              term.parent === 0 &&
-              term.slug === categorySlug
-          )
-        )
-      );
-      return filteredPosts.map(transformWordPressPost);
-    }
+    if (!cachedPosts || cachedPosts.length === 0) return [];
 
-    return [];
+    return cachedPosts
+      .filter((post) =>
+        post._embedded?.["wp:term"]?.some((termArray: any[]) =>
+          termArray.some((term: any) => term.taxonomy === "category" && term.slug === categorySlug)
+        )
+      )
+      .map(transformWordPressPost);
   } catch (error) {
     console.warn(`Failed to fetch posts from category "${categorySlug}":`, error);
     return [];
@@ -260,39 +234,23 @@ export async function getPostsByCategory(categorySlug: string): Promise<Post[]> 
 }
 
 /**
- * Get posts by subcategory slug — Sanity or WordPress
+ * Get posts by subcategory slug — WordPress only
  */
 export async function getPostsBySubcategory(subcategorySlug: string): Promise<Post[]> {
-  if (USE_SANITY) {
-    const { sanityFetch, queries, transforms } = await getSanityModules();
-    const posts = await sanityFetch<any[]>(queries.postsBySubcategorySlugQuery, { subcategorySlug });
-    return posts.map(transforms.transformPost);
-  }
-
-  if (!USE_WORDPRESS) {
-    return [];
-  }
-
   try {
     const { readCachedPosts } = await import("./wordpress/cache");
     const { transformWordPressPost } = await import("./wordpress/transforms");
 
     const cachedPosts = await readCachedPosts();
-    if (cachedPosts && cachedPosts.length > 0) {
-      const filteredPosts = cachedPosts.filter((post) =>
-        post._embedded?.["wp:term"]?.some?.((termArray: any[]) =>
-          termArray.some(
-            (term: any) =>
-              term.taxonomy === "category" &&
-              term.parent > 0 &&
-              term.slug === subcategorySlug
-          )
-        )
-      );
-      return filteredPosts.map(transformWordPressPost);
-    }
+    if (!cachedPosts || cachedPosts.length === 0) return [];
 
-    return [];
+    return cachedPosts
+      .filter((post) =>
+        post._embedded?.["wp:term"]?.some((termArray: any[]) =>
+          termArray.some((term: any) => term.taxonomy === "category" && term.slug === subcategorySlug)
+        )
+      )
+      .map(transformWordPressPost);
   } catch (error) {
     console.warn(`Failed to fetch posts from subcategory "${subcategorySlug}":`, error);
     return [];
@@ -300,38 +258,32 @@ export async function getPostsBySubcategory(subcategorySlug: string): Promise<Po
 }
 
 /**
- * Get all unique tags
+ * Get all unique tags — WordPress only
  */
 export async function getAllTags(): Promise<string[]> {
-  if (USE_SANITY) {
-    const { sanityFetch, queries } = await getSanityModules();
-    return sanityFetch<string[]>(queries.allTagsQuery);
+  try {
+    const { readCachedPosts } = await import("./wordpress/cache");
+    const cachedPosts = await readCachedPosts();
+    if (!cachedPosts) return [];
+    const tags = new Set<string>();
+    cachedPosts.forEach((p) =>
+      p._embedded?.["wp:term"]?.flat()?.forEach((t: any) => {
+        if (t.taxonomy === "post_tag") tags.add(t.slug);
+      })
+    );
+    return Array.from(tags);
+  } catch {
+    return [];
   }
-
-  const posts = await getCollection("posts");
-  const tags = new Set<string>();
-  posts.forEach((p) => p.data.tags.forEach((tag) => tags.add(tag)));
-  return Array.from(tags);
 }
 
 /**
- * Get all categories — Sanity or WordPress
+ * Get all categories — WordPress only
  */
 export async function getAllCategories(): Promise<Category[]> {
-  if (USE_SANITY) {
-    const { sanityFetch, queries } = await getSanityModules();
-    const raw = await sanityFetch<any[]>(queries.allCategoriesQuery);
-    return raw.map((c) => ({ id: c._id, name: c.title, slug: c.slug, description: c.description }));
-  }
-
-  if (!USE_WORDPRESS) {
-    return [];
-  }
-
   try {
     const posts = await getPosts();
     const categoryMap = new Map<string, Category>();
-
     posts.forEach((post) => {
       post.data.categories?.forEach((cat) => {
         if (!categoryMap.has(cat.slug)) {
@@ -339,7 +291,6 @@ export async function getAllCategories(): Promise<Category[]> {
         }
       });
     });
-
     return Array.from(categoryMap.values()).sort((a, b) => a.name.localeCompare(b.name));
   } catch (error) {
     console.warn("Failed to get categories:", error);
@@ -348,30 +299,12 @@ export async function getAllCategories(): Promise<Category[]> {
 }
 
 /**
- * Get all subcategories — Sanity or WordPress
+ * Get all subcategories — WordPress only
  */
 export async function getAllSubcategories(): Promise<Subcategory[]> {
-  if (USE_SANITY) {
-    const { sanityFetch, queries } = await getSanityModules();
-    const raw = await sanityFetch<any[]>(queries.allSubcategoriesQuery);
-    return raw.map((s) => ({
-      id: s._id,
-      name: s.title,
-      slug: s.slug,
-      description: s.description,
-      parentId: s.parentId,
-      parentSlug: s.parentSlug,
-    }));
-  }
-
-  if (!USE_WORDPRESS) {
-    return [];
-  }
-
   try {
     const posts = await getPosts();
     const subcategoryMap = new Map<string, Subcategory>();
-
     posts.forEach((post) => {
       post.data.subcategories?.forEach((sub) => {
         if (!subcategoryMap.has(sub.slug)) {
@@ -384,7 +317,6 @@ export async function getAllSubcategories(): Promise<Subcategory[]> {
         }
       });
     });
-
     return Array.from(subcategoryMap.values()).sort((a, b) => a.name.localeCompare(b.name));
   } catch (error) {
     console.warn("Failed to get subcategories:", error);

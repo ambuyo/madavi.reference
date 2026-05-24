@@ -56,6 +56,7 @@ export const clientLogo = defineType({
           { title: "Venture Capital", value: "ventureCapital" },
           { title: "Technology", value: "technology" },
           { title: "Manufacturing", value: "manufacturing" },
+          { title: "Services", value: "services" },
         ],
       },
     }),

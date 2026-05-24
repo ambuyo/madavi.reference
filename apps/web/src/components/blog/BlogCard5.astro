@@ -2,19 +2,19 @@
 import Text from "@/components/fundations/elements/Text.astro";
 import readingTime from "reading-time";
 
+const post = Astro.props.post;
 const { url, title, pubDate, tags } = {
-  url: "/blog/posts/" + Astro.props.post.id,
-  title: Astro.props.post.data.title,
-  tags: Astro.props.post.data.tags,
-  pubDate: new Date(Astro.props.post.data.pubDate).toLocaleDateString("en-US", {
+  url: "/blog/" + (post.slug || post.id),
+  title: post.data.title,
+  tags: post.data.tags ?? [],
+  pubDate: new Date(post.data.pubDate).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
     day: "2-digit",
   }),
 };
 
-// Calculate reading time
-const stats = readingTime(Astro.props.post.body);
+const stats = readingTime(post.body ?? "");
 ---
 
 <article class="relative w-full pb-4 group overflow-hidden">
@@ -31,7 +31,7 @@ const stats = readingTime(Astro.props.post.body);
     <div class="flex items-center gap-x-2 text-base-600">
       <span>
         {
-          tags.map((tag) => {
+          tags.map((tag: string) => {
             const formattedTag = tag.replace(/-/g, " ");
             return (
               <Text
