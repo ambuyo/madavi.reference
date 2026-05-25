@@ -2,6 +2,7 @@
 title: Brand Communication
 description: Bring your brand to life with powerful storytelling—SEO & content creation, social media management, public relations, and integrated campaigns that engage and captivate your audience.
 slug: brand-communication
+cardImage: "https://images.madavi.co/Madavi%20Astro%202026/Brand%20Communications%20_%20Madavi.png"
 pageTitle: Brand Communication Services - Content, Social Media & PR | Madavi
 seoMetaDescription: Amplify your brand voice through strategic content creation, social media management, public relations, and integrated campaigns. Drive engagement and build lasting audience connections.
 schema:

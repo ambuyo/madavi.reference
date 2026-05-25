@@ -36,7 +36,7 @@ hero:
   headline: "Turn Non-Billable Time Into Revenue"
   description: "AI systems that free law firm associates from repetitive work, so they can focus on the high-value advisory work clients pay premium rates for."
   backgroundColor: "#005B65"
-  image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&h=600&fit=crop"
+  image: "https://images.madavi.co/Madavi%20Astro%202026/industries/Legal%20_%20Madavi%20Industry.png"
 
 threeTierProblems:
   title: "The Three Problems Worth Solving"

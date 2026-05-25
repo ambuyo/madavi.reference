@@ -2,6 +2,7 @@
 title: Website Design
 description: Professional websites that convert visitors into customers—custom design and development, UX/UI optimization, mobile-responsive and SEO-friendly, with ongoing maintenance and performance enhancement.
 slug: website-design
+cardImage: "https://images.madavi.co/Madavi%20Astro%202026/Web%20Design_%20Madavi.png"
 pageTitle: Website Design Services - Custom Development & UX Optimization | Madavi
 seoMetaDescription: Build high-converting websites with professional design, seamless user experience, mobile responsiveness, and SEO optimization. Custom website development and ongoing maintenance for African businesses.
 schema:

@@ -1,7 +1,6 @@
 ---
 // Assets
 import { Image } from "astro:assets";
-import talk from "@/images/assets/talk.png";
 // Fundations
 import Text from "@/components/fundations/elements/Text.astro";
 import Kicker from "@/components/fundations/elements/Kicker.astro";
@@ -9,7 +8,7 @@ import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 const features = [
   {
     title: "Leadership Buy-In",
-    description:
+    description: 
       "At least one C-level executive actively championing AI adoption, attending strategic sessions, and removing organizational blockers.",
   },
   {
@@ -43,9 +42,10 @@ const features = [
 <section>
   <Wrapper variant="standard" class="py-12">
     <div
-      class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 p-8 lg:p-12 bg-base-50"
+      class="grid md:grid-cols-2 lg:grid-cols-3 overflow-hidden"
+      style="background-image: url('/Section BG.png'); background-size: cover; background-position: center;"
     >
-      <div class="flex flex-col lg:col-span-2">
+      <div class="flex flex-col lg:col-span-2 p-8 lg:p-12">
         <div>
           <Text
             tag="h2"
@@ -86,15 +86,17 @@ We've learned what predicts success across 50+ implementations:
           }
         </div>
       </div>
-      <Image
-        src={talk}
-        alt="Image"
-        width={800}
-        height={1440}
-        loading="eager"
-        decoding="async"
-        class="size-full object-cover object-center aspect-square"
-      />
+      <div class="self-stretch">
+        <Image
+          src="https://images.madavi.co/Madavi%20Astro%202026/Madavi%20Our%20Approach%20-%20Success.png"
+          alt="Madavi Our Approach - Success"
+          width={800}
+          height={1440}
+          loading="eager"
+          decoding="async"
+          class="w-full h-full object-cover object-center"
+        />
+      </div>
     </div>
   </Wrapper>
 </section>

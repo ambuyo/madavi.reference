@@ -1,7 +1,8 @@
 ---
 interface Props {
-  variant?: "megamenu" | "standard" | "paddingLess" | "prose"; // Define any variants you need
-  class?: string; // Optional prop for additional classes
+  variant?: "megamenu" | "standard" | "paddingLess" | "prose";
+  class?: string;
+  children?: any;
 }
 const { variant = "standard", class: extraClass = "" } = Astro.props;
 // Map each variant to its specific classes

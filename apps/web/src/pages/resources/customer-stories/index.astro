@@ -1,0 +1,40 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Text from "@/components/fundations/elements/Text.astro";
+import Kicker from "@/components/fundations/elements/Kicker.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+import YoutubeReviews from "@/components/cases/YoutubeReviews.astro";
+import ClutchReviews from "@/components/cases/ClutchReviews.astro";
+import GoogleReviews from "@/components/cases/GoogleReviews.astro";
+
+const seo = {
+  title: "Customer Stories: AI Adoption That Actually Worked",
+  description: "Real results from law firms, healthcare organizations, and enterprises that deployed AI without disrupting operations. Watch video testimonials and read verified reviews from clients who transformed productivity, not just bought software.",
+  type: "website" as const,
+};
+---
+
+<BaseLayout seo={seo}>
+  <section>
+    <Wrapper variant="standard" class="py-12">
+      <div class="max-w-2xl">
+        <Kicker variant="default">Customer Stories</Kicker>
+        <Text
+          tag="h1"
+          variant="displayLG"
+          class="text-base-900 text-balance font-medium tracking-tight mt-8 font-display"
+        >AI Adoption That Actually Worked</Text>
+        <Text
+          tag="p"
+          variant="textBase"
+          class="text-base-600 lg:text-balance mt-4"
+        >
+          Real results from law firms, healthcare organizations, and enterprises that deployed AI without disrupting operations. Watch video testimonials and read verified reviews from clients who transformed productivity, not just bought software.
+        </Text>
+      </div>
+    </Wrapper>
+  </section>
+  <YoutubeReviews />
+  <ClutchReviews />
+  <GoogleReviews />
+</BaseLayout>

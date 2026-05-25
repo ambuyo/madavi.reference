@@ -10,20 +10,21 @@ import IndustryROI from "@/components/industries/IndustryROI.astro";
 import IndustryBlogPreview from "@/components/industries/IndustryBlogPreview.astro";
 import IndustryFAQs from "@/components/industries/IndustryFAQs.astro";
 
-// Fetch industry content from markdown
 const industries = await getCollection("industries");
-const industryContent = industries.find((ind: any) => ind.id === "nonprofits");
+const industryContent = industries.find((ind: any) => ind.id === "professional-services");
 const industryData = industryContent?.data || {};
 
+const heroColor = industryData.hero?.backgroundColor || "#2E86AB";
+
 const seo = {
-  title: industryData.seo?.title || "Nonprofit AI Solutions",
-  description: industryData.seo?.description || "Specialized AI consulting and digital transformation for nonprofit organizations.",
+  title: industryData.seo?.title || "AI For Professional Services | Consulting Firm Digital Transformation",
+  description: industryData.seo?.description || "AI systems for professional services that increase billable utilization, reduce proposal time, and capture institutional knowledge.",
   type: "website" as const,
 };
 ---
 
 <IndustryLayout seo={seo}>
-  <section class="bg-[#005B65] text-white">
+  <section style={`background-color: ${heroColor};`} class="text-white">
     <Wrapper variant="standard" class="py-24 lg:py-32">
       <div class="max-w-3xl">
         <Text
@@ -31,19 +32,18 @@ const seo = {
           variant="textXS"
           class="text-white/80 tracking-wide uppercase"
         >
-          {industryData.hero?.kicker || "AI FOR NONPROFITS"}
-
+          {industryData.hero?.kicker || "AI FOR PROFESSIONAL SERVICES FIRMS"}
         </Text>
         <Text
           tag="h1"
           variant="displayLG"
           class="text-white font-display font-bold mt-2"
-        >{industryData.hero?.headline || "When Mission Meets Innovation"}</Text>
+        >{industryData.hero?.headline || "Amplify Expert Capacity, Eliminate Administrative Bottlenecks"}</Text>
         <Text
           tag="p"
           variant="textLG"
           class="text-white/90 mt-6"
-        >{industryData.hero?.description || "AI systems that free nonprofit staff from administrative burden, so they can focus on mission work."}</Text>
+        >{industryData.hero?.description || "AI systems that maximize billable utilization, automate proposal development, and capture institutional knowledge."}</Text>
       </div>
     </Wrapper>
   </section>
@@ -85,7 +85,7 @@ const seo = {
     secondaryBenefits={industryData.roi?.secondaryBenefits || []}
   />
 
-  <IndustryBlogPreview category="nonprofits" />
+  <IndustryBlogPreview category={industryData.blog?.category || "professional-services"} />
 
   <IndustryFAQs
     title={industryData.faqs?.title}

@@ -9,7 +9,8 @@ import BlogCard from "@/components/blog/BlogCard1.astro";
 // Data
 import { getPostsByCategory } from "@/lib/data";
 
-const legalPosts = await getPostsByCategory("legal");
+const { category = "legal" } = Astro.props;
+const posts = await getPostsByCategory(category);
 ---
 
 <section>
@@ -42,7 +43,7 @@ const legalPosts = await getPostsByCategory("legal");
         </Button>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-3 mt-12 gap-4">
-        {legalPosts.slice(0, 3).map((post) => <BlogCard post={post} />)}
+        {posts.slice(0, 3).map((post) => <BlogCard post={post} />)}
       </div>
     </div>
   </Wrapper>

@@ -2,6 +2,7 @@
 title: Brand Strategy
 description: Data-driven brand strategies that position your business for success—market research, brand positioning, audience profiling, and competitive analysis.
 slug: brand-strategy
+cardImage: "https://images.madavi.co/Madavi%20Astro%202026/Brand%20Strategy%20_%20Madavi.png"
 pageTitle: Brand Strategy Services - Market Research & Positioning | Madavi
 seoMetaDescription: Build strong market presence with data-driven brand strategy. Expert market research, brand positioning, target audience profiling, and competitive analysis for African businesses.
 schema:

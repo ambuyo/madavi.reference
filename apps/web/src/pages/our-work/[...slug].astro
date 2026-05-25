@@ -80,15 +80,10 @@ const { frontmatter } = Astro.props;
           </a>
         )}
         <div class="relative overflow-hidden lg:col-span-3">
-          <Image
-            width={1000}
-            height={100}
-            src={caseStudy.data.image.url}
-            alt={caseStudy.data.image.alt}
-            data-aos="fade-up"
-            data-aos-duration="2000"
-            class="w-full aspect-[8/4] object-cover object-center"
-          />
+          {caseStudy.data.image?.url
+            ? <Image width={1000} height={100} src={caseStudy.data.image.url} alt={caseStudy.data.image.alt || ""} data-aos="fade-up" data-aos-duration="2000" class="w-full aspect-[8/4] object-cover object-center" />
+            : <div class="w-full aspect-[8/4] bg-base-100" />
+          }
         </div>
       </div>
     </Wrapper>

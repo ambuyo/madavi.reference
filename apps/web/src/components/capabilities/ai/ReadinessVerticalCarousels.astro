@@ -1,8 +1,5 @@
 ---
-import { Image } from "astro:assets";
-import testimonial from "@/images/assets/testimonial.png";
 import Text from "@/components/fundations/elements/Text.astro";
-import Button from "@/components/fundations/elements/Button.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 
 interface Props {
@@ -188,72 +185,25 @@ const displaySections: typeof defaultReadinessDimensions = hasDetailedStructure 
   <Wrapper variant="paddingLess" class="py-24">
     <div class="grid grid-cols-1 lg:grid-cols-2">
       <div>
-        <div class="relative w-full lg:sticky lg:top-16 lg:h-screen">
-          <Image
-            src={testimonial}
-            width={1440}
-            height={900}
-            alt="Our Approach"
-            class="object-cover object-center w-full h-full bg-base-50"
+        <div class="relative w-full lg:sticky lg:top-16 lg:h-screen overflow-hidden">
+          <img
+            src="/Process%20Methodology.png"
+            alt="AI Readiness Assessment"
+            class="object-cover object-center w-full h-full"
             loading="eager"
             decoding="async"
           />
-          <div
-            class="lg:absolute lg:inset-0 size-full bg-accent-900 lg:bg-accent-900/90 flex flex-col items-start justify-start px-8 md:px-12 lg:px-24 z-10 py-24 text-white"
-          >
-            <div class="w-full">
-              <Text
-                tag="p"
-                variant="textXS"
-                class="text-secondary-400 tracking-wide uppercase"
-              >
-                our way
-              </Text>
-              <Text
-                tag="h2"
-                variant="displayLG"
-                class="text-white font-display text-balance mt-12"
-              >
-What We Assess: 7 Readiness Dimensions
-              </Text>
-              <Text tag="p" variant="textSM" class="text-base-300 mt-2">
+          <div class="absolute inset-0 bg-gradient-to-b from-black/75 via-black/30 to-transparent z-10 flex flex-col items-start justify-start px-8 md:px-12 lg:px-10 py-10">
+            <Text
+              tag="h2"
+              variant="displayLG"
+              class="text-white font-display text-balance"
+            >
+              What We Assess: 7 Readiness Dimensions
+            </Text>
+            <Text tag="p" variant="textBase" class="text-white/80 mt-3 max-w-sm">
               We evaluate your organization across seven critical dimensions. Each one can make or break AI adoption—regardless of which tools you buy.
-
-              </Text>
-              <div
-                class="mt-12 grid grid-cols-1 overflow-hidden lg:grid-cols-2 bg-white/5 backdrop-blur-sm"
-              >
-                <Image
-                  src={testimonial}
-                  width={500}
-                  height={500}
-                  loading="eager"
-                  decoding="async"
-                  alt="Customer testimonial"
-                  class="object-cover h-60 w-full object-top"
-                />
-                <figure class="p-4 flex flex-col h-full justify-between">
-                  <blockquote>
-                    <Text tag="p" variant="textSM" class="text-base-300 italic">
-                      "Carrington guided us through a complex dispute with
-                      clarity and confidence. We always knew our options and
-                      felt genuinely supported."
-                    </Text>
-                  </blockquote>
-                  <figcaption class="mt-3 flex items-center gap-3">
-                    <Text
-                      tag="p"
-                      variant="textXS"
-                      class="text-secondary-300 font-medium"
-                    >
-                      Alex Rivera, COO,
-                      <br />
-                      Northshore Holdings
-                    </Text>
-                  </figcaption>
-                </figure>
-              </div>
-            </div>
+            </Text>
           </div>
         </div>
       </div>

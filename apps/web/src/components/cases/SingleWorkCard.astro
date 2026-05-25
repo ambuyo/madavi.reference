@@ -15,7 +15,7 @@ if (!post) {
 
 const { url, image, industry, client } = {
   url: "/our-work/" + post.slug,
-  image: post.data.image.url,
+  image: post.data.image?.url || null,
   industry: post.data.industry,
   client: post.data.client,
 };
@@ -27,13 +27,10 @@ const { url, image, industry, client } = {
     class="block relative overflow-hidden"
     title={`View case study: ${client}`}
   >
-    <Image
-      src={image}
-      alt={client}
-      width={600}
-      height={500}
-      class="w-full aspect-[6/5] object-cover object-center group-hover:scale-105 transition-transform"
-    />
+    {image
+      ? <Image src={image} alt={client} width={600} height={500} class="w-full aspect-[6/5] object-cover object-center group-hover:scale-105 transition-transform" />
+      : <div class="w-full aspect-[6/5] bg-base-100" />
+    }
   </a>
 
   <div class="p-6 flex flex-col gap-3">

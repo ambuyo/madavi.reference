@@ -2,6 +2,7 @@
 title: AI Readiness Assessment
 description: Discover if your organization is truly ready for AI implementation with our comprehensive readiness assessment.
 slug: ai-readiness
+cardImage: "https://images.madavi.co/Madavi%20Astro%202026/AI%20Readiness%20_%20Madavi.png"
 pageTitle: AI Readiness Assessment - Comprehensive Organizational Evaluation | Madavi
 seoMetaDescription: Assess your organization's AI readiness across 7 critical dimensions. Get actionable insights on technical, cultural, and operational barriers to AI adoption.
 schema:
@@ -15,7 +16,7 @@ schema:
     - organizational AI adoption
     - digital transformation readiness
     - AI capability evaluation
-    - AI barriers assessment
+    - AI barriers assessment 
 
 hero:
   subtitle: AI CAPABILITIES

@@ -2,6 +2,7 @@
 title: Leadership AI Fluency Cohort
 description: Build AI literacy across your leadership team through cohort-based learning—move from AI awareness to confident decision-making in 8 weeks.
 slug: leadership-cohort
+cardImage: "https://images.madavi.co/Madavi%20Astro%202026/leadership-cohort.jpg"
 pageTitle: Leadership AI Fluency Cohort - Executive AI Training Program | Madavi
 seoMetaDescription: Transform your leadership team from AI-curious to AI-fluent through cohort-based training. 8-week program building practical AI decision-making skills across executives.
 schema:

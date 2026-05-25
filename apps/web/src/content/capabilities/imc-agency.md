@@ -2,6 +2,7 @@
 title: "The IMC Agency"
 description: "Explore our Agency - innovative solutions for AI-powered transformation and digital innovation."
 slug: "imc-agency"
+cardImage: "https://images.madavi.co/Madavi%20Astro%202026/imc-agency.jpg"
 seoType: "website"
 
 hero:

@@ -1,0 +1,95 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Text from "@/components/fundations/elements/Text.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+import Kicker from "@/components/fundations/elements/Kicker.astro";
+
+const allCapabilities = await getCollection("capabilities");
+
+// AI services first, then agency/brand services
+const aiSlugs = ["ai-readiness", "executive-advisory", "leadership-cohort", "keynotes-licensing"];
+const capabilities = allCapabilities.sort((a, b) => {
+  const aRank = aiSlugs.includes(a.data.slug) ? 0 : 1;
+  const bRank = aiSlugs.includes(b.data.slug) ? 0 : 1;
+  return aRank - bRank;
+});
+
+const seo = {
+  title: "AI Capabilities — Madavi Agency",
+  description: "60% of businesses waste $50K+ on AI tools they're not ready to use. Get a free AI readiness audit to find out if you're ready— before you invest. No obligation.",
+};
+---
+
+<BaseLayout seo={seo}>
+  <section>
+    <Wrapper variant="standard" class="py-24 lg:pt-32">
+      <div class="max-w-xl">
+        <Kicker variant="default">AI CAPABILITIES</Kicker>
+        <Text
+          tag="h2"
+          variant="displayXL"
+          class="text-base-900 mt-6 tracking-tight font-display text-balance"
+        >
+          Our Capabilities
+        </Text>
+        <Text tag="p" variant="textLG" class="text-base-600 mt-4 text-balance">
+          60% of businesses waste $50K+ on AI tools they're not ready to use. Get a free AI readiness audit to find out if you're ready— before you invest. No obligation.
+        </Text>
+      </div>
+
+      <div class="space-y-8 lg:space-y-24 mt-12 lg:mt-24">
+        {capabilities.map((cap) => (
+          <article
+            class="relative group grid grid-cols-1 lg:grid-cols-5 gap-x-4 items-start"
+            style="background-color: #FDF8F1;"
+          >
+            {cap.data.cardImage && (
+              <div class="col-span-1 lg:col-span-2 w-full h-full">
+                <img
+                  src={cap.data.cardImage}
+                  alt={cap.data.title}
+                  loading="lazy"
+                  decoding="async"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+            )}
+            <div class={`${cap.data.cardImage ? "lg:col-span-3" : "lg:col-span-5"} p-[20px] flex flex-col gap-8`}>
+              <div>
+                {cap.data.hero?.subtitle && (
+                  <Text
+                    tag="p"
+                    variant="textXS"
+                    class="uppercase font-medium text-accent-700 tracking-wider"
+                  >
+                    {cap.data.hero.subtitle}
+                  </Text>
+                )}
+                <a
+                  href={`/capabilities/${cap.data.slug}`}
+                  class="inline-block mt-4 hover:text-accent-700 transition-colors"
+                >
+                  <Text
+                    tag="h2"
+                    variant="displaySM"
+                    class="text-base-900 font-display text-[26px]"
+                  >
+                    {cap.data.title}
+                  </Text>
+                </a>
+              </div>
+              <Text
+                tag="p"
+                variant="textLG"
+                class="text-base-900 leading-relaxed text-[16px]"
+              >
+                {cap.data.hero?.description || cap.data.description}
+              </Text>
+            </div>
+          </article>
+        ))}
+      </div>
+    </Wrapper>
+  </section>
+</BaseLayout>

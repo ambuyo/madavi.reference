@@ -4,9 +4,6 @@ import Shield from "@/components/assets/Shield.astro";
 // Fundations
 import Text from "@/components/fundations/elements/Text.astro";
 import Button from "@/components/fundations/elements/Button.astro";
-import Wrapper from "@/components/fundations/containers/Wrapper.astro";
-// Icons
-import ArrowRight from "@/components/fundations/icons/ArrowRight.astro";
 // Data
 import { getSolutions } from "@/lib/sanity/reports";
 
@@ -15,6 +12,7 @@ const solutions = await getSolutions();
 const solutionLinks = solutions.map((solution) => ({
   href: `/solutions/${solution.slug.current}`,
   label: solution.name,
+  description: "",
 }));
 
 // Megamenu sections
@@ -31,171 +29,189 @@ const megamenuSections = [
       {
         href: "/capabilities/ai-readiness",
         label: "AI Readiness Assessment",
+        description: "Benchmark your organisation's AI maturity",
       },
       {
         href: "/capabilities/executive-advisory",
-        label: "Executive Advisory Retainer",
+        label: "Executive Advisory",
+        description: "On-call strategic AI counsel for leaders",
       },
       {
         href: "/capabilities/leadership-cohort",
-        label: "Leadership AI Fluency Cohort",
+        label: "Leadership AI Fluency",
+        description: "Train leaders to lead in an AI world",
       },
       {
         href: "/capabilities/keynotes-licensing",
         label: "Keynotes & Licensing",
+        description: "Inspire your teams and audiences",
       },
     ],
   },
   {
-    title: "THE IMC AGENCY",
+    title: "The IMC Agency",
     href: "/the-imc-agency",
     links: [
       {
         href: "/capabilities/brand-strategy",
         label: "Brand Strategy",
+        description: "Define your position and purpose",
       },
       {
         href: "/capabilities/brand-communication",
         label: "Brand Communications",
+        description: "Messaging that resonates and converts",
       },
       {
         href: "/capabilities/brand-management",
         label: "Brand Management",
+        description: "Protect and evolve your brand equity",
       },
       {
         href: "/capabilities/website-design",
         label: "Website Design",
+        description: "Websites built for growth",
       },
     ],
   },
   {
-    title: "Industries We Serve",
+    title: "Our Industries",
     href: "/industries",
     links: [
       {
-        href: "/industries/legal",  label: "Legal Services",
+        href: "/industries/legal",
+        label: "Legal Services",
+        description: "AI for law firms and legal teams",
       },
-      { href: "/industries/healthcare", label: "Healthcare" },
       {
-        href: "/industries/nonprofits", label: "Non Profits",
+        href: "/industries/healthcare",
+        label: "Healthcare",
+        description: "Compliant AI for clinical operations",
       },
-      { href: "/industries/retail", label: "Ecommerce & Retail " },
       {
-        href: "/industries/professional-services",  label: "Professional Services",
+        href: "/industries/nonprofits",
+        label: "Non Profits",
+        description: "Amplify impact with smarter tools",
       },
-            {
-        href: "/industries/real-estate",  label: "Real Estate",
+      {
+        href: "/industries/retail",
+        label: "Ecommerce & Retail",
+        description: "Convert more, retain longer",
+      },
+      {
+        href: "/industries/professional-services",
+        label: "Professional Services",
+        description: "Scale expertise without scaling headcount",
+      },
+      {
+        href: "/industries/real-estate",
+        label: "Real Estate",
+        description: "Smarter client acquisition and ops",
       },
     ],
   },
 ];
-
-
 ---
 
 <div
   id="megamenu"
-  class="hidden group-hover/megamenu:block fixed left-0 right-0 top-[73px] z-40 md:max-h-none max-h-[calc(100vh-73px)] overflow-y-auto bg-black"
+  class="hidden group-hover/megamenu:block fixed left-0 right-0 top-[73px] z-40 md:max-h-none max-h-[calc(100vh-73px)] overflow-y-auto"
+  style="background-color: #FEFCF4;"
 >
   <div class="flex justify-center">
     <div class="w-full max-w-7xl px-12 py-12">
-      <div
-        class="grid grid-cols-2 gap-y-8 lg:grid-cols-5 lg:divide-x divide-base-900 p-0"
-      >
-      <div
-        class="p-8 bg-accent-400 flex flex-col h-full justify-between gap-12 lg:gap-18 col-span-full lg:col-span-1"
-      >
-        <div>
-          <Shield class="h-6 text-white" />
-          <Text
-            tag="h3"
-            variant="displaySM"
-            class="text-base text-white mt-8 font-display font-medium"
-          >
-            Get in touch
-          </Text>
-          <Text tag="p" variant="textSM" class="text-white font-medium mt-2">
-            Get in touch with us to learn more about our services and how we can
-            help you.
-          </Text>
+      <div class="grid grid-cols-2 gap-y-8 lg:grid-cols-5 p-0">
+
+        <!-- Col 1: CTA panel -->
+        <div class="p-8 bg-accent-400 flex flex-col h-full justify-between gap-12 lg:gap-18 col-span-full lg:col-span-1">
+          <div>
+            <Shield class="h-6 text-white" />
+            <Text
+              tag="h3"
+              variant="displaySM"
+              class="text-base text-white mt-8 font-display font-medium"
+            >
+              Get in touch
+            </Text>
+            <Text tag="p" variant="textSM" class="text-white font-medium mt-2">
+              Get in touch with us to learn more about our services and how we can help you.
+            </Text>
+          </div>
+          <Button variant="muted" size="xs" isLink={true} href="/contact" class="w-fit">
+            Contact Us
+          </Button>
         </div>
-        <Button
-          variant="muted"
-          size="xs"
-          isLink={true}
-          href="/contact"
-          class="w-fit"
-        >
-          Contact Us
-        </Button>
-      </div>
-      {
-        megamenuSections.map((section) => (
-          <div class="px-6">
+
+        <!-- Cols 2–5: sections -->
+        {megamenuSections.map((section) => (
+          <div class="px-6 flex flex-col">
+            <!-- Pill header -->
             <a
               href={section.href}
-              class="group flex items-center justify-between text-white uppercase hover:text-accent-400 transition-colors"
+              class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full font-medium hover:opacity-80 transition-opacity mb-8 w-fit"
+              style="background-color: #C5E39C; font-family: 'Tiempos', serif; font-size: 15px; color: #1B1B1B;"
             >
-              <Text tag="h3" variant="textSM">
-                {section.title}
-              </Text>
-              <ArrowRight class="size-4 " />
+              {section.title}
+              <svg xmlns="http://www.w3.org/2000/svg" class="size-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M17 7H7M17 7v10" />
+              </svg>
             </a>
-            <ul class="space-y-2 mt-4 lg:mt-12">
+
+            <!-- Links with dividers -->
+            <ul class="divide-y divide-[#E97451]/40">
               {section.links.map((link) => (
                 <li>
                   <a
                     href={link.href}
-                    class="group text-xs flex items-center text-base-300 hover:text-accent-500 transition-colors duration-300 justify-between"
+                    class="group flex flex-col py-3 hover:opacity-70 transition-opacity"
                   >
-                    {link.label}
-                    <ArrowRight class="size-4 hidden group-hover:flex duration-300" />
+                    <span
+                      class="font-semibold leading-snug"
+                      style="font-family: 'Tiempos', serif; font-size: 15px; color: #1B1B1B;"
+                    >
+                      {link.label}
+                    </span>
+                    {link.description && (
+                      <span
+                        class="mt-0.5 leading-snug"
+                        style="font-family: 'Tiempos', serif; font-size: 12px; color: #7A8189;"
+                      >
+                        {link.description}
+                      </span>
+                    )}
                   </a>
                 </li>
               ))}
             </ul>
           </div>
-        ))
-      }
-      <div
-        class="border-t pt-4 border-base-900 col-span-full flex flex-col lg:flex-row gap-4 lg:items-center lg:justify-between"
-      >
-        <div class="flex flex-wrap gap-4 items-center">
-          <a
-            href="tel:+1-555-123-4567"
-            class="text-base-400 text-xs hover:text-white-400 transition-colors"
-          >
-            +254 (718) 735-565
-          </a>
-          <span class="hidden md:flex text-base-900">|</span>
-          <address class="text-base-400 not-italic text-xs">
-            2595, 1007 N Orange St. 4th Floor, DE, Wilmington, USA
-          </address>
-        </div>
+        ))}
+
+        <!-- Footer -->
         <div
-          class="flex flex-wrap gap-4 items-center order-first lg:order-none"
+          class="border-t pt-4 mt-4 col-span-full flex flex-col lg:flex-row gap-4 lg:items-center lg:justify-between"
+          style="border-color: #E97451;"
         >
-          <a
-            href="#_"
-            class="text-base-400 text-xs hover:text-white-400 transition-colors"
-          >
-            X
-          </a>
-          <a
-            href="#_"
-            class="text-base-400 text-xs hover:text-white-400 transition-colors"
-          >
-            LinkedIn
-          </a>
-          <a
-            href="#_"
-            class="text-base-400 text-xs hover:text-white-400 transition-colors"
-          >
-            Email
-          </a>
+          <div class="flex flex-wrap gap-4 items-center">
+            <a
+              href="tel:+254718735565"
+              class="text-xs hover:text-accent-500 transition-colors"
+              style="color: #7A8189;"
+            >
+              +254 (718) 735-565
+            </a>
+            <span class="hidden md:flex" style="color: #E97451;">|</span>
+            <address class="not-italic text-xs" style="color: #7A8189;">
+              2595, 1007 N Orange St. 4th Floor, DE, Wilmington, USA
+            </address>
+          </div>
+          <div class="flex flex-wrap gap-4 items-center order-first lg:order-none">
+            <a href="#_" class="text-xs hover:text-accent-500 transition-colors" style="color: #7A8189;">X</a>
+            <a href="#_" class="text-xs hover:text-accent-500 transition-colors" style="color: #7A8189;">LinkedIn</a>
+            <a href="#_" class="text-xs hover:text-accent-500 transition-colors" style="color: #7A8189;">Email</a>
+          </div>
         </div>
+
       </div>
     </div>
   </div>
 </div>
-

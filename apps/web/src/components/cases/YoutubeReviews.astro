@@ -1,0 +1,87 @@
+---
+import Text from "@/components/fundations/elements/Text.astro";
+import Kicker from "@/components/fundations/elements/Kicker.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+
+const PLAYLIST_ID = "PL7Rm45pXi5ZqPw7aRh11wk9eCNxRytsuM";
+
+interface Video {
+  videoId: string;
+  title: string;
+}
+
+function decodeHtmlEntities(str: string): string {
+  return str
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'");
+}
+
+let videos: Video[] = [];
+
+try {
+  const res = await fetch(
+    `https://www.youtube.com/feeds/videos.xml?playlist_id=${PLAYLIST_ID}`
+  );
+  const xml = await res.text();
+  const ids = [...xml.matchAll(/<yt:videoId>(.*?)<\/yt:videoId>/g)].map((m) => m[1]);
+  const rawTitles = [...xml.matchAll(/<title>(.*?)<\/title>/g)].map((m) => m[1]);
+  // First <title> is the feed title — skip it
+  const titles = rawTitles.slice(1);
+  videos = ids.map((videoId, i) => ({
+    videoId,
+    title: decodeHtmlEntities(titles[i] ?? ""),
+  }));
+} catch (e) {
+  console.warn("Failed to fetch YouTube playlist:", e);
+}
+---
+
+<section class="bg-accent-950 relative overflow-hidden">
+  <Wrapper variant="standard" class="py-12 lg:py-24 lg:border-x lg:border-white/10">
+    <Text
+      tag="h2"
+      variant="displayLG"
+      class="text-white font-medium tracking-tight max-w-2xl mb-12"
+    >
+What Our Clients Say
+    </Text>
+
+    {videos.length > 0 ? (
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {videos.map((video) => (
+          <div>
+            <div
+              class="relative overflow-hidden rounded-sm bg-black"
+              style="aspect-ratio: 16/9;"
+            >
+              <iframe
+                src={`https://www.youtube.com/embed/${video.videoId}`}
+                title={video.title}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+                loading="lazy"
+                class="absolute inset-0 w-full h-full border-0"
+              ></iframe>
+            </div>
+            {video.title && (
+              <Text
+                tag="p"
+                variant="textSM"
+                class="text-base-400 mt-3 font-medium leading-snug"
+              >
+                {video.title}
+              </Text>
+            )}
+          </div>
+        ))}
+      </div>
+    ) : (
+      <Text tag="p" variant="textBase" class="text-base-500">
+        Videos unavailable — check back soon.
+      </Text>
+    )}
+  </Wrapper>
+</section>

@@ -1,6 +1,4 @@
 ---
-import { Image } from "astro:assets";
-import talk from "@/images/assets/talk.png";
 import Text from "@/components/fundations/elements/Text.astro";
 import Kicker from "@/components/fundations/elements/Kicker.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
@@ -103,11 +101,9 @@ const columns = [
     <div
       class="grid md:grid-cols-2 lg:grid-cols-2 gap-8 p-8 lg:p-12 bg-base-50"
     >
-      <Image
-        src={talk}
-        alt="Image"
-        width={800}
-        height={1440}
+      <img
+        src="https://images.madavi.co/Madavi%20Astro%202026/AI%20Readiness%20_%20Madavi.png"
+        alt="AI Readiness"
         loading="eager"
         decoding="async"
         class="size-full object-cover object-center aspect-square"

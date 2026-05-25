@@ -440,6 +440,9 @@ const capabilities = defineCollection({
       keywords: z.array(z.string()).optional(),
     }).optional(),
 
+    // Card image for index listing
+    cardImage: z.string().optional(),
+
     // Hero section
     hero: z.object({
       subtitle: z.string().optional(),

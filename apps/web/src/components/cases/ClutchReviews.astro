@@ -1,0 +1,32 @@
+---
+import Text from "@/components/fundations/elements/Text.astro";
+import Kicker from "@/components/fundations/elements/Kicker.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+---
+
+<section style="background-color: #FEFCF4;" class="relative overflow-hidden">
+  <Wrapper variant="standard" class="py-12 lg:py-24 lg:border-x lg:border-base-200">
+    <Kicker class="text-base-500 mb-4">VERIFIED REVIEWS</Kicker>
+    <Text
+      tag="h2"
+      variant="displayLG"
+      class="text-base-900 font-medium tracking-tight max-w-2xl mb-12"
+    >
+      What Our Clients Say on Clutch
+    </Text>
+
+    <div
+      class="clutch-widget"
+      data-url="https://widget.clutch.co"
+      data-widget-type="8"
+      data-height="300"
+      data-nofollow="false"
+      data-expandifr="true"
+      data-scale="100"
+      data-reviews="123085,121792,117781,141244,123662,115564"
+      data-clutchcompany-id="1239948"
+    ></div>
+  </Wrapper>
+</section>
+
+<script src="https://widget.clutch.co/static/js/widget.js"></script>

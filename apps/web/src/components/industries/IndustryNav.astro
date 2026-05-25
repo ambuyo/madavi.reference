@@ -17,7 +17,7 @@ const navLinks = [
   { label: "Our Work", href: "/our-work" },
   { label: "About", href: "/about" },
   { label: "Our Approach", href: "/our-approach" },
-  { label: "Contact", href: "/#contact" },
+  { label: "Contact", href: "/contact" },
 ];
 
 const headerBaseClass = "fixed inset-x-0 top-0 z-50 transition-all duration-300";
@@ -112,4 +112,54 @@ const headerBaseClass = "fixed inset-x-0 top-0 z-50 transition-all duration-300"
   }
 
   handleIndustryNavbarScroll();
+
+  // Megamenu interactions
+  document.addEventListener("DOMContentLoaded", function() {
+    const header = document.querySelector("header[data-navbar-variant='industry']");
+    if (!header) return;
+
+    const capabilitiesLink = header.querySelector('[data-megamenu="capabilities"]');
+    const resourcesLink = header.querySelector('[data-megamenu="resources"]');
+    const megamenu = header.querySelector("#megamenu");
+    const resourcesMegamenu = header.querySelector("#resources-megamenu");
+
+    const hideAllMenus = () => {
+      megamenu?.classList.add("hidden");
+      resourcesMegamenu?.classList.add("hidden");
+    };
+
+    const showCapabilitiesMenu = () => {
+      hideAllMenus();
+      megamenu?.classList.remove("hidden");
+    };
+
+    const showResourcesMenu = () => {
+      hideAllMenus();
+      resourcesMegamenu?.classList.remove("hidden");
+    };
+
+    if (capabilitiesLink) {
+      capabilitiesLink.addEventListener("mouseenter", showCapabilitiesMenu);
+      capabilitiesLink.addEventListener("mouseleave", () => {
+        setTimeout(() => { if (!megamenu?.matches(":hover")) hideAllMenus(); }, 100);
+      });
+    }
+
+    if (resourcesLink) {
+      resourcesLink.addEventListener("mouseenter", showResourcesMenu);
+      resourcesLink.addEventListener("mouseleave", () => {
+        setTimeout(() => { if (!resourcesMegamenu?.matches(":hover")) hideAllMenus(); }, 100);
+      });
+    }
+
+    if (megamenu) {
+      megamenu.addEventListener("mouseenter", showCapabilitiesMenu);
+      megamenu.addEventListener("mouseleave", hideAllMenus);
+    }
+
+    if (resourcesMegamenu) {
+      resourcesMegamenu.addEventListener("mouseenter", showResourcesMenu);
+      resourcesMegamenu.addEventListener("mouseleave", hideAllMenus);
+    }
+  });
 </script>

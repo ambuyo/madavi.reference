@@ -1,25 +1,8 @@
 ---
 import SingleBlogLayout from "@/layouts/SingleBlogLayout.astro";
 import { getPostBySlug } from "@/lib/data";
-import { readCachedPosts } from "@/lib/wordpress/cache";
 
-export async function getStaticPaths() {
-  try {
-    const cachedPosts = await readCachedPosts();
-
-    if (!cachedPosts || cachedPosts.length === 0) {
-      console.warn("No cached posts found for blog routes");
-      return [];
-    }
-
-    return cachedPosts.map((post) => ({
-      params: { slug: post.slug },
-    }));
-  } catch (error) {
-    console.error("Error generating blog post static paths:", error);
-    return [];
-  }
-}
+export const prerender = false;
 
 const { slug } = Astro.params;
 const post = await getPostBySlug(slug!);

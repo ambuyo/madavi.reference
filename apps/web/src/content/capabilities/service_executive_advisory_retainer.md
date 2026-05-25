@@ -2,6 +2,7 @@
 title: Executive Advisory Retainer
 description: Strategic AI counsel for leaders making frequent, high-stakes decisions—without vendor bias or internal politics.
 slug: executive-advisory
+cardImage: "https://images.madavi.co/Madavi%20Astro%202026/executive-advisory.jpg"
 pageTitle: Executive Advisory Retainer - Independent AI Strategy Counsel | Madavi
 seoMetaDescription: Get ongoing strategic AI counsel from advisors with no products to sell. Navigate vendor selection, budget allocation, governance design, and stakeholder alignment—3+ decisions per quarter.
 schema:

@@ -2,6 +2,7 @@
 title: Keynotes & Licensing
 description: Book Amukune for speaking engagements on AI adoption strategy, or license the HCAIF framework for your organization, consultancy, or training programs.
 slug: keynotes-licensing
+cardImage: "https://images.madavi.co/Madavi%20Astro%202026/keynotes-licensing.jpg"
 pageTitle: Keynotes & Licensing - AI Adoption Speaking & Framework Licensing | Madavi
 seoMetaDescription: Book keynote speaking on human-centric AI adoption for conferences and corporate events. License the HCAIF framework for consulting, training, or internal use across Africa.
 schema:

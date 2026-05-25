@@ -32,6 +32,7 @@ interface Props {
     pageTitle?: string;
     seoMetaDescription?: string;
     hero?: any;
+    cardImage?: string;
     barriers: any[];
     barrierSection?: any;
     programs: any[];
@@ -69,6 +70,7 @@ const ValueStepsComponent = isAIService ? ReadinessValueSteps : AgencyValueSteps
     barrierTitle={capability.barrierSection?.title}
     barrierHeading={capability.barrierSection?.heading}
     barrierDescription={capability.barrierSection?.description}
+    image={capability.cardImage}
   />
   <BarriersCombatComponent programs={capability.programs} />
   <VerticalCarouselsComponent sections={capability.carouselSections?.[0]?.items} />

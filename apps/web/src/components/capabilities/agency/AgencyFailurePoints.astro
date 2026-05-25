@@ -1,6 +1,4 @@
 ---
-import { Image } from "astro:assets";
-import talk from "@/images/assets/talk.png";
 import Text from "@/components/fundations/elements/Text.astro";
 import Kicker from "@/components/fundations/elements/Kicker.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
@@ -14,10 +12,12 @@ interface Props {
   barrierTitle?: string;
   barrierHeading?: string;
   barrierDescription?: string;
+  image?: string;
 }
 
 const {
   failures = [],
+  image,
   barrierTitle = "Common Barriers",
   barrierHeading = "Most businesses prioritize tools",
   barrierDescription = "A successful AI readiness program doesn't start with technology—it starts with awareness. By first understanding the specific barriers to adoption, we design a roadmap that proactively addresses cultural resistance and data silos.",
@@ -103,15 +103,15 @@ const columns = [
     <div
       class="grid md:grid-cols-2 lg:grid-cols-2 gap-8 p-8 lg:p-12 bg-base-50"
     >
-      <Image
-        src={talk}
-        alt="Image"
-        width={800}
-        height={1440}
-        loading="eager"
-        decoding="async"
-        class="size-full object-cover object-center aspect-square"
-      />
+      {image && (
+        <img
+          src={image}
+          alt=""
+          loading="eager"
+          decoding="async"
+          class="size-full object-cover object-center aspect-square"
+        />
+      )}
       <div class="flex flex-col">
         <div>
           <Kicker>{barrierTitle}</Kicker>

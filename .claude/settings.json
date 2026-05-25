@@ -16,7 +16,14 @@
       "Bash(curl -s http://localhost:4322/resources/events)",
       "Bash(curl -s http://localhost:4322/careers)",
       "Bash(curl -s http://localhost:4322/services/template)",
-      "Bash(curl -s http://localhost:4321/services/template)"
+      "Bash(curl -s http://localhost:4321/services/template)",
+      "Bash(pnpm --filter web install)",
+      "Bash(node -e \"try { require\\('/Volumes/Atlantis/Codex/madavi_2026_astro-main/node_modules/.pnpm/sharp@0.34.5/node_modules/sharp'\\) } catch\\(e\\) { console.log\\(e.message\\) }\")",
+      "Bash(node /Volumes/Atlantis/Codex/madavi_2026_astro-main/node_modules/.pnpm/sharp@0.34.5/node_modules/sharp/install/check.js)",
+      "Bash(node -e \"const sharp = require\\('/Volumes/Atlantis/Codex/madavi_2026_astro-main/node_modules/.pnpm/sharp@0.34.5/node_modules/sharp'\\); console.log\\(typeof sharp\\)\")",
+      "Bash(pnpm --filter web run build)",
+      "Bash(sed -n '33,42p' /Volumes/Atlantis/Codex/madavi_2026_astro-main/apps/web/src/content/industries/industry_professionalservices_content.md)",
+      "Bash(sed -n '33,42p' /Volumes/Atlantis/Codex/madavi_2026_astro-main/apps/web/src/content/industries/industry_realestate_content.md)"
     ]
   }
 }

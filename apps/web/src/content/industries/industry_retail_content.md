@@ -36,7 +36,7 @@ hero:
   headline: "Scale Without Scaling Headcount"
   description: "AI systems that personalize customer experience at scale, optimize inventory in real-time, and automate support—so you can grow revenue without proportionally growing costs."
   backgroundColor: "#005B65"
-  image: "https://images.unsplash.com/photo-1556740738-b6a63e27c4df?w=1200&h=600&fit=crop"
+  image: "https://images.madavi.co/Madavi%20Astro%202026/industries/Retail%20and%20Ecommerce_%20Madavi%20Industry.png"
 
 threeTierProblems:
   title: "The Three Problems Worth Solving"

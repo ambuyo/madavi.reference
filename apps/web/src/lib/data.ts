@@ -172,19 +172,16 @@ export async function getPostBySlug(slug: string) {
   }
 
   try {
-    const { readCachedPosts } = await import("./wordpress/cache");
+    const { fetchWordPressPostBySlug } = await import("./wordpress/fetch");
     const { transformWordPressPost } = await import("./wordpress/transforms");
 
-    const cachedPosts = await readCachedPosts();
-    if (cachedPosts) {
-      const post = cachedPosts.find((p) => p.slug === slug);
-      if (post) {
-        return transformWordPressPost(post);
-      }
+    // Always fetch full content live — cache only stores truncated content
+    const post = await fetchWordPressPostBySlug(slug);
+    if (post) {
+      return transformWordPressPost(post);
     }
 
-    // If not in cache, try fetching fresh (shouldn't happen in normal operation)
-    console.warn(`Post "${slug}" not found in cache`);
+    console.warn(`Post "${slug}" not found`);
   } catch (error) {
     console.warn(`Failed to get post "${slug}":`, error);
   }

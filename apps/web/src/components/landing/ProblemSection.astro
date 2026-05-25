@@ -1,6 +1,4 @@
 ---
-import { Image } from "astro:assets";
-import talk from "@/images/assets/talk.png";
 import Text from "@/components/fundations/elements/Text.astro";
 import Kicker from "@/components/fundations/elements/Kicker.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
@@ -20,16 +18,14 @@ const outcomes = [
   },
 ];
 ---
-
+ 
 <section>
   <Wrapper variant="standard" class="py-12">
     <div class="grid md:grid-cols-2 lg:grid-cols-2 gap-8 p-8 lg:p-12 relative">
       <div aria-hidden="true" class="absolute inset-0 pointer-events-none" style="background-image: url('/Section BG.png'); background-size: cover; background-position: center; opacity: 0.7;"></div>
-      <Image
-        src={talk}
+      <img
+        src="https://images.madavi.co/Madavi%20Astro%202026/Madavi%20Home%20Image.png"
         alt="AI implementation failure"
-        width={800}
-        height={1440}
         loading="lazy"
         decoding="async"
         class="relative z-10 size-full object-cover object-center aspect-square"

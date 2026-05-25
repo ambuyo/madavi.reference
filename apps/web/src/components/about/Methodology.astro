@@ -1,9 +1,6 @@
 ---
 // Assets
 import { Image } from "astro:assets";
-import methodologyImage from "@/images/assets/talk.png";
-import testimonialImage from "@/images/assets/testimonial.png";
-
 // Fundations
 import Text from "@/components/fundations/elements/Text.astro";
 import Button from "@/components/fundations/elements/Button.astro";
@@ -41,62 +38,27 @@ const methodologySteps = [
   <Wrapper variant="paddingLess" class="py-24">
     <div class="grid grid-cols-1 lg:grid-cols-2">
       <div>
-        <div class="relative w-full lg:sticky lg:top-16 lg:h-screen">
+        <div class="relative w-full lg:sticky lg:top-16 lg:h-screen overflow-hidden">
           <Image
-            src={methodologyImage}
+            src="https://images.madavi.co/Madavi%20Astro%202026/Madavi%20Methodology.png"
             width={1440}
             height={900}
             alt="Madavi - WHY Madavi Stands Out"
-            class="object-cover object-center w-full h-full bg-base-50"
+            class="object-cover object-center w-full h-full"
             loading="eager"
             decoding="async"
           />
-          <div
-            class="lg:absolute lg:inset-0 size-full bg-accent-900 lg:bg-accent-900/90 flex flex-col items-start justify-start px-8 md:px-12 lg:px-24 z-10 py-24 text-white"
-          >
-            <div class="w-full">
-              <Text
-                tag="h2"
-                variant="displayLG"
-                class="text-white font-display text-balance mt-12"
-              >
-                How We Work
-              </Text>
-              <Text tag="p" variant="textSM" class="text-base-300 mt-2">
-Our Human-Centric AI Integration Framework isn't theoretical—it's the battle-tested methodology we use to deploy AI across five industry verticals. It ensures every automation we build preserves the human elements that matter while eliminating the busywork that doesn't.
-              </Text>
-              <div
-                class="mt-12 grid grid-cols-1 overflow-hidden lg:grid-cols-2 bg-white/5 backdrop-blur-sm"
-              >
-                <Image
-                  src={testimonialImage}
-                  width={500}
-                  height={500}
-                  loading="eager"
-                  decoding="async"
-                  alt="Client testimonial"
-                  class="object-cover h-60 size-full object-top"
-                />
-                <figure class="p-4 flex flex-col h-full justify-between">
-                  <blockquote>
-                    <Text tag="p" variant="textSM" class="text-base-300 italic">
-                      "Madavi transformed how we approach AI. Their strategic guidance and hands-on support gave us confidence to move forward. We've already seen significant improvements."
-                    </Text>
-                  </blockquote>
-                  <figcaption class="mt-3 flex items-center gap-3">
-                    <Text
-                      tag="p"
-                      variant="textXS"
-                      class="text-accent-400 font-medium"
-                    >
-                      Sarah Chen, CTO,
-                      <br />
-                      Tech Innovations Inc.
-                    </Text>
-                  </figcaption>
-                </figure>
-              </div>
-            </div>
+          <div class="absolute inset-0 bg-gradient-to-b from-black/75 via-black/30 to-transparent z-10 flex flex-col items-start justify-start px-8 md:px-12 lg:px-10 py-10">
+            <Text
+              tag="h2"
+              variant="displayLG"
+              class="text-white font-display text-balance"
+            >
+              How We Work
+            </Text>
+            <Text tag="p" variant="textBase" class="text-white/80 mt-3 max-w-sm">
+              Our Human-Centric AI Integration Framework isn't theoretical—it's the battle-tested methodology we use to deploy AI across five industry verticals.
+            </Text>
           </div>
         </div>
       </div>
@@ -111,6 +73,7 @@ Our Human-Centric AI Integration Framework isn't theoretical—it's the battle-t
                       tag="p"
                       variant="displayXL"
                       class="text-accent-800 font-display italic font-medium"
+                      style="font-size: 45px;"
                     >
                       {idx + 1}
                     </Text>
@@ -118,6 +81,7 @@ Our Human-Centric AI Integration Framework isn't theoretical—it's the battle-t
                       tag="h3"
                       variant="displaySM"
                       class="text-base-800 font-display mt-12"
+                      style="font-size: 25px;"
                     >
                       {step.title}
                     </Text>

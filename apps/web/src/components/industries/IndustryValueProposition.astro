@@ -17,8 +17,14 @@ interface Props {
 const { title, description, narrativeParagraphs, heroImage } = Astro.props;
 ---
 
-<section> 
-  <Wrapper variant="standard" class="py-12">
+<section class="relative overflow-hidden">
+  <img
+    src="/Solutions%20BG.png"
+    alt=""
+    aria-hidden="true"
+    class="absolute inset-0 w-full h-full object-cover object-center"
+  />
+  <Wrapper variant="standard" class="relative z-10 py-12">
     <div
       class="grid md:grid-cols-2 lg:grid-cols-2 gap-0 bg-base-50 items-stretch"
     >
