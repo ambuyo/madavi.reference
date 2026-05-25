@@ -2,43 +2,12 @@
 import CategoryLayout from "@/layouts/CategoryLayout.astro";
 import { getPosts, getPostsByCategory, getCategoryDescription } from "@/lib/data";
 
-interface Props {
-  category: string;
-}
+export const prerender = false;
 
 const POSTS_PER_PAGE = 20;
 
-export async function getStaticPaths() {
-  const POSTS_PER_PAGE = 20;
-  const posts = await getPosts();
-
-  // Extract unique categories from all posts
-  const categorySet = new Set<string>();
-  posts.forEach((post) => {
-    post.data.categories?.forEach((cat) => {
-      categorySet.add(cat.slug);
-    });
-  });
-
-  const paths: any[] = [];
-
-  for (const categorySlug of categorySet) {
-    const categoryPosts = await getPostsByCategory(categorySlug);
-    const totalPages = Math.ceil(categoryPosts.length / POSTS_PER_PAGE);
-
-    // Add page 1 without page number in URL
-    paths.push({ params: { category: categorySlug } });
-
-    // Add additional pages with page number
-    for (let page = 2; page <= totalPages; page++) {
-      paths.push({ params: { category: `${categorySlug}/${page}` } });
-    }
-  }
-
-  return paths;
-}
-
 const { category: categoryParam } = Astro.params;
+if (!categoryParam) return Astro.redirect("/blog");
 
 // Parse category and page from params
 const parts = categoryParam.split('/');

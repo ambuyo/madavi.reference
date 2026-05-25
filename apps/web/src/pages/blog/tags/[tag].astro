@@ -7,22 +7,11 @@ import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 // Components
 import BlogEntry from "@/components/blog/BlogCard1.astro";
 // Content
-import { getAllTags, getPostsByTag } from "@/lib/data";
-export async function getStaticPaths() {
-  const uniqueTags = await getAllTags();
-  const paths = await Promise.all(
-    uniqueTags.map(async (tag) => {
-      const filteredPosts = await getPostsByTag(tag);
-      return {
-        params: { tag },
-        props: { posts: filteredPosts },
-      };
-    })
-  );
-  return paths;
-}
+import { getPostsByTag } from "@/lib/data";
+export const prerender = false;
 const { tag } = Astro.params;
-const { posts } = Astro.props;
+if (!tag) return Astro.redirect("/blog");
+const posts = await getPostsByTag(tag);
 
 const seo = {
   title: `Articles tagged "${tag}"`,

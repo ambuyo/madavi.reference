@@ -8,6 +8,7 @@ import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 import ArrowRight from "@/components/fundations/icons/ArrowRight.astro";
 // Content
 import { getAllTags } from "@/lib/data";
+export const prerender = false;
 const tags = await getAllTags();
 
 const seo = {

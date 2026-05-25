@@ -2,8 +2,10 @@ import { defineConfig } from "astro/config";
 import sitemap from "@astrojs/sitemap";
 import react from "@astrojs/react";
 import tailwindcss from "@tailwindcss/vite";
+import netlify from "@astrojs/netlify";
 
 export default defineConfig({
+  adapter: netlify({ sessions: false }),
   markdown: {
     drafts: true,
     shikiConfig: {
