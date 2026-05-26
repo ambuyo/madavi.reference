@@ -11,7 +11,7 @@ import TeamCard from "@/components/team/TeamCard.astro";
 // Content
 import { getTeamMembers } from "@/lib/data";
 
-const teamMembers = await getTeamMembers();
+const teamMembers = await getTeamMembers(2);
 ---
 
 <section>
@@ -38,7 +38,7 @@ const teamMembers = await getTeamMembers();
     <div
       class="grid grid-cols-1 lg:grid-cols-3 mt-12 gap-2 p-8 lg:p-12 bg-base-50"
     >
-      {teamMembers.slice(0, 2).map((member) => <TeamCard post={member} />)}
+      {teamMembers.map((member) => <TeamCard post={member} />)}
       <div class="bg-accent-400 p-8 flex flex-col h-full justify-between gap-8">
         <div>
           <Shield class="h-8 text-white" />

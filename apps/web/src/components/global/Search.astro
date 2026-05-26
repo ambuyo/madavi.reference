@@ -3,86 +3,8 @@ interface Props {
   variant?: "default" | "transparent";
 }
 
-// Fundations
 import Button from "@/components/fundations/elements/Button.astro";
-// Icons
 import SearchIcon from "@/components/fundations/icons/Search.astro";
-import {
-  getPosts,
-  getServices,
-  getIndustries,
-  getOurWork,
-  getTeamMembers,
-  getInfoPages,
-} from "@/lib/data";
-
-const postsData = await getPosts();
-const posts = postsData.map((post) => ({
-  title: post.data.title,
-  description: post.data.description,
-  date: post.data.pubDate,
-  slug: post.slug,
-  type: "post",
-  category: "Blog Post",
-}));
-
-const servicesData = await getServices();
-const services = servicesData.map((service) => ({
-  title: service.data.title,
-  description: service.data.summary,
-  date: service.data.pubDate || service.data.updatedDate,
-  slug: service.slug,
-  type: "service",
-  category: service.data.category,
-}));
-
-const industriesData = await getIndustries();
-const industries = industriesData.map((industry) => ({
-  title: industry.data.title,
-  description: industry.data.summary,
-  slug: industry.slug,
-  type: "industry",
-  category: "Industry",
-}));
-
-const ourWorkData = await getOurWork();
-const ourWork = ourWorkData.map((singleWork) => ({
-  title: singleWork.data.client,
-  description: singleWork.data.aboutClient || singleWork.data.tagline || `Our work with ${singleWork.data.client}`,
-  date: singleWork.data.pubDate,
-  slug: singleWork.slug,
-  type: "ourWork",
-  category: singleWork.data.industry,
-}));
-
-const teamData = await getTeamMembers();
-const team = teamData.map((member) => ({
-  title: member.data.name,
-  description: member.data.bio || member.data.role || "",
-  slug: member.slug,
-  type: "team",
-  category: "Team Member",
-}));
-
-const infopagesData = await getInfoPages();
-const infopages = infopagesData.map((page) => ({
-  title: page.data.page,
-  description: `Information page: ${page.data.page}`,
-  date: page.data.pubDate,
-  slug: page.slug,
-  type: "infopage",
-  category: "Legal",
-}));
-
-// Combine all content into a single search array
-const allContent = [
-  ...posts,
-  ...services,
-  ...industries,
-  ...ourWork,
-  ...team,
-  ...infopages,
-];
 ---
 
 <div>
@@ -93,9 +15,9 @@ const allContent = [
     type="button"
     id="searchButton"
     aria-label="Search all content"
-    class="fixed bottom-4 right-4 z-10"
+    class="fixed top-1/2 -translate-y-1/2 right-4 z-10 !size-12 !bg-[#FF5000] !border-[#FF5000] hover:!bg-[#e04800]"
   >
-    <SearchIcon slot="icon" class="size-4" />
+    <SearchIcon slot="icon" class="size-5" />
   </Button>
   <div
     id="searchModal"
@@ -105,7 +27,7 @@ const allContent = [
   >
     <div class="min-h-screen px-4 text-center">
       <div
-        class="relative bg-black p-8 inline-block w-full max-w-xl mt-12 mb-8 text-left align-middle lg:mt-48 transition-all transform"
+        class="relative p-8 inline-block w-full max-w-xl mt-12 mb-8 text-left align-middle lg:mt-48 transition-all transform" style="background-color: #FF5000;"
       >
         <div class="hidden">
           <button
@@ -132,46 +54,56 @@ const allContent = [
     </div>
   </div>
 </div>
-<script is:inline define:vars={{ allContent }}>
+<script is:inline>
   window.addEventListener("load", () => {
     const searchButton = document.getElementById("searchButton");
     const searchModal = document.getElementById("searchModal");
     const searchInput = document.getElementById("searchInput");
     const searchResults = document.getElementById("searchResults");
     const closeSearch = document.getElementById("closeSearch");
-    const fuse = new Fuse(allContent, {
-      keys: ["title", "description", "category"],
-      threshold: 0.3,
-      includeMatches: true,
-    });
+
+    let fuse = null;
+    let indexLoaded = false;
+
+    async function loadIndex() {
+      if (indexLoaded) return;
+      try {
+        const res = await fetch("/api/search-index.json");
+        const allContent = await res.json();
+        fuse = new Fuse(allContent, {
+          keys: ["title", "description", "category"],
+          threshold: 0.3,
+          includeMatches: true,
+        });
+        indexLoaded = true;
+      } catch (err) {
+        console.warn("Search index failed to load", err);
+      }
+    }
+
     searchResults.classList.add("hidden");
 
     function getUrl(item) {
       switch (item.type) {
-        case "post":
-          return `/${item.slug}`;
-        case "service":
-          return `/capabilities/${item.slug}`;
-        case "industry":
-          return `/industries/${item.slug}`;
-        case "ourWork":
-          return `/our-work/${item.slug}`;
-        case "team":
-          return `/team/${item.slug}`;
-        case "infopage":
-          return `/legal/${item.slug}`;
-        default:
-          return "#";
+        case "post":      return `/${item.slug}`;
+        case "service":   return `/capabilities/${item.slug}`;
+        case "industry":  return `/industries/${item.slug}`;
+        case "ourWork":   return `/our-work/${item.slug}`;
+        case "team":      return `/team/${item.slug}`;
+        case "infopage":  return `/legal/${item.slug}`;
+        default:          return "#";
       }
     }
 
-    function openSearch(e) {
+    async function openSearch(e) {
       e.preventDefault();
       e.stopPropagation();
       searchModal.classList.remove("hidden");
       document.body.style.overflow = "hidden";
+      await loadIndex();
       setTimeout(() => searchInput.focus(), 100);
     }
+
     function closeSearchModal(e) {
       if (e) {
         e.preventDefault();
@@ -183,6 +115,7 @@ const allContent = [
       searchResults.innerHTML = "";
       searchResults.classList.add("hidden");
     }
+
     function renderResults(results) {
       if (!searchInput.value.trim()) {
         searchResults.innerHTML = "";
@@ -213,49 +146,43 @@ const allContent = [
                   })}
                 </p>`
             : "";
-
           return `
             <div class="relative block p-4 duration-300 hover:bg-white/6 backdrop-blur bg-white/5">
               <a href="${url}" class="absolute inset-0 z-10"></a>
               <div class="flex items-center justify-between mb-1">
-                <span class="inline-block text-xs font-medium text-base-400 ">
-                  ${item.category}
-                </span>
+                <span class="inline-block text-xs font-medium text-base-400">${item.category}</span>
                 ${dateDisplay}
               </div>
-              <h3 class="block mt-2 text-base mt-8 font-display text-white">
-                ${item.title}
-              </h3>
-              <p class="block text-xs text-base-300 line-clamp-2 mt-2">
-                ${item.description}
-              </p>
+              <h3 class="block mt-2 text-base mt-8 font-display text-white">${item.title}</h3>
+              <p class="block text-xs text-base-300 line-clamp-2 mt-2">${item.description}</p>
             </div>
           `;
         })
         .join("");
       searchResults.classList.remove("hidden");
     }
+
     searchButton.addEventListener("click", openSearch);
     searchButton.addEventListener("touchend", openSearch);
     closeSearch.addEventListener("click", closeSearchModal);
     closeSearch.addEventListener("touchend", closeSearchModal);
+
     searchInput.addEventListener("input", (e) => {
+      if (!fuse) return;
       const value = e.target.value.trim();
       const results = value ? fuse.search(value) : [];
       renderResults(results);
     });
-    // Close on escape key
+
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && !searchModal.classList.contains("hidden")) {
         closeSearchModal();
       }
     });
-    // Click outside modal content to close
+
     searchModal.addEventListener("click", (e) => {
       const modalContent = e.target.closest(".inline-block");
-      if (!modalContent) {
-        closeSearchModal(e);
-      }
+      if (!modalContent) closeSearchModal(e);
     });
   });
 </script>

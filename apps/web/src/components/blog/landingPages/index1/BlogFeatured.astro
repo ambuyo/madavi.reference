@@ -5,7 +5,7 @@ import Text from "@/components/fundations/elements/Text.astro";
 import BlogCard7 from "@/components/blog/BlogCard7.astro";
 // Data
 import { getPosts } from "@/lib/data";
-const allPosts = await getPosts();
+const allPosts = await getPosts(1);
 ---
 
 <div>
@@ -17,7 +17,7 @@ const allPosts = await getPosts();
   >
     <div class="relative">
       {
-        allPosts.slice(0, 1).map((post) => <BlogCard7 post={post} />)
+        allPosts.map((post) => <BlogCard7 post={post} />)
       }
     </div>
   </div>

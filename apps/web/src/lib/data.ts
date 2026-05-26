@@ -135,7 +135,7 @@ async function getSanityModules() {
  * Posts are cached at build time, ensuring fast native-like performance
  * New posts require a rebuild/redeploy to appear
  */
-export async function getPosts() {
+export async function getPosts(limit?: number) {
   if (!USE_WORDPRESS) {
     return [];
   }
@@ -146,7 +146,8 @@ export async function getPosts() {
 
     const cachedPosts = await readCachedPosts();
     if (cachedPosts && cachedPosts.length > 0) {
-      return cachedPosts.map(transformWordPressPost);
+      const posts = cachedPosts.map(transformWordPressPost);
+      return limit ? posts.slice(0, limit) : posts;
     }
 
     // If no cache exists at all, try fetching fresh (first build)
@@ -209,7 +210,7 @@ export async function getPostsByTag(tag: string): Promise<Post[]> {
 /**
  * Get posts by category slug — WordPress only
  */
-export async function getPostsByCategory(categorySlug: string): Promise<Post[]> {
+export async function getPostsByCategory(categorySlug: string, limit?: number): Promise<Post[]> {
   try {
     const { readCachedPosts } = await import("./wordpress/cache");
     const { transformWordPressPost } = await import("./wordpress/transforms");
@@ -217,13 +218,14 @@ export async function getPostsByCategory(categorySlug: string): Promise<Post[]> 
     const cachedPosts = await readCachedPosts();
     if (!cachedPosts || cachedPosts.length === 0) return [];
 
-    return cachedPosts
+    const filtered = cachedPosts
       .filter((post) =>
         post._embedded?.["wp:term"]?.some((termArray: any[]) =>
           termArray.some((term: any) => term.taxonomy === "category" && term.slug === categorySlug)
         )
-      )
-      .map(transformWordPressPost);
+      );
+    const sliced = limit ? filtered.slice(0, limit) : filtered;
+    return sliced.map(transformWordPressPost);
   } catch (error) {
     console.warn(`Failed to fetch posts from category "${categorySlug}":`, error);
     return [];
@@ -365,11 +367,12 @@ export async function getCategoryDescription(
 /**
  * Get all team members
  */
-export async function getTeamMembers(): Promise<TeamMember[]> {
+export async function getTeamMembers(limit?: number): Promise<TeamMember[]> {
   if (USE_SANITY) {
     const { sanityFetch, queries, transforms } = await getSanityModules();
     const members = await sanityFetch<any[]>(queries.allTeamMembersQuery);
-    return members.map(transforms.transformTeamMember);
+    const result = members.map(transforms.transformTeamMember);
+    return limit ? result.slice(0, limit) : result;
   }
 
   const members = await getCollection("team");
@@ -422,11 +425,12 @@ export async function getTeamMemberBySlug(
 /**
  * Get all services
  */
-export async function getServices(): Promise<Service[]> {
+export async function getServices(limit?: number): Promise<Service[]> {
   if (USE_SANITY) {
     const { sanityFetch, queries, transforms } = await getSanityModules();
     const services = await sanityFetch<any[]>(queries.allServicesQuery);
-    return services.filter(Boolean).map(transforms.transformService).filter((s: any) => s?.slug);
+    const result = services.filter(Boolean).map(transforms.transformService).filter((s: any) => s?.slug);
+    return limit ? result.slice(0, limit) : result;
   }
 
   const services = await getCollection("services");
@@ -489,13 +493,14 @@ export async function getServiceBySlug(slug: string): Promise<Service | null> {
 /**
  * Get all industries
  */
-export async function getIndustries(): Promise<Industry[]> {
+export async function getIndustries(limit?: number): Promise<Industry[]> {
   if (USE_SANITY) {
     const { sanityFetch, queries, transforms } = await getSanityModules();
     const industries = await sanityFetch<any[]>(queries.allIndustriesQuery);
-    return industries
+    const result = industries
       .map(transforms.transformIndustry)
       .filter(industry => industry.slug !== null && industry.slug !== undefined);
+    return limit ? result.slice(0, limit) : result;
   }
 
   const industries = await getCollection("industries");
@@ -573,14 +578,15 @@ export async function getIndustryBySlug(
 /**
  * Get all single works
  */
-export async function getOurWork(): Promise<SingleWork[]> {
+export async function getOurWork(limit?: number): Promise<SingleWork[]> {
   if (USE_SANITY) {
     const { sanityFetch, queries, transforms } = await getSanityModules();
     const caseStudies = await sanityFetch<any[]>(queries.allCaseStudiesQuery);
-    return caseStudies
+    const result = caseStudies
       .filter(Boolean)
       .map(transforms.transformSingleWork)
       .filter((cs: any) => cs?.slug && cs?.data?.client);
+    return limit ? result.slice(0, limit) : result;
   }
 
   const caseStudies = await getCollection("caseStudies");

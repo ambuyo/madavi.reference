@@ -8,7 +8,7 @@ import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 import BlogCard from "@/components/blog/BlogCard1.astro";
 // Data
 import { getPosts } from "@/lib/data";
-const allPosts = await getPosts();
+const allPosts = await getPosts(3);
 ---
 
 <section>
@@ -42,7 +42,7 @@ Thought Leadership on AI Adoption
         </Button>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-3 mt-12 gap-4">
-        {allPosts.slice(0, 3).map((post) => <BlogCard post={post} />)}
+        {allPosts.map((post) => <BlogCard post={post} />)}
       </div>
     </div>
   </Wrapper>

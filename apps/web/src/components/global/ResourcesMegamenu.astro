@@ -2,43 +2,24 @@
 // Fundations
 import Text from "@/components/fundations/elements/Text.astro";
 // Data
-import { getPosts, getOurWork } from "@/lib/data";
+import { getPostsByCategory, getOurWork } from "@/lib/data";
 import { getReports } from "@/lib/sanity/reports";
 
-// Fetch latest items from different sources
-const allPosts = await getPosts();
-const allReports = await getReports();
-const allOurWork = await getOurWork();
-
-// Get latest report
-const latestReport = allReports.sort((a, b) => {
-  const dateA = new Date(a.publicationDate).getTime();
-  const dateB = new Date(b.publicationDate).getTime();
-  return dateB - dateA;
-})[0];
-
-// Get latest Our Work (from Sanity case studies) - sorted by Year
-const latestOurWork = allOurWork.sort((a, b) => {
-  const yearA = parseInt(String(a.data.year)) || 0;
-  const yearB = parseInt(String(b.data.year)) || 0;
-  return yearB - yearA;
-})[0];
-
-// Helper function to get image URL
 const getImageUrl = (image: any) => {
   if (typeof image === "string") return image;
   return image?.src || image?.url || "";
 };
 
-// Get latest AI Studio article
-const latestAIStudio = allPosts
-  ?.filter(post => post.data.categories?.[0]?.name?.toLowerCase().includes("ai studio"))
-  ?.sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime())?.[0];
+// Fetch only what's needed — 1 item each, in parallel
+const [[latestReport], [latestAIStudio], [latestGrowthMarketing], ourWork] =
+  await Promise.all([
+    getReports(1),
+    getPostsByCategory("the-ai-studio", 1),
+    getPostsByCategory("growth-marketing", 1),
+    getOurWork(1),
+  ]);
 
-// Get latest Growth Marketing article
-const latestGrowthMarketing = allPosts
-  ?.filter(post => post.data.categories?.[0]?.name?.toLowerCase().includes("growth marketing"))
-  ?.sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime())?.[0];
+const latestOurWork = ourWork[0];
 
 // Featured items for Latest Media - 2x2 standardized grid
 const mediaItems = [
@@ -125,7 +106,7 @@ const resourcesSections = [
                   {link.description && (
                     <span
                       class="mt-0.5 leading-snug"
-                      style="font-family: 'Tiempos', serif; font-size: 12px; color: #7A8189;"
+                      style="font-family: 'DM Sans', sans-serif; font-size: 12px; color: #7A8189;"
                     >
                       {link.description}
                     </span>

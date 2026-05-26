@@ -19,10 +19,10 @@ const { variant = "default" } = Astro.props;
 // Navigation links
 const navLinks = [
   { label: "Capabilities", href: "/capabilities", hasMegamenu: true },
-  { label: "Resources", href: "/resources", hasMegamenu: true },
   { label: "Our Work", href: "/our-work" },
-  { label: "About", href: "/about" },
   { label: "Our Approach", href: "/our-approach" },
+  { label: "Resources", href: "/resources", hasMegamenu: true },
+  { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -100,9 +100,7 @@ const headerClass = variant === "transparent"
       </div>
     </div>
   </Wrapper>
-  <div class="group/megamenu">
-    <Megamenu />
-  </div>
+  <Megamenu />
   <ResourcesMegamenu />
 </header>
 
@@ -143,55 +141,43 @@ const headerClass = variant === "transparent"
     const megamenu = header.querySelector("#megamenu");
     const resourcesMegamenu = header.querySelector("#resources-megamenu");
 
-    const hideAllMenus = () => {
-      megamenu?.classList.add("hidden");
-      resourcesMegamenu?.classList.add("hidden");
+    let hideTimer = null;
+
+    const cancelHide = () => {
+      clearTimeout(hideTimer);
+      hideTimer = null;
+    };
+
+    const scheduleHide = () => {
+      cancelHide();
+      hideTimer = setTimeout(() => {
+        megamenu?.classList.add("hidden");
+        resourcesMegamenu?.classList.add("hidden");
+      }, 120);
     };
 
     const showCapabilitiesMenu = () => {
-      hideAllMenus();
+      cancelHide();
       megamenu?.classList.remove("hidden");
+      resourcesMegamenu?.classList.add("hidden");
     };
 
     const showResourcesMenu = () => {
-      hideAllMenus();
+      cancelHide();
       resourcesMegamenu?.classList.remove("hidden");
+      megamenu?.classList.add("hidden");
     };
 
-    // Capabilities link - shows megamenu
-    if (capabilitiesLink) {
-      capabilitiesLink.addEventListener("mouseenter", showCapabilitiesMenu);
-      capabilitiesLink.addEventListener("mouseleave", () => {
-        setTimeout(() => {
-          if (!megamenu?.matches(":hover")) {
-            hideAllMenus();
-          }
-        }, 100);
-      });
-    }
+    capabilitiesLink?.addEventListener("mouseenter", showCapabilitiesMenu);
+    capabilitiesLink?.addEventListener("mouseleave", scheduleHide);
 
-    // Resources link - shows resources megamenu
-    if (resourcesLink) {
-      resourcesLink.addEventListener("mouseenter", showResourcesMenu);
-      resourcesLink.addEventListener("mouseleave", () => {
-        setTimeout(() => {
-          if (!resourcesMegamenu?.matches(":hover")) {
-            hideAllMenus();
-          }
-        }, 100);
-      });
-    }
+    resourcesLink?.addEventListener("mouseenter", showResourcesMenu);
+    resourcesLink?.addEventListener("mouseleave", scheduleHide);
 
-    // Megamenu (Capabilities) hover states
-    if (megamenu) {
-      megamenu.addEventListener("mouseenter", showCapabilitiesMenu);
-      megamenu.addEventListener("mouseleave", hideAllMenus);
-    }
+    megamenu?.addEventListener("mouseenter", cancelHide);
+    megamenu?.addEventListener("mouseleave", scheduleHide);
 
-    // Resources megamenu hover states
-    if (resourcesMegamenu) {
-      resourcesMegamenu.addEventListener("mouseenter", showResourcesMenu);
-      resourcesMegamenu.addEventListener("mouseleave", hideAllMenus);
-    }
+    resourcesMegamenu?.addEventListener("mouseenter", cancelHide);
+    resourcesMegamenu?.addEventListener("mouseleave", scheduleHide);
   });
 </script>

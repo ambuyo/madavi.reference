@@ -6,6 +6,9 @@ import netlify from "@astrojs/netlify";
 
 export default defineConfig({
   adapter: netlify({ sessions: false }),
+  redirects: {
+    "/resources": { destination: "/blog", status: 301 },
+  },
   markdown: {
     drafts: true,
     shikiConfig: {
@@ -63,6 +66,10 @@ export default defineConfig({
       {
         protocol: "https",
         hostname: "secure.gravatar.com",
+      },
+      {
+        protocol: "https",
+        hostname: "cdn.sanity.io",
       },
     ],
     // Optimize image formats and caching

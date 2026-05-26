@@ -48,9 +48,10 @@ export interface SanitySolution {
   };
 }
 
-export async function getReports(): Promise<SanityReport[]> {
+export async function getReports(limit?: number): Promise<SanityReport[]> {
+  const slice = limit ? `[0...${limit}]` : "";
   const query = `
-    *[_type == "report"] | order(publicationDate desc) {
+    *[_type == "report"] | order(publicationDate desc) ${slice} {
       _id,
       name,
       slug,

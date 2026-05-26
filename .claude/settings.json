@@ -23,7 +23,16 @@
       "Bash(node -e \"const sharp = require\\('/Volumes/Atlantis/Codex/madavi_2026_astro-main/node_modules/.pnpm/sharp@0.34.5/node_modules/sharp'\\); console.log\\(typeof sharp\\)\")",
       "Bash(pnpm --filter web run build)",
       "Bash(sed -n '33,42p' /Volumes/Atlantis/Codex/madavi_2026_astro-main/apps/web/src/content/industries/industry_professionalservices_content.md)",
-      "Bash(sed -n '33,42p' /Volumes/Atlantis/Codex/madavi_2026_astro-main/apps/web/src/content/industries/industry_realestate_content.md)"
+      "Bash(sed -n '33,42p' /Volumes/Atlantis/Codex/madavi_2026_astro-main/apps/web/src/content/industries/industry_realestate_content.md)",
+      "Bash(curl -s \"https://6u680gce.api.sanity.io/v2024-01-01/data/query/production?query=*%5B_type+%3D%3D+%22infoPage%22%5D%7B+slug%2C+page%2C+%22bodyLength%22%3A+length\\(pt%3A%3Atext\\(body\\)\\)%7D\")",
+      "Bash(python3 -m json.tool)",
+      "Bash(curl -s \"https://6u680gce.api.sanity.io/v2024-01-01/data/query/production?query=*%5B_type+%3D%3D+%22solution%22%5D%7Bname%2C+%22slug%22%3A+slug.current%7D\")",
+      "Bash(rm -rf /Volumes/Atlantis/Codex/madavi_2026_astro-main/node_modules /Volumes/Atlantis/Codex/madavi_2026_astro-main/apps/studio/node_modules /Volumes/Atlantis/Codex/madavi_2026_astro-main/apps/web/node_modules)",
+      "Bash(pnpm store *)",
+      "Bash(xargs cat)"
+    ],
+    "additionalDirectories": [
+      "/Volumes/Atlantis/Codex/madavi_2026_astro-main/node_modules"
     ]
   }
 }

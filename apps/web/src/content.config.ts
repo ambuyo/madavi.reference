@@ -356,52 +356,6 @@ const industries = defineCollection({
     }),
 });
 
-const ourWork = defineCollection({
-  loader: glob({ pattern: "**/*.md", base: "./src/content/ourWork" }),
-  schema: ({ image }) =>
-    z.object({
-      title: z.string(),
-      client: z.string(),
-      industry: z.string(),
-      services: z.array(z.string()),
-      year: z.number().optional(),
-      tagline: z.string().optional(),
-      aboutClient: z.string().optional(),
-      ourProcess: z.string().optional(),
-      challenge: z.string(),
-      solution: z.string(),
-      results: z.array(
-        z.object({
-          label: z.string(),
-          value: z.string(),
-        })
-      ),
-      businessImpact: z.string().optional(),
-      testimonial: z
-        .object({
-          quote: z.string(),
-          author: z.string(),
-          role: z.string().optional(),
-        })
-        .optional(),
-      projectUrl: z.string().optional(),
-      image: z
-        .object({
-          url: image(),
-          alt: z.string(),
-        })
-        .optional(),
-      projectImages: z
-        .array(
-          z.object({
-            url: image(),
-            alt: z.string(),
-          })
-        )
-        .optional(),
-      pubDate: z.date(),
-    }),
-});
 
 const faqs = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/faqs" }),
@@ -534,7 +488,6 @@ export const collections = {
   posts: postsCollection,
   services,
   industries,
-  ourWork,
   faqs,
   capabilities,
 };

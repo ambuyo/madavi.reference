@@ -14,9 +14,8 @@ const page = await getInfoPageBySlug(slug!);
 if (!page) {
   return Astro.redirect("/404");
 }
-const Content = page.render ? (await page.render()).Content : null;
 ---
 
 <LegalLayout frontmatter={page.data}>
-  {Content ? <Content /> : <div set:html={page.body} />}
+  <div set:html={page.body} />
 </LegalLayout>

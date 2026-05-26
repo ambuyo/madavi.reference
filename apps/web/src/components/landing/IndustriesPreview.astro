@@ -10,7 +10,7 @@ import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 import IndustryCard from "@/components/industries/IndustryCard.astro";
 // Data
 import { getIndustries } from "@/lib/data";
-const allIndustries = await getIndustries();
+const allIndustries = await getIndustries(2);
 --- 
  
 <section>
@@ -36,7 +36,6 @@ Our AI Framework methodology works across sectors because cultural readiness, st
       <div class="relative z-10 grid grid-cols-1 lg:grid-cols-3 mt-12 gap-2">
         {
           allIndustries
-            .slice(0, 2)
             .map((industry) => (
               <IndustryCard industry={industry} titleOnly={true} />
             ))

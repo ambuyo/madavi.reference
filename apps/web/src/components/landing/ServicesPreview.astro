@@ -10,7 +10,7 @@ import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 import ServiceCard from "@/components/capabilities/template/ServiceCard.astro";
 // Data
 import { getServices } from "@/lib/data";
-const allServices = await getServices();
+const allServices = await getServices(2);
 ---
 
 <section>
@@ -39,7 +39,6 @@ const allServices = await getServices();
       <div class="grid grid-cols-1 lg:grid-cols-3 mt-12 gap-2">
         {
           allServices
-            .slice(0, 2)
             .map((service) => <ServiceCard service={service} />)
         }
         <div
