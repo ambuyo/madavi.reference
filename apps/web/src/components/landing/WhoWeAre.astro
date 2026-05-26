@@ -1,0 +1,54 @@
+---
+// Foundations
+import Text from "@/components/fundations/elements/Text.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+
+const content = [
+  "Our experience and expertise span across several industries we have worked in over the last decade, taking companies from zero to one and beyond by enabling them to get to their full potential.",
+  "By seamlessly blending cutting-edge artificial intelligence with deep strategic insight, we don't just help brands keep pace with the modern market—we empower them to define it.",
+  "We build intuitive, scalable solutions designed to solve complex business challenges, optimize growth, and unlock entirely new vectors of value.",
+  "Whether you are a disruptive startup laying your first bricks or an established enterprise engineering your next evolution, Madavi is the catalyst that transforms ambitious vision into sustainable, high-impact reality.",
+];
+--- 
+
+<section>
+  <Wrapper variant="standard" class="py-12 ">
+    <div class="relative grid grid-cols-1 lg:grid-cols-2 gap-12 rounded-3xl p-8 lg:p-12 overflow-hidden">
+      <div class="absolute inset-0 rounded-3xl" style="background-image: url('/Solutions%20BG.png'); background-size: cover; background-position: center; opacity: 0.8;" />
+      <div class="relative z-10">
+        <Text
+          tag="h2"
+          variant="displayXL"
+          class="text-[#1B1B1B] tracking-tight font-display lg:col-span-2"
+        >
+          Who We Are
+        </Text>
+        <Text
+          tag="p"
+          variant="textLG"
+          class="text-[#1B1B1B] mt-4 text-balance font-bold"
+        >
+Madavi is an AI-driven marketing and technology company building products for forward-thinking companies in the digital age.        </Text>
+
+        <div class="mt-12 space-y-4 lg:columns-2">
+          {
+            content.map((paragraph) => (
+              <Text tag="p" variant="textBase" class="text-[#1B1B1B]">
+                {paragraph}
+              </Text>
+            ))
+          }
+        </div>
+      </div>
+      <div class="relative z-10">
+        <img
+          src="https://images.madavi.co/Madavi%20Astro%202026/Who%20We%20Are%20Madavi.jpg"
+          alt="Who We Are - Madavi"
+          loading="eager"
+          decoding="async"
+          class="w-full h-full object-cover object-center rounded-xl"
+        />
+      </div>
+    </div>
+  </Wrapper>
+</section>

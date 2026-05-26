@@ -2,7 +2,7 @@
 title: Brand Management
 description: Protect and grow your brand equity—professional identity development, comprehensive brand guidelines, strategic rebranding, and ongoing performance monitoring.
 slug: brand-management
-cardImage: "https://images.madavi.co/Madavi%20Astro%202026/Brand%20Management%20_%20Madavi.png"
+cardImage: "https://images.madavi.co/Madavi%20Astro%202026/capabilities/Brand%20Management%20_%20Madavi.png"
 pageTitle: Brand Management Services - Identity, Guidelines & Monitoring | Madavi
 seoMetaDescription: Build and protect your brand with professional identity development, comprehensive brand guidelines, strategic rebranding services, and performance monitoring. Consistent brand presence across all touchpoints.
 schema:

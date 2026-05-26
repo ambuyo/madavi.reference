@@ -2,21 +2,26 @@
 // Fundations
 import Text from "@/components/fundations/elements/Text.astro";
 // Entries
-import BlogCard3 from "@/components/blog/BlogCard3.astro";
+import BlogCard1 from "@/components/blog/categories/BlogCard1.astro";
 // Data
 import { getPostsByCategory } from "@/lib/data";
-const allPosts = await getPostsByCategory("the-ai-studio");
+const allPosts = await getPostsByCategory("content-marketing");
 ---
 
 <div>
-  <Text tag="h2" variant="textXS" class="text-base-900 uppercase font-medium">
-    The AI Studio
+  <Text
+    tag="h2"
+    variant="textXS"
+    class="text-base-900 uppercase font-medium"
+  >
+    Content Marketing
   </Text>
   <div
     class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-2 relative before:absolute after:absolute before:bg-base-950 after:bg-base-950/10 before:top-0 before:left-0 before:h-px before:w-6 after:top-0 after:right-0 after:left-8 after:h-px pt-4"
   >
     {
-      allPosts.slice(0, 4).map((post) => <BlogCard3 post={post} />)
+      allPosts.slice(0, 3).map((post) => <BlogCard1 post={post} compact={true} />)
     }
-  </div> 
+  </div>
 </div>
+ 

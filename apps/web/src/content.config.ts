@@ -288,6 +288,7 @@ const industries = defineCollection({
         headline: z.string().optional(),
         description: z.string().optional(),
         backgroundColor: z.string().optional(),
+        image: z.string().optional(),
       }).optional(),
       threeTierProblems: z.object({
         title: z.string().optional(),

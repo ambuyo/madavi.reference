@@ -21,7 +21,7 @@ schema:
 
 hero:
   subtitle: SPEAKING & LICENSING
-  description: "Book Amukune to speak at your conference, corporate event, or board meeting. Or license the HCAIF framework to train your consultants, educate your clients, or implement across your organization."
+  description: "Book Madavi to speak at your conference, corporate event, or board meeting. Or license the HCAIF framework to train your consultants, educate your clients, or implement across your organization."
 
 barrierSection:
   title: Common Barriers

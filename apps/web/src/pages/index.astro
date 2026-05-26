@@ -7,6 +7,7 @@ import Stats1 from "@/components/stats/Stats1.astro";
 import HomeServices from "@/components/landing/HomeServices.astro";
 import IndustriesOverview from "@/components/landing/IndustriesPreview.astro";
 import HomeTestimonials from "@/components/landing/HomeTestimonials.astro";
+import WhoWeAre from "@/components/landing/WhoWeAre.astro";
 import OurWorkPreview from "@/components/landing/OurWorkPreview.astro";
 import ProblemSection from "@/components/landing/ProblemSection.astro";
 import SolutionsOverview from "@/components/landing/SolutionsOverview.astro";
@@ -23,9 +24,10 @@ const seo = {
 <BaseLayout seo={seo} navVariant="transparent">
   <MainHomeHeroAlt />
   <Stats1 />
-  <ProblemSection />
+  <ProblemSection /> 
   <HomeServices />
   <HomeTestimonials />
+  <WhoWeAre />
   <OurWorkPreview />
   <IndustriesOverview />
   <SolutionsOverview />

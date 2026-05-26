@@ -5,10 +5,10 @@ import Kicker from "@/components/fundations/elements/Kicker.astro";
 import Button from "@/components/fundations/elements/Button.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 // Components
-import BlogCard from "@/components/blog/BlogCard1.astro";
+import BlogCard from "@/components/blog/categories/BlogCard1.astro";
 // Data
 import { getPosts } from "@/lib/data";
-const allPosts = await getPosts(3);
+const allPosts = await getPosts();
 ---
 
 <section>
@@ -42,7 +42,7 @@ Thought Leadership on AI Adoption
         </Button>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-3 mt-12 gap-4">
-        {allPosts.map((post) => <BlogCard post={post} />)}
+        {allPosts.slice(0, 3).map((post) => <BlogCard post={post} />)}
       </div>
     </div>
   </Wrapper>

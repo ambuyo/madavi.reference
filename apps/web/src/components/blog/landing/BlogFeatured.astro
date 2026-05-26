@@ -2,10 +2,10 @@
 // Fundations
 import Text from "@/components/fundations/elements/Text.astro";
 // Entries
-import BlogCard7 from "@/components/blog/BlogCard7.astro";
+import BlogCard7 from "@/components/blog/landing/BlogCard7.astro";
 // Data
 import { getPosts } from "@/lib/data";
-const allPosts = await getPosts(1);
+const allPosts = await getPosts();
 ---
 
 <div>
@@ -17,7 +17,7 @@ const allPosts = await getPosts(1);
   >
     <div class="relative">
       {
-        allPosts.map((post) => <BlogCard7 post={post} />)
+        allPosts.slice(0, 1).map((post) => <BlogCard7 post={post} />)
       }
     </div>
   </div>
