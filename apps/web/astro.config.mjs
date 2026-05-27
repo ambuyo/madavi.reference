@@ -84,5 +84,8 @@ export default defineConfig({
         "@": "/src",
       },
     },
+    optimizeDeps: {
+      include: ["react", "react-dom", "react-dom/client"],
+    },
   },
 });

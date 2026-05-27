@@ -1,0 +1,266 @@
+---
+interface Props {
+  phoneNumber: string;
+  message?: string;
+}
+
+const { phoneNumber, message = "Hi Madavi team! I'd love to know more about your AI advisory services." } = Astro.props;
+
+const encodedMessage = encodeURIComponent(message);
+const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+---
+
+<!-- Floating trigger button -->
+<button
+  id="wa-trigger"
+  aria-label="Chat with us on WhatsApp"
+  class="wa-trigger"
+>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.713-1.457L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.742.002-2.602-1.01-5.05-2.85-6.892-1.84-1.842-4.29-2.856-6.896-2.858-5.442 0-9.867 4.372-9.87 9.744a9.636 9.636 0 0 0 1.492 5.117l-.982 3.58 3.68-.954zm10.926-6.815c-.293-.146-1.734-.857-2.002-.954-.268-.098-.463-.146-.659.146-.195.293-.756.954-.927 1.148-.171.195-.341.219-.634.073-1.8-.9-2.932-1.58-4.01-3.435-.285-.49.285-.455.816-1.517.088-.18.044-.341-.022-.488-.066-.147-.556-1.341-.762-1.838-.2-.482-.403-.416-.556-.424-.144-.007-.31-.008-.477-.008s-.439.063-.668.312c-.23.249-.875.855-.875 2.086 0 1.231.897 2.418 1.019 2.583.122.166 1.764 2.693 4.274 3.774.597.257 1.064.411 1.429.527.6.19 1.147.163 1.579.099.481-.072 1.734-.708 1.978-1.392.243-.684.243-1.27.171-1.392-.072-.123-.267-.196-.56-.342z"/>
+  </svg>
+  <span>Chat With Us</span>
+</button>
+
+<!-- Chat widget popup -->
+<div id="wa-widget" class="wa-widget" aria-hidden="true">
+  <!-- Header -->
+  <div class="wa-header">
+    <div class="wa-avatar">M</div>
+    <div class="wa-header-info">
+      <p class="wa-name">Madavi</p>
+      <p class="wa-status">Typically replies within a day</p>
+    </div>
+    <button id="wa-close" class="wa-close" aria-label="Close chat">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Body -->
+  <div class="wa-body">
+    <div class="wa-bubble">
+      <p class="wa-bubble-name">Madavi</p>
+      <p>Welcome to Madavi! 👋</p>
+    </div>
+
+    <div class="wa-bubble">
+      <p class="wa-looking">I am looking for:</p>
+      <a href={`https://wa.me/${phoneNumber}?text=${encodeURIComponent("Hi! I'd like to learn about Madavi's AI advisory services.")}`} target="_blank" rel="noopener noreferrer" class="wa-option">AI Advisory Services</a>
+      <a href={`https://wa.me/${phoneNumber}?text=${encodeURIComponent("Hi! I'd like to discuss a potential engagement with Madavi.")}`} target="_blank" rel="noopener noreferrer" class="wa-option">Work With Us</a>
+      <a href={`https://wa.me/${phoneNumber}?text=${encodeURIComponent("Hi! I have a general enquiry for the Madavi team.")}`} target="_blank" rel="noopener noreferrer" class="wa-option">General Enquiry</a>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="wa-footer">
+    <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" class="wa-start">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.713-1.457L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.742.002-2.602-1.01-5.05-2.85-6.892-1.84-1.842-4.29-2.856-6.896-2.858-5.442 0-9.867 4.372-9.87 9.744a9.636 9.636 0 0 0 1.492 5.117l-.982 3.58 3.68-.954zm10.926-6.815c-.293-.146-1.734-.857-2.002-.954-.268-.098-.463-.146-.659.146-.195.293-.756.954-.927 1.148-.171.195-.341.219-.634.073-1.8-.9-2.932-1.58-4.01-3.435-.285-.49.285-.455.816-1.517.088-.18.044-.341-.022-.488-.066-.147-.556-1.341-.762-1.838-.2-.482-.403-.416-.556-.424-.144-.007-.31-.008-.477-.008s-.439.063-.668.312c-.23.249-.875.855-.875 2.086 0 1.231.897 2.418 1.019 2.583.122.166 1.764 2.693 4.274 3.774.597.257 1.064.411 1.429.527.6.19 1.147.163 1.579.099.481-.072 1.734-.708 1.978-1.392.243-.684.243-1.27.171-1.392-.072-.123-.267-.196-.56-.342z"/>
+      </svg>
+      Start Chat
+    </a>
+  </div>
+</div>
+
+<style>
+  .wa-trigger {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: #25d366;
+    color: #fff;
+    border: none;
+    border-radius: 9999px;
+    padding: 14px 22px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s;
+    animation: fadeInUp 0.5s ease-out;
+  }
+
+  .wa-trigger:hover {
+    background-color: #20ba5a;
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  }
+
+  .wa-widget {
+    position: fixed;
+    bottom: 104px;
+    right: 32px;
+    z-index: 9998;
+    width: 340px;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.18);
+    display: flex;
+    flex-direction: column;
+    transform: translateY(20px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+
+  .wa-widget.open {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: all;
+  }
+
+  .wa-header {
+    background-color: #005B65;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .wa-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: #fff;
+    color: #005B65;
+    font-size: 20px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .wa-header-info { flex: 1; }
+
+  .wa-name {
+    color: #fff;
+    font-weight: 700;
+    font-size: 16px;
+    margin: 0;
+  }
+
+  .wa-status {
+    color: rgba(255,255,255,0.75);
+    font-size: 13px;
+    margin: 2px 0 0;
+  }
+
+  .wa-close {
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+  }
+
+  .wa-close:hover { opacity: 1; }
+
+  .wa-body {
+    background-color: #ece5dd;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c8bdb5' fill-opacity='0.15'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .wa-bubble {
+    background: #fff;
+    border-radius: 0 12px 12px 12px;
+    padding: 14px 16px;
+    font-size: 14px;
+    color: #111;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .wa-bubble-name {
+    font-weight: 700;
+    color: #005B65;
+    margin: 0 0 2px;
+  }
+
+  .wa-looking {
+    color: #555;
+    margin: 0;
+  }
+
+  .wa-option {
+    display: block;
+    border: 1.5px solid #25d366;
+    border-radius: 9999px;
+    padding: 8px 16px;
+    color: #111;
+    font-size: 13px;
+    text-decoration: none;
+    text-align: center;
+    transition: background-color 0.2s, color 0.2s;
+  }
+
+  .wa-option:hover {
+    background-color: #25d366;
+    color: #fff;
+  }
+
+  .wa-footer {
+    background: #fff;
+    padding: 14px 16px;
+  }
+
+  .wa-start {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background-color: #25d366;
+    color: #fff;
+    border-radius: 9999px;
+    padding: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.2s;
+  }
+
+  .wa-start:hover { background-color: #20ba5a; }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 400px) {
+    .wa-widget { right: 12px; width: calc(100vw - 24px); }
+    .wa-trigger { right: 12px; bottom: 20px; }
+  }
+</style>
+
+<script>
+  const trigger = document.getElementById('wa-trigger');
+  const widget  = document.getElementById('wa-widget');
+  const close   = document.getElementById('wa-close');
+
+  trigger?.addEventListener('click', () => {
+    const isOpen = widget?.classList.contains('open');
+    widget?.classList.toggle('open');
+    widget?.setAttribute('aria-hidden', isOpen ? 'true' : 'false');
+  });
+
+  close?.addEventListener('click', () => {
+    widget?.classList.remove('open');
+    widget?.setAttribute('aria-hidden', 'true');
+  });
+</script>

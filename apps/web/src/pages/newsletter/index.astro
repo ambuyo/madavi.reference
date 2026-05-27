@@ -1,6 +1,7 @@
 ---
 // Fundations
 import BaseLayout from "@/layouts/BaseLayout.astro";
+const TURNSTILE_SITE_KEY = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "1x00000000000000000000AA";
 import Text from "@/components/fundations/elements/Text.astro";
 import Button from "@/components/fundations/elements/Button.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
@@ -180,6 +181,7 @@ const newsletterTopics = [
                 >.
               </label>
             </div>
+            <div class="cf-turnstile" data-sitekey={TURNSTILE_SITE_KEY} data-theme="dark"></div>
             <div class="space-y-2">
               <Button variant="muted" size="sm" type="submit" class="w-full" id="subscribe-btn">
                 Subscribe to Newsletter
@@ -288,6 +290,7 @@ const newsletterTopics = [
   </section>
 </BaseLayout>
 
+<script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <script>
   const form = document.querySelector("form") as HTMLFormElement;
   const messageDiv = document.getElementById("form-message");
@@ -298,12 +301,22 @@ const newsletterTopics = [
       e.preventDefault();
 
       const formData = new FormData(form);
+      const turnstileToken = formData.get("cf-turnstile-response");
+
+      if (!turnstileToken) {
+        messageDiv.classList.remove("hidden");
+        messageDiv.classList.add("bg-red-50", "text-red-800", "border", "border-red-200");
+        messageDiv.textContent = "Please complete the security check before submitting.";
+        return;
+      }
+
       const data = {
         firstName: formData.get("firstName"),
         lastName: formData.get("lastName"),
         email: formData.get("email"),
         interest: formData.get("interest"),
         privacy: formData.get("privacy") === "on",
+        turnstileToken,
       };
 
       try {

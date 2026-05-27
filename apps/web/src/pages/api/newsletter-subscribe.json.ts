@@ -1,6 +1,7 @@
 import type { APIRoute } from "astro";
 import fs from "fs";
 import path from "path";
+import { verifyTurnstile } from "@/lib/turnstile";
 
 interface Subscriber {
   id: string;
@@ -43,7 +44,17 @@ export const POST: APIRoute = async ({ request }) => {
 
   try {
     const body = await request.json();
-    const { firstName, lastName, email, interest, privacy } = body;
+    const { firstName, lastName, email, interest, privacy, turnstileToken } = body;
+
+    // Turnstile verification
+    const ip = request.headers.get("CF-Connecting-IP") ?? undefined;
+    const turnstileOk = await verifyTurnstile(turnstileToken ?? "", ip);
+    if (!turnstileOk) {
+      return new Response(
+        JSON.stringify({ error: "Bot verification failed", message: "Please complete the security check and try again." }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
+    }
 
     // Validation
     if (!firstName || !lastName || !email || !privacy) {

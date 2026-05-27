@@ -84,16 +84,16 @@ const headerClass = variant === "transparent"
         <Search variant={variant} />
         {variant === "transparent" ? (
           <>
-            <Button isLink size="base" variant="orange" href="/contact" class="hidden lg:flex rounded-[15px] [.scrolled_&]:!hidden">
-              Get My AI Audit
+            <Button isLink size="base" variant="orange" href="/get-a-proposal" class="hidden lg:flex rounded-[15px] [.scrolled_&]:!hidden">
+              Free AI Audit
             </Button>
-            <Button isLink size="base" variant="orange" href="/contact" class="hidden rounded-[15px] [.scrolled_&]:!flex">
-              Get My AI Audit
+            <Button isLink size="base" variant="orange" href="/get-a-proposal" class="hidden rounded-[15px] [.scrolled_&]:!flex">
+              Free AI Audit
             </Button>
           </>
         ) : (
-          <Button isLink size="base" variant="orange" href="/contact" class="hidden lg:flex rounded-[15px]">
-            Get My AI Audit
+          <Button isLink size="base" variant="orange" href="/get-a-proposal" class="hidden lg:flex rounded-[15px]">
+            Free AI Audit
           </Button>
         )}
         <MobileNav links={navLinks} variant={variant} />

@@ -1,7 +1,9 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useState } from "react";
+import { useState, useRef } from "react";
+import { Turnstile } from "@marsidev/react-turnstile";
+import type { TurnstileInstance } from "@marsidev/react-turnstile";
 
 const contactSchema = z.object({
   name: z.string().min(1, "Full name is required"),
@@ -25,6 +27,8 @@ export function ContactFormReact() {
     "idle" | "success" | "error"
   >("idle");
   const [submitMessage, setSubmitMessage] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const turnstileRef = useRef<TurnstileInstance>(null);
 
   const {
     register,
@@ -46,7 +50,7 @@ export function ContactFormReact() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, turnstileToken }),
       });
 
       const result = await response.json();
@@ -55,6 +59,8 @@ export function ContactFormReact() {
         setSubmitStatus("success");
         setSubmitMessage("Message sent successfully! We'll be in touch soon.");
         reset();
+        setTurnstileToken(null);
+        turnstileRef.current?.reset();
       } else {
         setSubmitStatus("error");
         setSubmitMessage(result.message || "Failed to send message");
@@ -244,10 +250,19 @@ export function ContactFormReact() {
         </div>
       )}
 
+      {/* Turnstile */}
+      <Turnstile
+        ref={turnstileRef}
+        siteKey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "1x00000000000000000000AA"}
+        onSuccess={setTurnstileToken}
+        onExpire={() => setTurnstileToken(null)}
+        options={{ theme: "dark" }}
+      />
+
       {/* Submit Button */}
       <button
         type="submit"
-        disabled={isSubmitting}
+        disabled={isSubmitting || !turnstileToken}
         className="w-full px-6 py-3 bg-accent-400 text-black font-semibold rounded hover:bg-accent-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isSubmitting ? "Sending..." : "Send Message"}

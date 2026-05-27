@@ -1,5 +1,6 @@
 import type { APIRoute } from "astro";
 import { createClient } from "@sanity/client";
+import { verifyTurnstile } from "@/lib/turnstile";
 
 interface EventRegistration {
   id: string;
@@ -44,7 +45,18 @@ export const POST: APIRoute = async ({ request }) => {
       eventId,
       eventTitle,
       terms,
+      turnstileToken,
     } = body;
+
+    // Turnstile verification
+    const ip = request.headers.get("CF-Connecting-IP") ?? undefined;
+    const turnstileOk = await verifyTurnstile(turnstileToken ?? "", ip);
+    if (!turnstileOk) {
+      return new Response(
+        JSON.stringify({ error: "Bot verification failed", message: "Please complete the security check and try again." }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
+    }
 
     // Validation
     if (!name || !email || !attendeeCount || !eventId || !terms) {

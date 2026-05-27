@@ -2,6 +2,9 @@
 // Styles
 import "@/styles/global.css";
 
+// UI
+import WhatsAppButton from "@/components/ui/WhatsAppButton.astro";
+
 // SEO & Head Components
 import BaseHead from "@/components/fundations/head/BaseHead.astro";
 import SEOHead from "@/components/SEOHead.astro";
@@ -130,5 +133,9 @@ const seoPublishedTime = publishDate || (seo?.publishedTime ? new Date(seo.publi
     {!hideMainCta && <MainCta />}
     {!hideFooter && <Footer />}
     <Search />
+    <WhatsAppButton
+      phoneNumber="15559698590"
+      message="Hi Madavi team! I'd love to know more about your AI advisory services."
+    />
   </body>
 </html>
