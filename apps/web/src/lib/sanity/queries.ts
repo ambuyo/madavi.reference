@@ -421,6 +421,7 @@ const caseStudyFields = groq`
   imcServices,
   aiStudioServices,
   completionDate,
+  displayOrder,
   tagline,
   aboutClient,
   ourProcess,
@@ -448,7 +449,7 @@ const caseStudyFields = groq`
 
 // All case studies
 export const allCaseStudiesQuery = groq`
-  *[_type == "singleWork"] | order(pubDate desc) {
+  *[_type == "singleWork"] | order(completionDate desc) {
     ${caseStudyFields}
   }
 `;

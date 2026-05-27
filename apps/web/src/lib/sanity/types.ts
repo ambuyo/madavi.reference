@@ -500,6 +500,7 @@ export interface SanitySingleWork {
   /** @deprecated use imcServices + aiStudioServices */
   services?: string[];
   completionDate?: string; // ISO date string e.g. "2024-03-15"
+  displayOrder?: number;
   tagline?: string;
   aboutClient?: string;
   ourProcess?: string;
@@ -529,6 +530,8 @@ export interface SingleWork {
     completionDate?: string;
     /** Year derived from completionDate, for display only */
     year?: number;
+    /** Lower numbers appear first in homepage preview */
+    displayOrder?: number;
     tagline?: string;
     aboutClient?: string;
     ourProcess?: string;

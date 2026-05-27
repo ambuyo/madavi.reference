@@ -1,7 +1,4 @@
 ---
-// Assets
-import { Image } from "astro:assets";
-import talk from "@/images/assets/talk.png";
 // Fundations
 import Text from "@/components/fundations/elements/Text.astro";
 import Kicker from "@/components/fundations/elements/Kicker.astro";
@@ -14,7 +11,7 @@ const features = [
       "Integration with your existing tech stack",
       "Security and compliance documentation",
       "Maintenance and troubleshooting runbooks",
-    ],
+    ], 
   },
   {
     title: "Operational Enablement",
@@ -25,7 +22,7 @@ const features = [
       "Continuous improvement frameworks",
     ],
   },
-  {
+  { 
     title: "Business Outcomes",
     items: [
       "Measurable time savings (we track hours recovered)",
@@ -83,11 +80,11 @@ const features = [
           }
         </div>
       </div>
-      <Image
-        src={talk}
-        alt="Image"
-        width={800}
-        height={1440}
+      <img
+        src="https://images.madavi.co/Madavi%20Astro%202026/capabilities/AI%20Studios%20Madavi.png"
+        alt="AI Studio"
+        width="800"
+        height="800"
         loading="eager"
         decoding="async"
         class="size-full object-cover object-center aspect-square"

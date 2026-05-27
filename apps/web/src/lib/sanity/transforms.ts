@@ -257,6 +257,7 @@ export function transformSingleWork(singleWork: SanitySingleWork): SingleWork {
       services: [...(singleWork.imcServices || []), ...(singleWork.aiStudioServices || [])],
       completionDate: singleWork.completionDate,
       year: singleWork.completionDate ? new Date(singleWork.completionDate).getFullYear() : undefined,
+      displayOrder: singleWork.displayOrder,
       tagline: singleWork.tagline,
       aboutClient: singleWork.aboutClient,
       ourProcess: singleWork.ourProcess,

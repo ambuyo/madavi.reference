@@ -10,9 +10,9 @@ import { getOurWork } from "@/lib/data";
 const recentWork = (await getOurWork())
   .filter((work) => work.data.image?.url)
   .sort((a, b) => {
-    const dateA = a.data.completionDate ? new Date(a.data.completionDate).getTime() : (a.data.year ?? 0) * 1000;
-    const dateB = b.data.completionDate ? new Date(b.data.completionDate).getTime() : (b.data.year ?? 0) * 1000;
-    return dateB - dateA;
+    const orderA = a.data.displayOrder ?? Infinity;
+    const orderB = b.data.displayOrder ?? Infinity;
+    return orderA - orderB;
   })
   .slice(0, 6);
 const leftColumn = recentWork.filter((_, i) => i % 2 === 0);

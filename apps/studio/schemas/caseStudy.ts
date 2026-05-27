@@ -176,6 +176,12 @@ export const singleWork = defineType({
       description: "Date the project was completed",
     }),
     defineField({
+      name: "displayOrder",
+      title: "Display Order",
+      type: "number",
+      description: "Controls display order — lower numbers appear first",
+    }),
+    defineField({
       name: "tagline",
       title: "Project Tagline",
       type: "string",

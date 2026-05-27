@@ -1,7 +1,4 @@
 ---
-// Assets
-import Shield from "@/components/assets/Shield.astro";
-
 // Fundations
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import Text from "@/components/fundations/elements/Text.astro";
@@ -11,39 +8,39 @@ import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 // Popular Pages Data
 const popularPages = [
   {
-    href: "/services",
-    title: "Our Services",
-    description: "Explore our accounting solutions",
+    href: "/the-imc-agency",
+    title: "The IMC Agency",
+    description: "Integrated marketing communications built for modern brands",
+  },
+  {
+    href: "/ai-studio",
+    title: "The AI Studio",
+    description: "AI-powered solutions to accelerate your business growth",
   },
   {
     href: "/about",
-    title: "About Us",
-    description: "Learn about our company",
-  },
-  {
-    href: "/contact",
-    title: "Contact",
-    description: "Get in touch with us",
-  },
-  {
-    href: "/faq",
-    title: "FAQ",
-    description: "Find answers to common questions",
+    title: "About",
+    description: "Learn who we are and what drives us",
   },
   {
     href: "/blog",
     title: "Blog",
-    description: "Read our latest insights",
+    description: "Insights, ideas, and industry perspectives",
   },
   {
-    href: "/pricing",
-    title: "Pricing",
-    description: "View our service packages",
+    href: "/our-work",
+    title: "Our Work",
+    description: "Case studies and projects we're proud of",
+  },
+  {
+    href: "/solutions",
+    title: "Solutions",
+    description: "Explore the full range of what we offer",
   },
 ];
 ---
 
-<BaseLayout h>
+<BaseLayout>
   <section>
     <Wrapper variant="standard" class="py-12">
       <div class="max-w-2xl">
@@ -53,7 +50,7 @@ const popularPages = [
           variant="displayLG"
           class="text-base-900 text-balance font-medium tracking-tight mt-8 font-display"
         >
-          Page Not Found
+          404 - Page Not Found
         </Text>
         <Text
           tag="p"
@@ -75,20 +72,22 @@ const popularPages = [
       <div class="grid grid-cols-1 lg:grid-cols-3 mt-12 gap-2">
         {
           popularPages.map((page) => (
-            <div class="relative group  flex flex-col overflow-hidden gap-24 lg:gap-62 p-8 bg-base-50 h-full justify-between">
+            <div class="relative group flex flex-col overflow-hidden gap-24 lg:gap-62 p-8 h-full justify-between" style="background-color: #FF5000;">
               <a href={page.href} class="inset-0 absolute z-10" />
               <div class="text-left">
                 <Text
                   tag="h3"
                   variant="displayMD"
-                  class="text-base-900 font-display"
+                  class="font-display"
+                  style="color: #fff;"
                 >
                   {page.title}
                 </Text>
                 <Text
                   tag="p"
                   variant="textBase"
-                  class="text-base-600 mt-4 text-pretty"
+                  class="mt-4 text-pretty"
+                  style="color: #fff; opacity: 0.85;"
                 >
                   {page.description}
                 </Text>
@@ -96,7 +95,8 @@ const popularPages = [
               <Text
                 tag="p"
                 variant="textSM"
-                class="uppercase font-medium text-base-900 group-hover:text-accent-400 mt-4"
+                class="uppercase font-medium mt-4"
+                style="color: #fff;"
               >
                 Read further
               </Text>
@@ -115,17 +115,17 @@ const popularPages = [
           class="flex flex-col sm:flex-row gap-4 justify-center items-center"
         >
           <a
-            href="#_"
+            href="tel:+254718735565"
             class="uppercase font-medium ext-base-900 hover:text-accent-400 text-sm"
           >
-            (555) 012-3456
+            (254) 718-735-565
           </a>
           <span class="hidden sm:block text-base-300">•</span>
           <a
-            href="mailto:hello@mulberry.com"
+            href="mailto:hi@madavi.co"
             class="uppercase font-medium ext-base-900 hover:text-accent-400 text-sm"
           >
-            hello@mulberry.com
+            hi@madavi.co
           </a>
         </div>
       </div>

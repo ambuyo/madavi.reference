@@ -1,41 +1,20 @@
 ---
-// Fundations
 import BaseLayout from "@/layouts/BaseLayout.astro";
-const TURNSTILE_SITE_KEY = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "1x00000000000000000000AA";
 import Text from "@/components/fundations/elements/Text.astro";
 import Button from "@/components/fundations/elements/Button.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
-// Icons
 import Updates from "@/components/fundations/icons/Updates.astro";
 import Insights from "@/components/fundations/icons/Insights.astro";
 import Clients from "@/components/fundations/icons/Clients.astro";
 import Industry from "@/components/fundations/icons/Industry.astro";
 
+const TURNSTILE_SITE_KEY = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "1x00000000000000000000AA";
+
 const newsletterBenefits = [
-  {
-    title: "AI Strategy Updates",
-    description:
-      "Stay informed about changes in AI policy, governance, and adoption trends that may affect your organization.",
-    icon: Updates,
-  },
-  {
-    title: "Expert Insights",
-    description:
-      "Get expert analysis and insights into AI implementation, human-centric transformation, and organizational readiness.",
-    icon: Insights,
-  },
-  {
-    title: "Client Success Stories",
-    description:
-      "Read about real cases and how our HCAIF Framework helped clients achieve their AI adoption goals.",
-    icon: Clients,
-  },
-  {
-    title: "Industry Trends",
-    description:
-      "Learn about emerging trends in AI adoption across sectors and how they impact businesses and leaders.",
-    icon: Industry,
-  },
+  { title: "AI Strategy Updates", description: "Stay informed about changes in AI policy, governance, and adoption trends that may affect your organization.", icon: Updates },
+  { title: "Expert Insights", description: "Get expert analysis and insights into AI implementation, human-centric transformation, and organisational readiness.", icon: Insights },
+  { title: "Client Success Stories", description: "Read about real cases and how our HCAIF Framework helped clients achieve their AI adoption goals.", icon: Clients },
+  { title: "Industry Trends", description: "Learn about emerging trends in AI adoption across sectors and how they impact businesses and leaders.", icon: Industry },
 ];
 
 const newsletterTopics = [
@@ -51,7 +30,7 @@ const newsletterTopics = [
 ---
 
 <BaseLayout>
-  <section>
+  <section class="newsletter-page">
     <Wrapper variant="standard" class="pb-12 pt-48">
       <div class="overflow-hidden grid grid-cols-1 lg:grid-cols-2">
         <div class="p-8 h-full flex flex-col justify-start bg-base-50">
@@ -89,8 +68,8 @@ const newsletterTopics = [
             }
           </div>
         </div>
-        <div class="mx-auto">
-          <form class="space-y-4 p-8 bg-accent-900 h-full">
+        <div class="mx-auto w-full">
+          <form class="space-y-4 p-8 bg-accent-900 h-full" id="newsletter-form">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div class="space-y-1">
                 <label
@@ -104,7 +83,7 @@ const newsletterTopics = [
                   id="firstName"
                   name="firstName"
                   required
-                  class="w-full px-3 py-2 border-b border-transparent h-12 bg-white/5 focus:outline-none focus:bg-white/8 text-white text-xs focus:ring-0"
+                  class="w-full px-3 py-2 border-b border-transparent h-12 bg-white/5 focus:outline-none focus:bg-white/8 text-white placeholder:text-white text-xs focus:ring-0"
                   placeholder="John"
                 />
               </div>
@@ -120,7 +99,7 @@ const newsletterTopics = [
                   id="lastName"
                   name="lastName"
                   required
-                  class="w-full px-3 py-2 border-b border-transparent h-12 bg-white/5 focus:outline-none focus:bg-white/8 text-white text-xs focus:ring-0"
+                  class="w-full px-3 py-2 border-b border-transparent h-12 bg-white/5 focus:outline-none focus:bg-white/8 text-white placeholder:text-white text-xs focus:ring-0"
                   placeholder="Doe"
                 />
               </div>
@@ -137,7 +116,7 @@ const newsletterTopics = [
                 id="email"
                 name="email"
                 required
-                class="w-full px-3 py-2 border-b border-transparent h-12 bg-white/5 focus:outline-none focus:bg-white/8 text-white text-xs focus:ring-0"
+                class="w-full px-3 py-2 border-b border-transparent h-12 bg-white/5 focus:outline-none focus:bg-white/8 text-white placeholder:text-white text-xs focus:ring-0"
                 placeholder="john.doe@example.com"
               />
             </div>
@@ -151,7 +130,7 @@ const newsletterTopics = [
               <select
                 id="interest"
                 name="interest"
-                class="w-full px-3 py-2 border-b border-transparent h-12 bg-white/5 focus:outline-none focus:bg-white/8 text-white text-xs focus:ring-0"
+                class="w-full px-3 py-2 border-b border-transparent h-12 bg-white/5 focus:outline-none focus:bg-white/8 text-white placeholder:text-white text-xs focus:ring-0"
               >
                 <option value="">Select areas of interest</option>
                 <option value="strategy">AI Strategy</option>
@@ -172,7 +151,7 @@ const newsletterTopics = [
                 required
                 class="mt-1 size-4 text-accent-600 focus:ring-accent-500 ring-offset-accent-900 border-white/10 rounded bg-accent-800"
               />
-              <label for="privacy" class="text-xs text-base-400">
+              <label for="privacy" class="text-xs text-white">
                 I agree to receive newsletters from Madavi Advisory. I
                 understand I can unsubscribe at any time. View our <a
                   href="/privacy"
@@ -202,9 +181,9 @@ const newsletterTopics = [
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-8">
         {
           newsletterBenefits.map((benefit) => (
-            <div class="bg-base-50  p-8 flex flex-col">
+            <div class="bg-base-50 p-8 flex flex-col">
               {benefit.icon && (
-                <benefit.icon class="size-8 text-secondary-400 " />
+                <benefit.icon class="size-8 text-secondary-400" />
               )}
               <Text
                 tag="h3"
@@ -254,18 +233,9 @@ const newsletterTopics = [
       >
         {
           [
-            {
-              label: "Active Subscribers",
-              value: "5,000+",
-            },
-            {
-              label: "Newsletter Delivery",
-              value: "Monthly",
-            },
-            {
-              label: "Years of Insights",
-              value: "5+",
-            },
+            { label: "Active Subscribers", value: "5,000+" },
+            { label: "Newsletter Delivery", value: "Monthly" },
+            { label: "Years of Insights",   value: "5+" },
           ].map((stat) => (
             <li class="flex flex-col gap-1 lg:gap-48 lg:px-4">
               <Text
@@ -292,7 +262,7 @@ const newsletterTopics = [
 
 <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <script>
-  const form = document.querySelector("form") as HTMLFormElement;
+  const form = document.getElementById("newsletter-form") as HTMLFormElement;
   const messageDiv = document.getElementById("form-message");
   const submitBtn = document.getElementById("subscribe-btn") as HTMLButtonElement;
 
@@ -305,7 +275,7 @@ const newsletterTopics = [
 
       if (!turnstileToken) {
         messageDiv.classList.remove("hidden");
-        messageDiv.classList.add("bg-red-50", "text-red-800", "border", "border-red-200");
+        messageDiv.className = "text-xs p-3 rounded bg-red-50 text-red-800 border border-red-200";
         messageDiv.textContent = "Please complete the security check before submitting.";
         return;
       }
@@ -314,7 +284,7 @@ const newsletterTopics = [
         firstName: formData.get("firstName"),
         lastName: formData.get("lastName"),
         email: formData.get("email"),
-        interest: formData.get("interest"),
+        interest: formData.get("interest") || "all",
         privacy: formData.get("privacy") === "on",
         turnstileToken,
       };
@@ -331,22 +301,19 @@ const newsletterTopics = [
         });
 
         const result = await response.json();
-
         messageDiv.classList.remove("hidden");
 
         if (response.ok) {
-          messageDiv.classList.add("bg-green-50", "text-green-800", "border", "border-green-200");
-          messageDiv.classList.remove("bg-red-50", "text-red-800", "border-red-200");
+          messageDiv.className = "text-xs p-3 rounded bg-green-50 text-green-800 border border-green-200";
           messageDiv.textContent = `Success! Welcome ${data.firstName}. Check your inbox for updates.`;
           form.reset();
         } else {
-          messageDiv.classList.add("bg-red-50", "text-red-800", "border", "border-red-200");
-          messageDiv.classList.remove("bg-green-50", "text-green-800", "border-green-200");
-          messageDiv.textContent = result.message || result.error || "Failed to subscribe";
+          messageDiv.className = "text-xs p-3 rounded bg-red-50 text-red-800 border border-red-200";
+          messageDiv.textContent = result.message || result.error || "Failed to subscribe. Please try again.";
         }
-      } catch (error) {
-        messageDiv.classList.remove("hidden", "bg-green-50", "text-green-800", "border-green-200");
-        messageDiv.classList.add("bg-red-50", "text-red-800", "border", "border-red-200");
+      } catch {
+        messageDiv.classList.remove("hidden");
+        messageDiv.className = "text-xs p-3 rounded bg-red-50 text-red-800 border border-red-200";
         messageDiv.textContent = "An error occurred. Please try again.";
       } finally {
         submitBtn.disabled = false;
@@ -355,3 +322,10 @@ const newsletterTopics = [
     });
   }
 </script>
+
+<style>
+  .newsletter-page {
+    --color-accent-800: #015E68;
+    --color-accent-900: #015E68;
+  }
+</style>

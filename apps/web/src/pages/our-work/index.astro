@@ -9,9 +9,9 @@ import SingleWorkCard from "@/components/cases/SingleWorkCard.astro";
 // Data
 import { getOurWork } from "@/lib/data";
 const allCaseStudies = (await getOurWork()).sort((a, b) => {
-  const yearA = a.data.year || 0;
-  const yearB = b.data.year || 0;
-  return yearB - yearA;
+  const dateA = (a.data as any).completionDate ? new Date((a.data as any).completionDate).getTime() : 0;
+  const dateB = (b.data as any).completionDate ? new Date((b.data as any).completionDate).getTime() : 0;
+  return dateB - dateA;
 });
 
 const seo = {

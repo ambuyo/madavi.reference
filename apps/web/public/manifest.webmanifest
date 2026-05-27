@@ -4,13 +4,13 @@
   "description": "Madavi Agency",
   "start_url": "/",
   "display": "standalone",
-  "theme_color": "#000000",
+  "theme_color": "#005B65",
   "background_color": "#ffffff",
   "icons": [
     {
-      "src": "/favicon.ico",
+      "src": "/favicon.png",
       "sizes": "any",
-      "type": "image/x-icon"
+      "type": "image/png"
     }
   ]
 }
