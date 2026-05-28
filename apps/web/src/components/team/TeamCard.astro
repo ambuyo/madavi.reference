@@ -7,7 +7,7 @@ const { url, name, image, role } = {
   url: "/team/" + Astro.props.post.slug,
   name: Astro.props.post.data.name,
   role: Astro.props.post.data.role,
-  image: Astro.props.post.data.image.url,
+  image: Astro.props.post.data.image?.url,
 };
 ---
 
@@ -20,13 +20,15 @@ const { url, name, image, role } = {
     aria-label={`View profile for ${name}`}
     class="absolute inset-0 z-10"></a>
 
-  <Image
-    width="1000"
-    height="1000"
-    src={image}
-    alt={name}
-    class="object-cover object-center w-full aspect-9/12"
-  />
+  {image && (
+    <Image
+      width="1000"
+      height="1000"
+      src={image}
+      alt={name}
+      class="object-cover object-center w-full aspect-9/12"
+    />
+  )}
 
   <div class="p-8">
     <Text tag="h3" variant="displaySM" class="text-base-900 font-display">

@@ -2,7 +2,7 @@
 // Assets
 import { Image } from "astro:assets";
 import type { ImageMetadata } from "astro";
-import talk from "@/images/assets/talk.png";
+
 // Fundations
 import Text from "@/components/fundations/elements/Text.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
@@ -28,27 +28,29 @@ const { title, description, narrativeParagraphs, heroImage } = Astro.props;
     <div
       class="grid md:grid-cols-2 lg:grid-cols-2 gap-0 bg-base-50 items-stretch"
     >
-      <div class="overflow-hidden">
-        {typeof heroImage === "string" ? (
-          <img
-            src={heroImage}
-            alt="Value Proposition"
-            loading="eager"
-            decoding="async"
-            class="w-full h-full object-cover object-center"
-          />
-        ) : (
-          <Image
-            src={heroImage || talk}
-            alt="Value Proposition"
-            width={800}
-            height={800}
-            loading="eager"
-            decoding="async"
-            class="w-full h-full object-cover object-center"
-          />
-        )}
-      </div>
+      {heroImage && (
+        <div class="overflow-hidden">
+          {typeof heroImage === "string" ? (
+            <img
+              src={heroImage}
+              alt="Value Proposition"
+              loading="eager"
+              decoding="async"
+              class="w-full h-full object-cover object-center"
+            />
+          ) : (
+            <Image
+              src={heroImage}
+              alt="Value Proposition"
+              width={800}
+              height={800}
+              loading="eager"
+              decoding="async"
+              class="w-full h-full object-cover object-center"
+            />
+          )}
+        </div>
+      )}
       <div class="flex flex-col p-8 lg:p-12">
         <div>
           <Text

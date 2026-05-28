@@ -9,7 +9,7 @@ const { url, title, description, pubDate, image, author, tags } = {
   tags: post.data.tags ?? [],
   title: post.data.title,
   author: post.data.team ?? null,
-  image: post.data.image.url,
+  image: post.data.image?.url,
   description: post.data.description,
   pubDate: new Date(post.data.pubDate).toLocaleDateString("en-US", {
     year: "numeric",
@@ -66,13 +66,15 @@ const formattedAuthor = author
       </Text>
     </div>
   </div>
-  <Image
-    src={image}
-    alt={title}
-    width={800}
-    height={800}
-    loading="eager"
-    decoding="async"
-    class="object-cover w-full aspect-16/11 md:col-span-2 rounded-xl order-first md:order-last"
-  />
+  {image && (
+    <Image
+      src={image}
+      alt={title}
+      width={800}
+      height={800}
+      loading="eager"
+      decoding="async"
+      class="object-cover w-full aspect-16/11 md:col-span-2 rounded-xl order-first md:order-last"
+    />
+  )}
 </article>

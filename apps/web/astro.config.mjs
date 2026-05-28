@@ -53,7 +53,6 @@ export default defineConfig({
       {
         protocol: "https",
         hostname: "cms.madavi.co",
-        pathname: "/wp-content/**",
       },
       {
         protocol: "https",
