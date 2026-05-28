@@ -6,9 +6,9 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "cache:posts": "npx tsx scripts/cache-wordpress-posts.ts",
-    "populate:info-pages": "npx tsx scripts/populate-info-pages.ts",
-    "build": "npm run cache:posts && astro build",
+    "cache:posts": "pnpm exec tsx scripts/cache-wordpress-posts.ts",
+    "populate:info-pages": "pnpm exec tsx scripts/populate-info-pages.ts",
+    "build": "pnpm run cache:posts && astro build",
     "preview": "astro preview",
     "astro": "astro"
   },
@@ -47,6 +47,7 @@
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.1.18",
-    "tailwindcss": "^4.1.18"
+    "tailwindcss": "^4.1.18",
+    "tsx": "^4.21.0"
   }
 }
