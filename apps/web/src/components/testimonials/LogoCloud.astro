@@ -1,6 +1,4 @@
 ---
-// Assets
-import { Image } from "astro:assets";
 // Foundations
 import Kicker from "@/components/fundations/elements/Kicker.astro";
 import Text from "@/components/fundations/elements/Text.astro";
@@ -56,13 +54,13 @@ We’re proud to work with leaders and innovators across the globe and here in K
   class="grid grid-cols-2 lg:grid-cols-5 gap-4 items-center justify-between mt-12"
 >
   {
-    logos.map((logo) => (
+    logos.map((logo: any) => (
         <div class="bg-base-50 p-4 flex flex-col items-center justify-center aspect-square">
           {logo.url ? (
             <a href={logo.url} target="_blank" rel="noopener noreferrer" class="w-full h-full flex items-center justify-center">
               <img
-                src={logo.logo.asset.url}
-                alt={logo.logo.alt || logo.company}
+                src={logo.logo?.asset?.url}
+                alt={logo.logo?.alt || logo.company}
                 loading="eager"
                 decoding="async"
                 class="object-contain w-3/4 h-3/4 logo-img"
@@ -70,8 +68,8 @@ We’re proud to work with leaders and innovators across the globe and here in K
             </a>
           ) : (
             <img
-              src={logo.logo.asset.url}
-              alt={logo.logo.alt || logo.company}
+              src={logo.logo?.asset?.url}
+              alt={logo.logo?.alt || logo.company}
               loading="eager"
               decoding="async"
               class="object-contain w-3/4 h-3/4 logo-img"

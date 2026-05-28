@@ -5,7 +5,7 @@
     "dev": "pnpm --parallel -r dev",
     "dev:web": "pnpm --filter @madavi/web dev",
     "dev:studio": "pnpm --filter @madavi/studio dev",
-    "build": "pnpm --filter @madavi/web build",
+    "build": "cd apps/web && pnpm run build",
     "build:all": "pnpm --parallel -r build",
     "build:web": "pnpm --filter @madavi/web build",
     "build:studio": "pnpm --filter @madavi/studio build",

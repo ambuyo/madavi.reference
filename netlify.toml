@@ -1,0 +1,7 @@
+[build]
+  command = "corepack enable pnpm && pnpm --filter @madavi/web build"
+  publish = "apps/web/dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+  PNPM_VERSION = "11.4.0"
