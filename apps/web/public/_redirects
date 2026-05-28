@@ -1,0 +1,22 @@
+# Permanent redirects
+
+# Author archive: /writer/:username/ → /blog/author/:username
+/writer/:username/                          /blog/author/:username                      301
+/writer/:username                           /blog/author/:username                      301
+
+/contact                                    /get-a-proposal                             301
+/reports                                    /resources/reports                          301
+/reports/                                   /resources/reports                          301
+
+/the-agency                                 /the-imc-agency                             301
+/the-agency/                                /the-imc-agency                             301
+/gro/profile/madavi/                        /blog/cat/madavigro                         301
+/gro/profile/madavi                         /blog/cat/madavigro                         301
+/free-brand-discovery                       /get-a-proposal                             301
+/free-brand-discovery/                      /get-a-proposal                             301
+/work/:slug                                 /our-work/:slug                             301
+/work/:slug/                                /our-work/:slug                             301
+/contact-us                                 /get-a-proposal                             301
+/contact-us/                                /get-a-proposal                             301
+/ai-studio/agents-development/kuzafy/       /solutions/kuzafy                           301
+/ai-studio/agents-development/sauti-voice-ai/ /solutions/sauti-voice-ai               301
