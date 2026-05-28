@@ -4,10 +4,8 @@ packages:
 
 allowBuilds:
   '@parcel/watcher': true
-  esbuild: true
   sharp: true
 
 onlyBuiltDependencies:
   - '@parcel/watcher'
-  - esbuild
   - sharp
