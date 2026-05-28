@@ -1,0 +1,56 @@
+---
+const steps = [
+  {
+    num: "1",
+    title: "Submit Your Core Profile",
+    time: "Takes less than 5 minutes",
+    description: "Complete our brief, high-level organizational assessment form below. No sensitive technical credentials required.",
+  },
+  {
+    num: "2",
+    title: "Madavi AI Engine Process",
+    time: "10 – 20 Minutes",
+    description: "Our AI strategy leads analyze your market footprint, operational scale, and baseline tech readiness against established industry benchmarks.",
+  },
+  {
+    num: "3",
+    title: "Receive Your Custom Report",
+    time: "Within 15 minutes of data submission",
+    description: "Get a comprehensive, boardroom-ready PDF breaking down your operational vulnerabilities, advantages, and your explicit next strategic moves.",
+  },
+];
+---
+
+<div class="h-full flex flex-col p-8 lg:p-12" style="background-color: #005B65;">
+  <div class="mb-10">
+    <h2 class="text-white font-display font-bold leading-tight tracking-tight" style="font-size: clamp(1.4rem, 2.5vw, 2rem);">
+      The Process (How it Works)
+    </h2>
+  </div>
+
+  <div class="flex flex-col">
+    {steps.map((step, i) => (
+      <div class="flex gap-5" style="align-items: stretch;">
+        {/* Left: number + dotted line — stretches full height of row */}
+        <div class="flex flex-col items-center flex-shrink-0" style="width: 36px;">
+          <div
+            class="w-9 h-9 rounded-full border-2 flex items-center justify-center text-sm font-bold text-white flex-shrink-0"
+            style="border-color: rgba(255,255,255,0.6);"
+          >
+            {step.num}
+          </div>
+          {i < steps.length - 1 && (
+            <div style="flex: 1; width: 0; border-left: 2px dotted rgba(255,255,255,0.4); margin-top: 6px; margin-bottom: 0;" />
+          )}
+        </div>
+
+        {/* Right: content */}
+        <div class={i < steps.length - 1 ? "pb-10" : ""}>
+          <p class="text-white font-bold text-base leading-snug">{step.title}</p>
+          <p class="text-sm italic mt-1" style="color: rgba(255,255,255,0.6);">{step.time}</p>
+          <p class="text-sm mt-2 leading-relaxed" style="color: rgba(255,255,255,0.8);">{step.description}</p>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>

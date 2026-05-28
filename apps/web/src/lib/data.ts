@@ -257,6 +257,28 @@ export async function getPostsBySubcategory(subcategorySlug: string): Promise<Po
 }
 
 /**
+ * Get posts by author slug — WordPress only
+ */
+export async function getPostsByAuthor(authorSlug: string, limit?: number): Promise<Post[]> {
+  try {
+    const { readCachedPosts } = await import("./wordpress/cache");
+    const { transformWordPressPost } = await import("./wordpress/transforms");
+
+    const cachedPosts = await readCachedPosts();
+    if (!cachedPosts || cachedPosts.length === 0) return [];
+
+    const filtered = cachedPosts.filter(
+      (post) => post._embedded?.author?.[0]?.slug === authorSlug
+    );
+    const sliced = limit ? filtered.slice(0, limit) : filtered;
+    return sliced.map(transformWordPressPost);
+  } catch (error) {
+    console.warn(`Failed to fetch posts by author "${authorSlug}":`, error);
+    return [];
+  }
+}
+
+/**
  * Get all unique tags — WordPress only
  */
 export async function getAllTags(): Promise<string[]> {

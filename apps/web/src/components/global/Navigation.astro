@@ -23,7 +23,7 @@ const navLinks = [
   { label: "Our Approach", href: "/our-approach" },
   { label: "Resources", href: "/resources", hasMegamenu: true },
   { label: "About", href: "/about" },
-  { label: "Contact", href: "/contact" },
+  { label: "Contact", href: "/get-a-proposal" },
 ];
 
 const headerBaseClass = "fixed inset-x-0 top-0 z-50 transition-all duration-300";
@@ -84,15 +84,15 @@ const headerClass = variant === "transparent"
         <Search variant={variant} />
         {variant === "transparent" ? (
           <>
-            <Button isLink size="base" variant="orange" href="/get-a-proposal" class="hidden lg:flex rounded-[15px] [.scrolled_&]:!hidden">
+            <Button isLink size="base" variant="orange" href="/free-ai-audit" class="hidden lg:flex rounded-[15px] [.scrolled_&]:!hidden">
               Free AI Audit
             </Button>
-            <Button isLink size="base" variant="orange" href="/get-a-proposal" class="hidden rounded-[15px] [.scrolled_&]:!flex">
+            <Button isLink size="base" variant="orange" href="/free-ai-audit" class="hidden rounded-[15px] [.scrolled_&]:!flex">
               Free AI Audit
             </Button>
           </>
         ) : (
-          <Button isLink size="base" variant="orange" href="/get-a-proposal" class="hidden lg:flex rounded-[15px]">
+          <Button isLink size="base" variant="orange" href="/free-ai-audit" class="hidden lg:flex rounded-[15px]">
             Free AI Audit
           </Button>
         )}

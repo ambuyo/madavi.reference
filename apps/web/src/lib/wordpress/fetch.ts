@@ -75,6 +75,7 @@ export interface WordPressPost {
     author?: Array<{
       name: string;
       slug: string;
+      description?: string;
       avatar_urls?: { "24"?: string; "48"?: string; "96"?: string };
     }>;
     "wp:term"?: Array<Array<{

@@ -1,0 +1,70 @@
+---
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+import Text from "@/components/fundations/elements/Text.astro";
+
+const items = [
+  {
+    color: "#FF5000",
+    title: "Titan Benchmarking",
+    description: "See exactly how your current capabilities compare directly to leading enterprise models in your specific sector.",
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" /></svg>`,
+  },
+  {
+    color: "#FF5000",
+    title: "Infrastructure Assessment",
+    description: "Evaluate your existing data structures and tech stack to determine if you are built for seamless AI scaling.",
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5.25 14.25h13.5m-13.5 0a3 3 0 01-3-3m3 3a3 3 0 100 6h13.5a3 3 0 100-6m-16.5-3a3 3 0 013-3h13.5a3 3 0 013 3m-19.5 0a4.5 4.5 0 01.9-2.7L5.737 5.1a3.375 3.375 0 012.7-1.35h7.126c1.062 0 2.062.5 2.7 1.35l2.587 3.45a4.5 4.5 0 01.9 2.7m0 0a3 3 0 01-3 3m0 3h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008zm-3 6h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008z" /></svg>`,
+  },
+  { 
+    color: "#FF5000",
+    title: "Operational Readiness Scoring",
+    description: "Identify high-yield workflows ripe for optimization, separating real strategic value from superficial automation.",
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 010 5.332 3.745 3.745 0 01-3.068 1.593 3.745 3.745 0 01-5.332 0 3.745 3.745 0 01-1.593-3.068 3.745 3.745 0 010-5.332 3.745 3.745 0 011.593-3.068A3.745 3.745 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.745 3.745 0 015.332 0A3.745 3.745 0 0121 7.5c0 1.268-.63 2.39-1.593 3.068A3.74 3.74 0 0121 12z" /></svg>`,
+  },
+  {
+    color: "#FF5000",
+    title: "Human-Centric AI Blueprint",
+    description: "Actionable recommendations on bridging the gap between advanced technology and human identity to protect team morale and brand integrity.",
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.182 15.182a4.5 4.5 0 01-6.364 0M21 12a9 9 0 11-18 0 9 9 0 0118 0zM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75zm-.375 0h.008v.015h-.008V9.75zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75zm-.375 0h.008v.015h-.008V9.75z" /></svg>`,
+  },
+];
+---
+
+<section class="bg-base-50">
+  <Wrapper variant="standard" class="py-16 lg:py-24">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16 items-start">
+
+      {/* Left: Heading */}
+      <div class="lg:col-span-1">
+        <Text
+          tag="h2"
+          variant="displayLG"
+          class="text-base-950 font-display font-bold leading-tight tracking-tight"
+        >
+          What's Inside Your Customized AI Maturity Report?
+        </Text>
+      </div>
+
+      {/* Right: 2x2 grid */}
+      <div class="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-10">
+        {items.map((item) => (
+          <div>
+            <div style={`color: ${item.color};`} set:html={item.icon} />
+            <Text
+              tag="h3"
+              variant="textLG"
+              class="font-bold mt-3"
+              style={`color: ${item.color};`}
+            >
+              {item.title}
+            </Text>
+            <Text tag="p" variant="textSM" class="text-base-600 mt-2 leading-relaxed">
+              {item.description}
+            </Text>
+          </div>
+        ))}
+      </div>
+
+    </div>
+  </Wrapper>
+</section>

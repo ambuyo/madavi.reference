@@ -1,0 +1,82 @@
+---
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+import Text from "@/components/fundations/elements/Text.astro";
+import { client } from "@/lib/sanity/client";
+
+const query = `*[_type == "clientLogo"] | order(order asc) {
+  _id,
+  company,
+  logo { asset -> { url }, alt },
+  url
+}`;
+
+const logos = await client.fetch(query);
+const doubled = [...logos, ...logos];
+---
+
+<style>
+  .logo-track {
+    display: flex;
+    gap: 2rem;
+    animation: scroll-logos 60s linear infinite;
+    width: max-content;
+  }
+
+  .logo-track:hover {
+    animation-play-state: paused;
+  }
+
+  @keyframes scroll-logos {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  .logo-img {
+    filter: grayscale(100%);
+    transition: filter 0.3s ease;
+  }
+
+  .logo-img:hover {
+    filter: grayscale(0%);
+  }
+</style>
+
+<section class="py-12 lg:py-16 border-t border-base-200">
+  <Wrapper variant="standard">
+    <Text
+      tag="h2"
+      variant="displaySM"
+      class="text-base-950 font-display font-bold tracking-tight mb-10"
+    >
+      Trusted by AI-First Companies
+    </Text>
+  </Wrapper>
+
+  <div class="overflow-hidden">
+    <div class="logo-track">
+      {doubled.map((logo) => (
+        <div class="flex-shrink-0 flex items-center justify-center bg-base-50 p-4" style="width: 140px; height: 80px;">
+          {logo.url ? (
+            <a href={logo.url} target="_blank" rel="noopener noreferrer" class="flex items-center justify-center w-full h-full">
+              <img
+                src={logo.logo.asset.url}
+                alt={logo.logo.alt || logo.company}
+                loading="lazy"
+                decoding="async"
+                class="object-contain w-full h-full logo-img"
+              />
+            </a>
+          ) : (
+            <img
+              src={logo.logo.asset.url}
+              alt={logo.logo.alt || logo.company}
+              loading="lazy"
+              decoding="async"
+              class="object-contain w-full h-full logo-img"
+            />
+          )}
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

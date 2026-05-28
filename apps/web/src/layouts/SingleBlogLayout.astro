@@ -18,6 +18,8 @@ interface Props {
   fullSummary?: any[];
   compiledBy?: string;
   authorAvatar?: string | any;
+  authorSlug?: string;
+  categorySlug?: string;
   downloadUrl?: string;
 }
 
@@ -35,6 +37,8 @@ const {
   fullSummary,
   compiledBy,
   authorAvatar,
+  authorSlug,
+  categorySlug,
   downloadUrl,
 } = Astro.props;
 
@@ -74,9 +78,22 @@ const imageUrl = typeof image === "string" ? image : image?.url || image?.src;
 
             {/* Category & Publication Date */}
             <div class="mt-4 space-y-2">
-              <Text tag="p" variant="textXS" class="text-base-600 uppercase font-medium">
-                {category}
-              </Text>
+              {categorySlug ? (
+                <a
+                  href={`/blog/cat/${categorySlug}`}
+                  class="font-semibold text-base-600 hover:text-accent-700 transition-colors"
+                  style="font-family: 'Geom', sans-serif; font-weight: 600; font-size: 15px;"
+                >
+                  {category.replace(/\w+/g, (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())}
+                </a>
+              ) : (
+                <p
+                  class="font-semibold text-base-600"
+                  style="font-family: 'Geom', sans-serif; font-weight: 600; font-size: 15px;"
+                >
+                  {category.replace(/\w+/g, (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())}
+                </p>
+              )}
               {readingTime && (
                 <Text tag="p" variant="textXS" class="text-base-600">
                   {readingTime} read
@@ -98,17 +115,35 @@ const imageUrl = typeof image === "string" ? image : image?.url || image?.src;
                   <div class="flex items-center gap-3">
                     {authorAvatar && (
                       <div class="flex-shrink-0">
-                        <img
-                          src={typeof authorAvatar === "string" ? authorAvatar : authorAvatar?.url || authorAvatar?.src}
-                          alt={compiledBy}
-                          class="w-12 h-12 rounded-full object-cover"
-                        />
+                        {authorSlug ? (
+                          <a href={`/blog/author/${authorSlug}`}>
+                            <img
+                              src={typeof authorAvatar === "string" ? authorAvatar : authorAvatar?.url || authorAvatar?.src}
+                              alt={compiledBy}
+                              class="w-12 h-12 rounded-full object-cover hover:opacity-80 transition-opacity"
+                            />
+                          </a>
+                        ) : (
+                          <img
+                            src={typeof authorAvatar === "string" ? authorAvatar : authorAvatar?.url || authorAvatar?.src}
+                            alt={compiledBy}
+                            class="w-12 h-12 rounded-full object-cover"
+                          />
+                        )}
                       </div>
                     )}
                     <div>
-                      <Text tag="p" variant="textBase" class="text-base-900 font-semibold">
-                        {compiledBy}
-                      </Text>
+                      {authorSlug ? (
+                        <a href={`/blog/author/${authorSlug}`} class="hover:text-accent-700 transition-colors">
+                          <Text tag="p" variant="textBase" class="text-base-900 font-semibold">
+                            {compiledBy}
+                          </Text>
+                        </a>
+                      ) : (
+                        <Text tag="p" variant="textBase" class="text-base-900 font-semibold">
+                          {compiledBy}
+                        </Text>
+                      )}
                       <Text tag="p" variant="textXS" class="text-base-500 mt-1">
                         Madavi Team
                       </Text>

@@ -1,0 +1,29 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import AIAuditHero from "@/components/proposal/AIAuditHero.astro";
+import AIAuditForm from "@/components/proposal/AIAuditForm";
+import AuditProcess from "@/components/proposal/AuditProcess.astro";
+import AuditDeliverables from "@/components/proposal/AuditDeliverables.astro";
+import AuditClients from "@/components/proposal/AuditClients.astro";
+
+const seo = {
+  title: "Claim Your Free AI Audit | Madavi",
+  description: "Request your Free AI Audit today to receive a data-driven maturity report, map your tech stack capabilities, and uncover high-yield operational advantages built for scalable growth.",
+  type: "website" as const,
+};
+---
+
+<BaseLayout seo={seo}>
+  <AIAuditHero />
+  <div class="grid grid-cols-1 lg:grid-cols-3 mt-12 lg:mt-16">
+    <div class="lg:col-span-1">
+      <AuditProcess />
+    </div>
+    <div class="lg:col-span-2">
+      <AIAuditForm client:load />
+    </div>
+  </div>
+  <AuditDeliverables />
+  <AuditClients />
+</BaseLayout>
+ 

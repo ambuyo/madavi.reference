@@ -95,6 +95,7 @@ export function transformWordPressPost(wpPost: WordPressPost): Post {
         name: wpAuthor.name,
         slug: wpAuthor.slug,
         avatar: wpAuthor.avatar_urls?.["96"] || wpAuthor.avatar_urls?.["48"] || wpAuthor.avatar_urls?.["24"] || "",
+        bio: wpAuthor.description || "",
       }
     : undefined;
 

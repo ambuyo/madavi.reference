@@ -302,7 +302,7 @@ const SECTION_HEADERS = [
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
-export default function ProposalForm() {
+export default function AIAuditForm() {
   const [step, setStep] = useState(0);
   const [form, setForm] = useState<FormState>(INITIAL);
   const [errors, setErrors] = useState<Record<string, string>>({});

@@ -263,7 +263,8 @@ export function ContactFormReact() {
       <button
         type="submit"
         disabled={isSubmitting || !turnstileToken}
-        className="w-full px-6 py-3 bg-accent-400 text-black font-semibold rounded hover:bg-accent-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full px-6 py-3 text-black font-semibold rounded hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+        style={{ backgroundColor: "#fff" }}
       >
         {isSubmitting ? "Sending..." : "Send Message"}
       </button>

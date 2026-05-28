@@ -6,8 +6,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        display: '"Lora", serif',
-        sans: '"Inter", sans-serif',
+        display: '"Tiempos", serif',
+        sans: '"DM Sans", sans-serif',
       },
       animation: {
         'hover-wiggle': 'hover-wiggle 0.8s ease-in-out infinite',

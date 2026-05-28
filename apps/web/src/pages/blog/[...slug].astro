@@ -16,17 +16,20 @@ const imageUrl = typeof post.data.image === "string"
   : post.data.image?.url || "";
 
 const categoryName = post.data.categories?.[0]?.name || "Blog";
+const categorySlug = post.data.categories?.[0]?.slug;
 const wordCount = post.plainText?.trim().split(/\s+/).length || 0;
 const readingTimeMinutes = Math.ceil(wordCount / 200);
 const readingTime = readingTimeMinutes < 1 ? "1 min" : `${readingTimeMinutes} min`;
 
-// Get author name from team field or WordPress author data
-const authorName = post.data.team || (post.data as any)?._embedded?.author?.[0]?.name || "Madavi";
+const authorName = post.data.team || post.data.author?.name || "Madavi";
+const authorAvatar = post.data.author?.avatar;
+const authorSlug = post.data.author?.slug;
 ---
 
 <SingleBlogLayout
   title={post.data.title}
   category={categoryName}
+  categorySlug={categorySlug}
   date={post.data.pubDate || new Date()}
   readingTime={readingTime}
   image={imageUrl}
@@ -35,6 +38,8 @@ const authorName = post.data.team || (post.data as any)?._embedded?.author?.[0]?
   seoDescription={post.data.description}
   seoImage={imageUrl}
   compiledBy={authorName}
+  authorAvatar={authorAvatar}
+  authorSlug={authorSlug}
 >
   {post.body && <div set:html={post.body} />}
 </SingleBlogLayout>

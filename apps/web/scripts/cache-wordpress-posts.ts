@@ -41,6 +41,7 @@ function slimPost(post: WordPressPost): WordPressPost {
       rest._embedded.author = rest._embedded.author.map((a: any) => ({
         name: a.name,
         slug: a.slug,
+        description: a.description || "",
         avatar_urls: a.avatar_urls
           ? { "96": a.avatar_urls["96"] }
           : undefined,
@@ -84,11 +85,34 @@ async function cachePosts() {
       page++;
     }
 
-    const posts = allPosts.slice(0, TARGET).map(slimPost);
-    await writeCachedPosts(posts);
+    const slimmedPosts = allPosts.slice(0, TARGET).map(slimPost);
+
+    // Enrich author descriptions — _embed doesn't return description, fetch users directly
+    const authorSlugs = [...new Set(
+      slimmedPosts
+        .map((p: any) => p._embedded?.author?.[0]?.slug)
+        .filter(Boolean)
+    )];
+
+    if (authorSlugs.length > 0) {
+      const users = await wpFetch<any[]>(`/users?slug=${authorSlugs.join(",")}&per_page=100`);
+      const bioBySlug: Record<string, string> = {};
+      for (const u of users) {
+        if (u.slug && u.description) bioBySlug[u.slug] = u.description;
+      }
+      for (const post of slimmedPosts as any[]) {
+        const author = post._embedded?.author?.[0];
+        if (author?.slug && bioBySlug[author.slug]) {
+          author.description = bioBySlug[author.slug];
+        }
+      }
+      console.log(`👤 Enriched bios for ${Object.keys(bioBySlug).length} author(s)`);
+    }
+
+    await writeCachedPosts(slimmedPosts);
 
     const duration = Date.now() - startTime;
-    console.log(`✅ Cached ${posts.length} WordPress posts in ${duration}ms`);
+    console.log(`✅ Cached ${slimmedPosts.length} WordPress posts in ${duration}ms`);
     console.log(`📊 Cache will be used for instant page loads until next redeploy`);
   } catch (error) {
     console.error("❌ Failed to cache WordPress posts:", error);
