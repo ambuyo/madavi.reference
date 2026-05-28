@@ -1,13 +1,13 @@
 {
-  "name": "mulberry",
+  "name": "madavi",
   "private": true,
   "scripts": {
     "dev": "pnpm --parallel -r dev",
-    "dev:web": "pnpm --filter @lexington/web dev",
-    "dev:studio": "pnpm --filter @lexington/studio dev",
+    "dev:web": "pnpm --filter @madavi/web dev",
+    "dev:studio": "pnpm --filter @madavi/studio dev",
     "build": "pnpm --parallel -r build",
-    "build:web": "pnpm --filter @lexington/web build",
-    "build:studio": "pnpm --filter @lexington/studio build",
+    "build:web": "pnpm --filter @madavi/web build",
+    "build:studio": "pnpm --filter @madavi/studio build",
     "clean": "bash scripts/clean.sh",
     "seed:all": "SEED_ALL=1 pnpm exec tsx scripts/migrate-to-sanity.ts"
   },
