@@ -9,6 +9,13 @@ export default defineConfig({
   adapter: node({ mode: "standalone" }),
   redirects: {
     "/resources": { destination: "/blog", status: 301 },
+    "/work/healthtech-hub-africa/": { destination: "/our-work/", status: 301 },
+    "/work/konvergenz-network-solutions/": { destination: "/our-work/", status: 301 },
+    "/work/creco-kenya/": { destination: "/our-work/", status: 301 },
+    "/work/accosca/": { destination: "/our-work/", status: 301 },
+    "/work/clay-associates-advocates/": { destination: "/our-work/", status: 301 },
+    "/gro/courses/artificial-intelligence-in-digital-marketing/": { destination: "/our-work/", status: 301 },
+    "/turn-your-business-to-an-authentic-brand-in-kenya/": { destination: "/blog", status: 301 },
   },
   markdown: {
     drafts: true,
