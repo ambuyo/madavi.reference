@@ -1,5 +1,8 @@
+[nixpkgs]
+archive = "https://github.com/NixOS/nixpkgs/archive/nixos-25.05.tar.gz"
+
 [phases.setup]
-nixPkgs = ["nodejs_23"]
+nixPkgs = ["nodejs_24"]
 
 [phases.install]
 cmds = [
