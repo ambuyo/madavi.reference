@@ -51,13 +51,23 @@ const footerSections = [
         <Text tag="p" variant="textXS" class="text-base-300 mt-12">
           For nearly a decade, we built brands and drove growth. Now, we build the systems that make growth sustainable across critical industries.
         </Text>
-        <Text
-          tag="p"
-          variant="textXS"
-          class="text-base-300 border-t border-base-900 pt-4 mt-4"
-        >
-          © <span id="current-year"></span> Madavi Global Inc. All rights reserved.
-        </Text>
+        <div class="flex items-center gap-4 mt-6">
+          <a href="https://www.linkedin.com/company/madavihq/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" class="text-base-300 hover:text-accent-400 transition-colors duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" class="size-5" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14C2.239 0 0 2.239 0 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5V5c0-2.761-2.238-5-5-5zM8 19H5V8h3v11zM6.5 6.732c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zM20 19h-3v-5.604c0-3.368-4-3.113-4 0V19h-3V8h3v1.765C14.396 7.179 20 6.988 20 12.47V19z"/></svg>
+          </a>
+          <a href="https://www.instagram.com/madavihq" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="text-base-300 hover:text-accent-400 transition-colors duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" class="size-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          </a>
+          <a href="https://www.facebook.com/madavihq" target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="text-base-300 hover:text-accent-400 transition-colors duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" class="size-5" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073C24 5.446 18.627 0 12 0S0 5.446 0 12.073c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953h-1.514c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </a>
+          <a href="https://x.com/madavihq" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)" class="text-base-300 hover:text-accent-400 transition-colors duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" class="size-5" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.259 5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
+          <a href="https://clutch.co/profile/madavi" target="_blank" rel="noopener noreferrer" aria-label="Clutch" class="text-base-300 hover:text-accent-400 transition-colors duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" class="size-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 4.5c4.142 0 7.5 3.358 7.5 7.5 0 1.553-.472 2.997-1.281 4.194l-1.768-1.768A5.48 5.48 0 0 0 17.5 12c0-3.038-2.462-5.5-5.5-5.5a5.48 5.48 0 0 0-2.926.843L7.306 5.575A7.46 7.46 0 0 1 12 4.5zm0 15c-4.142 0-7.5-3.358-7.5-7.5 0-1.553.472-2.997 1.281-4.194l1.768 1.768A5.48 5.48 0 0 0 6.5 12c0 3.038 2.462 5.5 5.5 5.5a5.48 5.48 0 0 0 2.926-.843l1.768 1.768A7.46 7.46 0 0 1 12 19.5z"/></svg>
+          </a>
+        </div>
       </div>
       {
         footerSections.map((section) => (
@@ -102,18 +112,19 @@ const footerSections = [
       </div>
     </div>
 
-    <div class="border-t border-white/20 pt-4 mt-12">
+    <div class="border-t border-white/20 pt-4 mt-12 flex flex-wrap items-center justify-between gap-4">
       <nav aria-label="Legal">
         <ul class="flex flex-wrap gap-6">
           <li><a href="/legal/privacy-policy" class="text-xs text-base-300 hover:text-accent-400 transition-colors duration-300">Privacy Policy</a></li>
           <li><a href="/legal/terms-of-use" class="text-xs text-base-300 hover:text-accent-400 transition-colors duration-300">Terms of Use</a></li>
           <li><a href="/legal/accessibility" class="text-xs text-base-300 hover:text-accent-400 transition-colors duration-300">Accessibility</a></li>
           <li><a href="/legal/cookies-policy" class="text-xs text-base-300 hover:text-accent-400 transition-colors duration-300">Cookies Policy</a></li>
-<li><a href="/legal/disclaimer" class="text-xs text-base-300 hover:text-accent-400 transition-colors duration-300">Disclaimer</a></li>
+          <li><a href="/legal/disclaimer" class="text-xs text-base-300 hover:text-accent-400 transition-colors duration-300">Disclaimer</a></li>
           <li><a href="/legal/refund-policy" class="text-xs text-base-300 hover:text-accent-400 transition-colors duration-300">Refund Policy</a></li>
           <li><a href="/legal/data-processing-agreement" class="text-xs text-base-300 hover:text-accent-400 transition-colors duration-300">Data Processing Agreement</a></li>
         </ul>
       </nav>
+      <p class="text-xs text-base-300 shrink-0">© <span id="current-year"></span> Madavi Global Inc. All rights reserved.</p>
     </div>
     <div class="flex justify-center mt-24">
       <Image src={AIGrowthConsulting} alt="AI. Growth. Consulting." class="object-contain" />
