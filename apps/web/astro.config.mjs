@@ -2,9 +2,11 @@ import { defineConfig } from "astro/config";
 import sitemap from "@astrojs/sitemap";
 import react from "@astrojs/react";
 import tailwindcss from "@tailwindcss/vite";
+import node from "@astrojs/node";
 
 export default defineConfig({
-  output: "static",
+  output: "server",
+  adapter: node({ mode: "standalone" }),
   redirects: {
     "/resources": { destination: "/blog", status: 301 },
   },
@@ -19,7 +21,7 @@ export default defineConfig({
     skipInline: false,
     drafts: true,
   },
-  site: "https://madavi.co",
+  site: "https://staging.madavi.co",
   integrations: [
     react(),
     sitemap({
