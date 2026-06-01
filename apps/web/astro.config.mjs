@@ -21,7 +21,7 @@ export default defineConfig({
     skipInline: false,
     drafts: true,
   },
-  site: "https://staging.madavi.co",
+  site: "https://madavi.co",
   integrations: [
     react(),
     sitemap({
