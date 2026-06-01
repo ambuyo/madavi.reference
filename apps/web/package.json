@@ -6,9 +6,9 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "cache:posts": "pnpm exec tsx scripts/cache-wordpress-posts.ts",
+    "cache:posts": "tsx scripts/cache-wordpress-posts.ts",
     "populate:info-pages": "pnpm exec tsx scripts/populate-info-pages.ts",
-    "build": "pnpm run cache:posts && astro build",
+    "build": "tsx scripts/cache-wordpress-posts.ts && astro build",
     "preview": "astro preview",
     "astro": "astro"
   },
