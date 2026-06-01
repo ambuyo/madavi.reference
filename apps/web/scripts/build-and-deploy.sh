@@ -13,7 +13,7 @@ echo ""
 
 # Step 1: Cache latest posts
 echo "📝 Step 1: Fetching latest WordPress posts..."
-npm run cache:posts
+pnpm run cache:posts
 
 if [ $? -ne 0 ]; then
     echo "❌ Failed to cache posts"
@@ -24,7 +24,7 @@ echo ""
 
 # Step 2: Build the site
 echo "🔨 Step 2: Building Astro site..."
-npm run build
+pnpm --filter=web run build
 
 if [ $? -ne 0 ]; then
     echo "❌ Failed to build site"
