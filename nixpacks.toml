@@ -9,7 +9,7 @@ cmds = [
 
 [phases.build]
 cmds = [
-  "find node_modules/.pnpm -name 'esbuild' -path '*/bin/esbuild' -exec chmod +x {} \\; && npm --prefix apps/web run build"
+  "find node_modules/.pnpm -name 'esbuild' -path '*/bin/esbuild' -exec chmod +x {} \\; && NODE_OPTIONS=--experimental-sqlite pnpm --filter=web run build"
 ]
 
 [start]
