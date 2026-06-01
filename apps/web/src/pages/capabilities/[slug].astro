@@ -47,7 +47,7 @@ interface Props {
 const { capability } = Astro.props;
 
 // Determine which component set to use based on slug
-const isAIService = ['ai-readiness', 'executive-advisory', 'leadership-cohort', 'keynotes-licensing'].includes(capability.slug);
+const isAIService = ['ai-readiness', 'executive-advisory', 'leadership-cohort', 'keynotes-licensing', 'ai-agent-development'].includes(capability.slug);
 
 const HeroComponent = isAIService ? ReadinessHero : AgencyHero;
 const FailurePointsComponent = isAIService ? ReadinessFailurePoints : AgencyFailurePoints;
