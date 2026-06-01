@@ -1,13 +1,10 @@
-[nixpkgs]
-archive = "https://github.com/NixOS/nixpkgs/archive/nixos-25.05.tar.gz"
-
 [phases.setup]
-nixPkgs = ["nodejs_24"]
+nixPkgs = ["nodejs_23"]
 
 [phases.install]
 cmds = [
   "npm install -g corepack@latest && corepack enable",
-  "pnpm i --frozen-lockfile"
+  "NODE_OPTIONS=--experimental-sqlite pnpm i --frozen-lockfile"
 ]
 
 [phases.build]
