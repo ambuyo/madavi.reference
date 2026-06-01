@@ -13,7 +13,7 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/node": "^9.5.5",
+    "@astrojs/node": "^10.1.2",
     "@astrojs/react": "^3.5.0",
     "@astrojs/rss": "^4.0.17",
     "@astrojs/sitemap": "^3.7.2",
@@ -27,7 +27,7 @@
     "@sanity/image-url": "^1.1.0",
     "@tailwindcss/forms": "^0.5.11",
     "@tailwindcss/typography": "^0.5.19",
-    "astro": "^6.0.0",
+    "astro": "^6.4.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "embla-carousel-react": "^7.1.0",
