@@ -2,8 +2,14 @@ import type { WordPressPost } from "./fetch";
 import * as fs from "fs";
 import * as path from "path";
 
-const CACHE_DIR = ".cache";
-const POSTS_CACHE_FILE = path.join(CACHE_DIR, "wordpress-posts.json");
+// Build time: CWD = apps/web → .cache/wordpress-posts.json
+// Runtime:    CWD = repo root → apps/web/.cache/wordpress-posts.json
+const POSTS_CACHE_FILE = [
+  path.join(".cache", "wordpress-posts.json"),
+  path.join("apps", "web", ".cache", "wordpress-posts.json"),
+].find(fs.existsSync) ?? path.join(".cache", "wordpress-posts.json");
+
+const CACHE_DIR = path.dirname(POSTS_CACHE_FILE);
 
 // In-memory cache — persists for the lifetime of the Node.js server process.
 // Seeded from the build-time file cache on first access, updated via webhook.
