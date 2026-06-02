@@ -4,7 +4,7 @@ import { wpFetch } from "../src/lib/wordpress/client";
 import { writeCachedPosts } from "../src/lib/wordpress/cache";
 import type { WordPressPost } from "../src/lib/wordpress/fetch";
 
-const TARGET = 400;
+const TARGET = 200;
 const PAGE_SIZE = 100;
 
 // Only fetch fields we actually use — strips unused WP meta, reducing cache size significantly
