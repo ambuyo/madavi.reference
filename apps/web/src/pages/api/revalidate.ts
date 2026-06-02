@@ -30,12 +30,17 @@ export const POST: APIRoute = async ({ request }) => {
       page++;
     }
 
-    setMemoryPosts(allPosts.slice(0, 200));
+    const posts = allPosts.slice(0, 200);
+    setMemoryPosts(posts);
 
-    console.log(`[revalidate] Cache updated — ${allPosts.length} posts`);
+    // Also write to disk so the cache survives server restarts
+    const { writeCachedPosts } = await import("@/lib/wordpress/cache");
+    await writeCachedPosts(posts);
+
+    console.log(`[revalidate] Cache updated — ${posts.length} posts`);
 
     return new Response(
-      JSON.stringify({ success: true, posts: allPosts.length, timestamp: new Date().toISOString() }),
+      JSON.stringify({ success: true, posts: posts.length, timestamp: new Date().toISOString() }),
       { status: 200, headers: { "Content-Type": "application/json" } }
     );
   } catch (error) {

@@ -150,15 +150,12 @@ export async function getPosts(limit?: number) {
       return limit ? posts.slice(0, limit) : posts;
     }
 
-    // If no cache exists at all, try fetching fresh (first build)
+    // No cache on disk yet — fetch fresh synchronously (first boot only)
     const { fetchWordPressPosts } = await import("./wordpress/fetch");
     const posts = await fetchWordPressPosts();
-    return posts.map(transformWordPressPost);
+    return (limit ? posts.slice(0, limit) : posts).map(transformWordPressPost);
   } catch (error) {
-    console.warn(
-      "Failed to load posts. Ensure cache-wordpress-posts.ts has been run.",
-      error
-    );
+    console.warn("Failed to load posts from cms.madavi.co:", error);
     return [];
   }
 }

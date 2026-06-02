@@ -2,6 +2,8 @@ import type { WordPressPost } from "./fetch";
 import * as fs from "fs";
 import * as path from "path";
 
+const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+
 // Build time: CWD = apps/web → .cache/wordpress-posts.json
 // Runtime:    CWD = repo root → apps/web/.cache/wordpress-posts.json
 const POSTS_CACHE_FILE = [
@@ -11,33 +13,65 @@ const POSTS_CACHE_FILE = [
 
 const CACHE_DIR = path.dirname(POSTS_CACHE_FILE);
 
-// In-memory cache — persists for the lifetime of the Node.js server process.
-// Seeded from the build-time file cache on first access, updated via webhook.
-let memoryCache: WordPressPost[] | null = null;
-
-export function getMemoryPosts(): WordPressPost[] | null {
-  return memoryCache;
+interface CacheState {
+  posts: WordPressPost[];
+  timestamp: number;
+  refreshing: boolean;
 }
 
-export function setMemoryPosts(posts: WordPressPost[]): void {
-  memoryCache = posts;
+let cache: CacheState | null = null;
+
+function isStale(): boolean {
+  if (!cache) return true;
+  return Date.now() - cache.timestamp > CACHE_TTL_MS;
+}
+
+async function refreshFromWP(): Promise<void> {
+  if (cache?.refreshing) return;
+  if (cache) cache.refreshing = true;
+
+  try {
+    const { fetchWordPressPosts } = await import("./fetch");
+    const posts = await fetchWordPressPosts();
+    cache = { posts, timestamp: Date.now(), refreshing: false };
+    await writeCachedPosts(posts);
+    console.log(`[cache] Refreshed — ${posts.length} posts from cms.madavi.co`);
+  } catch (error) {
+    console.error("[cache] Failed to refresh posts from cms.madavi.co:", error);
+    if (cache) cache.refreshing = false;
+  }
 }
 
 export async function readCachedPosts(): Promise<WordPressPost[] | null> {
-  // Return in-memory cache if already loaded (avoids repeated disk reads)
-  if (memoryCache) return memoryCache;
-
-  try {
-    if (!fs.existsSync(POSTS_CACHE_FILE)) {
-      return null;
+  // Seed from disk on first boot (fast, no API call)
+  if (!cache) {
+    try {
+      if (fs.existsSync(POSTS_CACHE_FILE)) {
+        const data = fs.readFileSync(POSTS_CACHE_FILE, "utf-8");
+        const posts: WordPressPost[] = JSON.parse(data);
+        // timestamp=0 so first request triggers a background refresh
+        cache = { posts, timestamp: 0, refreshing: false };
+      }
+    } catch {
+      // ignore — will fall through to background refresh
     }
-    const data = fs.readFileSync(POSTS_CACHE_FILE, "utf-8");
-    const posts: WordPressPost[] = JSON.parse(data);
-    memoryCache = posts;
-    return posts;
-  } catch {
-    return null;
   }
+
+  // If stale, refresh in background (stale-while-revalidate)
+  // Caller gets current data immediately; next request gets fresh data
+  if (isStale()) {
+    refreshFromWP();
+  }
+
+  return cache?.posts ?? null;
+}
+
+export function getMemoryPosts(): WordPressPost[] | null {
+  return cache?.posts ?? null;
+}
+
+export function setMemoryPosts(posts: WordPressPost[]): void {
+  cache = { posts, timestamp: Date.now(), refreshing: false };
 }
 
 export async function writeCachedPosts(posts: WordPressPost[]): Promise<void> {
@@ -47,6 +81,6 @@ export async function writeCachedPosts(posts: WordPressPost[]): Promise<void> {
     }
     fs.writeFileSync(POSTS_CACHE_FILE, JSON.stringify(posts, null, 2));
   } catch (error) {
-    console.error("Failed to write posts cache:", error);
+    console.error("[cache] Failed to write posts to disk:", error);
   }
 }
