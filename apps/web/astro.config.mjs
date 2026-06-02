@@ -14,6 +14,7 @@ export default defineConfig({
     "/cdn-cgi/l/email-protection": { destination: "/legal/data-processing-agreement", status: 301 },
     "/gro/courses/artificial-intelligence-in-digital-marketing/": { destination: "/our-work/", status: 301 },
     "/turn-your-business-to-an-authentic-brand-in-kenya/": { destination: "/blog", status: 301 },
+    "/ai-studio/agents-development/kuzafy/": { destination: "/solutions/kuzafy/", status: 301 },
   },
   markdown: {
     drafts: true,
