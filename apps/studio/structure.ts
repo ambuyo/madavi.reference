@@ -35,6 +35,7 @@ export const structure = (S: StructureBuilder) =>
       // Services
       S.listItem()
         .title("Services")
+        .id("services")
         .icon(TagIcon)
         .schemaType("service")
         .child(S.documentTypeList("service").title("Services")),
@@ -52,6 +53,14 @@ export const structure = (S: StructureBuilder) =>
         .icon(CaseIcon)
         .schemaType("singleWork")
         .child(S.documentTypeList("singleWork").title("Our Work")),
+
+      // Case Studies
+      S.listItem()
+        .title("Case Studies")
+        .id("caseStudies")
+        .icon(DocumentTextIcon)
+        .schemaType("caseStudy")
+        .child(S.documentTypeList("caseStudy").title("Case Studies")),
 
       // Events
       S.listItem()

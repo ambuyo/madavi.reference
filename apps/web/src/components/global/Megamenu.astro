@@ -13,11 +13,17 @@ const solutionDescriptions: Record<string, string> = {
 };
 
 const solutions = await getSolutions();
-const solutionLinks = solutions.map((solution) => ({
-  href: `/solutions/${solution.slug.current}`,
-  label: solution.name,
-  description: solutionDescriptions[solution.slug.current] ?? "",
-}));
+const solutionLinks = [
+  ...solutions.map((solution) => ({
+    href: `/solutions/${solution.slug.current}`,
+    label: solution.name,
+    description: solutionDescriptions[solution.slug.current] ?? "",
+  })),
+  // TapThrive is hardcoded — not managed through Sanity
+  ...(!solutions.some((s) => s.slug.current === "tapthrive")
+    ? [{ href: "/solutions/tapthrive", label: "TapThrive", description: "NFC Reputation Growth for Local Businesses" }]
+    : []),
+];
 
 // Megamenu sections
 const megamenuSections = [

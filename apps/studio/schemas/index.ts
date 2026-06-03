@@ -12,6 +12,7 @@ import { event } from "./event";
 import { seo } from "./seo";
 import { category } from "./category";
 import { subcategory } from "./subcategory";
+import { caseStudyDeep } from "./caseStudyDeep";
 
 export const schemaTypes = [
   // Objects
@@ -31,4 +32,5 @@ export const schemaTypes = [
   report,
   solution,
   event,
+  caseStudyDeep,
 ];

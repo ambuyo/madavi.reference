@@ -1,0 +1,76 @@
+---
+import Text from "@/components/fundations/elements/Text.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+
+const pillars = [
+  {
+    title: "We know Kenyan customers.",
+    body: "WhatsApp-first communication, local business dynamics, how trust is built face-to-face — every feature was designed for this market, not adapted from one that doesn't fit.",
+  },
+  {
+    title: "We think beyond the tap.",
+    body: "The card — tap or scan — is the entry point. The system — the filter, the follow-up, the database, the report — is what compounds over time. We're here for what happens after month one.",
+  },
+  {
+    title: "We grow with you.",
+    body: "Start with one location. Scale to fifteen. Add your contact list to a WhatsApp broadcast campaign. Use your reputation data to make staffing and product decisions. TapThrive grows into whatever your business needs.",
+  },
+];
+---
+
+<section style="background:#1a3a2a;" class="py-24 lg:py-32 relative overflow-hidden">
+
+  <!-- Subtle radial highlight top-right -->
+  <div class="absolute top-0 right-0 w-1/2 h-full pointer-events-none" style="background: radial-gradient(ellipse 60% 70% at 100% 20%, rgba(61,122,85,0.35) 0%, transparent 70%);"></div>
+
+  <Wrapper variant="standard" class="relative z-10">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+
+      <!-- Left: copy -->
+      <div class="flex flex-col gap-6">
+        <Text tag="p" variant="textXS" class="uppercase tracking-widest font-semibold" style="color:#c2d9c9; letter-spacing:.14em;">
+          Why TapThrive
+        </Text>
+
+        <Text
+          tag="h2"
+          variant="displayLG"
+          class="font-display font-bold leading-tight tracking-tight"
+          style="color:#f7f3ed;"
+        >
+          This isn't a gadget. It's marketing infrastructure — backed by 8 years of doing this for real.
+        </Text>
+
+        <Text tag="p" variant="textBase" class="leading-relaxed max-w-lg" style="color:#c2d9c9;">
+          There are NFC card sellers on Jumia for KSh 500. They'll give you a card that points to your Google page.
+          You already know how to share your Google link.
+          What you're paying for with TapThrive isn't the card. It's the system behind the card — the landing page
+          that filters sentiment, the n8n automations that follow up on WhatsApp, the monthly reporting, and the
+          Madavi team that built all of it after working with 50+ Kenyan businesses.
+        </Text>
+      </div>
+
+      <!-- Right: pillar card -->
+      <div class="rounded-2xl p-8 lg:p-10 flex flex-col gap-0" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1);">
+
+        <!-- Card heading -->
+        <Text tag="h3" variant="displayXS" class="font-display font-bold leading-snug mb-8" style="color:#f7f3ed;">
+          Built on <em style="font-style:italic; color:#c97d2e;">real marketing<br>experience.</em> Not just tech.
+        </Text>
+
+        <!-- Pillars -->
+        <div class="flex flex-col">
+          {pillars.map((p, i) => (
+            <div class={`flex items-start gap-4 py-6 ${i < pillars.length - 1 ? "border-b" : ""}`} style="border-color:rgba(255,255,255,0.08);">
+              <span class="mt-1.5 size-2.5 rounded-full shrink-0" style="background:#c97d2e;"></span>
+              <Text tag="p" variant="textSM" class="leading-relaxed" style="color:#c2d9c9;">
+                <strong style="color:#f7f3ed; font-weight:600;">{p.title}</strong>{" "}{p.body}
+              </Text>
+            </div>
+          ))}
+        </div>
+
+      </div>
+    </div>
+  </Wrapper>
+</section>

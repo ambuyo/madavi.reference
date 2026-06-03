@@ -1,0 +1,158 @@
+---
+import Text from "@/components/fundations/elements/Text.astro";
+import Kicker from "@/components/fundations/elements/Kicker.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+
+const steps = [
+  {
+    num: "01",
+    title: "Customer taps or scans the card",
+    body: "Your branded TapThrive review card sits at the counter, on the table, or at the reception desk. Tap with NFC for modern phones, or scan the QR code — works on every phone, no exceptions.",
+    tags: ["NFC Tap", "QR Scan", "No app needed"],
+  },
+  {
+    num: "02",
+    title: "A smart page asks how it went",
+    body: "A simple, branded landing page loads instantly. Happy customers get sent straight to your Google review page. Unhappy ones send you a private message — before it ever reaches the internet.",
+    tags: ["Sentiment filter", "Google redirect", "Private inbox"],
+  },
+  {
+    num: "03",
+    title: "We save their WhatsApp number",
+    body: "With their consent, we capture their number. If they tapped but didn't leave a review, a warm follow-up lands on their WhatsApp within 2 hours. Friendly. On-brand. Sent automatically.",
+    tags: ["WhatsApp automation", "2-hour nudge", "With consent"],
+  },
+  {
+    num: "04",
+    title: "Your reputation builds itself",
+    body: "Every review makes you easier to find, easier to trust, easier to choose. We track your review count, rating, and customer sentiment — and send you a plain-language report every month.",
+    tags: ["Monthly report", "Rating tracking", "No dashboards"],
+  },
+];
+---
+
+<section id="how-it-works" style="background:#f5f0e8;" class="py-24 lg:py-32">
+  <Wrapper variant="standard">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+
+      <!-- Left column -->
+      <div class="flex flex-col gap-4 lg:sticky lg:top-28">
+
+        <!-- Quote card -->
+        <div class="rounded-2xl p-7 flex flex-col gap-6" style="background:#1a3a2a;">
+          <Text tag="p" variant="displayXS" class="font-display font-bold leading-snug" style="color:#f7f3ed;">
+            One tap or scan. A smart filter. A WhatsApp follow-up. Your reputation grows while you focus on the work.
+          </Text>
+          <div class="flex items-center gap-3">
+            <div class="size-10 rounded-full overflow-hidden border-2 border-white/20 shrink-0" style="background:#e8f0eb;">
+              <img
+                src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=80&h=80&fit=crop&q=80"
+                alt="Amina Hassan"
+                class="w-full h-full object-cover"
+              />
+            </div>
+            <div>
+              <Text tag="p" variant="textSM" class="font-semibold" style="color:#f7f3ed;">Amina Hassan</Text>
+              <Text tag="p" variant="textXS" style="color:#c2d9c9;">Manager, The Lush Salon</Text>
+            </div>
+          </div>
+        </div>
+
+        <!-- Image -->
+        <div class="relative rounded-2xl overflow-hidden" style="aspect-ratio:4/3;">
+          <img
+            src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=900&h=675&fit=crop&q=80"
+            alt="Business team reviewing customer feedback"
+            class="w-full h-full object-cover object-center"
+            loading="lazy"
+          />
+          <!-- NFC + QR badge -->
+          <div class="absolute top-4 left-4 flex gap-2">
+            <span class="rounded-full px-3 py-1.5 text-xs font-semibold text-white flex items-center gap-1.5" style="background:rgba(26,58,42,0.88); backdrop-filter:blur(6px);">
+              <svg class="size-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8.288 15.038a5.25 5.25 0 017.424 0M5.106 11.856c3.807-3.808 9.98-3.808 13.788 0M1.924 8.674c5.565-5.565 14.587-5.565 20.152 0"/>
+              </svg>
+              NFC
+            </span>
+            <span class="rounded-full px-3 py-1.5 text-xs font-semibold text-white" style="background:rgba(201,125,46,0.88); backdrop-filter:blur(6px);">
+              QR scan
+            </span>
+          </div>
+          <!-- Play button -->
+          <div class="absolute bottom-4 right-4 size-11 rounded-full flex items-center justify-center shadow-lg" style="background:rgba(255,255,255,0.9);">
+            <svg class="size-5 ml-0.5 text-base-900" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right column: timeline -->
+      <div class="flex flex-col gap-2">
+        <Kicker variant="default" class="mb-2">How it works</Kicker>
+        <Text tag="h2" variant="displayMD" class="font-display font-bold text-base-950 tracking-tight leading-tight mb-10">
+          Four steps. Runs itself.
+        </Text>
+
+        <!-- Timeline -->
+        <div class="relative flex flex-col">
+          <!-- Vertical line -->
+          <div class="absolute left-[11px] top-3 bottom-3 w-px" style="background:#e5e7eb;"></div>
+
+          {steps.map((step, i) => (
+            <div class="relative flex gap-6 pb-10 last:pb-0">
+              <!-- Dot -->
+              <div class="shrink-0 mt-1 z-10">
+                <div
+                  class="size-6 rounded-full flex items-center justify-center border-2"
+                  style={i === 0
+                    ? "background:#c97d2e; border-color:#c97d2e;"
+                    : "background:#fff; border-color:#d1d5db;"}
+                ></div>
+              </div>
+
+              <!-- Content -->
+              <div class="flex flex-col gap-2 pt-0.5">
+                <Text tag="p" variant="textXS" class="text-base-400 font-medium tabular-nums">
+                  {step.num}
+                </Text>
+                <Text tag="h3" variant="textLG" class="font-semibold text-base-900 leading-snug">
+                  {step.title}
+                </Text>
+                <Text tag="p" variant="textSM" class="text-base-500 leading-relaxed">
+                  {step.body}
+                </Text>
+                <!-- Tags -->
+                <div class="flex flex-wrap gap-2 mt-1">
+                  {step.tags.map((tag) => (
+                    <span class="rounded-full px-3 py-1 text-xs font-medium text-base-600 border border-base-200" style="background:#fff;">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <!-- CTA -->
+        <div class="mt-4 pt-6 border-t border-base-200">
+          <a
+            href="https://wa.me/254718735565?text=Hi%2C%20I%27d%20like%20to%20see%20TapThrive%20in%20action"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold text-white hover:opacity-80 transition-opacity"
+            style="background:#1a3a2a;"
+          >
+            <svg class="size-4" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+            </svg>
+            Want to see it live? Chat with us
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </Wrapper>
+</section>

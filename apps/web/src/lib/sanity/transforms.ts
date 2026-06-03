@@ -254,7 +254,19 @@ export function transformSingleWork(singleWork: SanitySingleWork): SingleWork {
       industry: singleWork.industry,
       imcServices: singleWork.imcServices || [],
       aiStudioServices: singleWork.aiStudioServices || [],
-      services: [...(singleWork.imcServices || []), ...(singleWork.aiStudioServices || [])],
+      // Use resolved reference names (preferred) or prettify legacy slugs as fallback
+      services: [
+        ...(singleWork.imcServiceRefs?.length
+          ? singleWork.imcServiceRefs.map((s: { name: string }) => s.name)
+          : (singleWork.imcServices || []).map((slug: string) =>
+              slug.replace(/-/g, " ").replace(/\b\w/g, (c: string) => c.toUpperCase())
+            )),
+        ...(singleWork.aiStudioServiceRefs?.length
+          ? singleWork.aiStudioServiceRefs.map((s: { name: string }) => s.name)
+          : (singleWork.aiStudioServices || []).map((slug: string) =>
+              slug.replace(/-/g, " ").replace(/\b\w/g, (c: string) => c.toUpperCase())
+            )),
+      ],
       completionDate: singleWork.completionDate,
       year: singleWork.completionDate ? new Date(singleWork.completionDate).getFullYear() : undefined,
       displayOrder: singleWork.displayOrder,

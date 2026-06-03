@@ -27,6 +27,13 @@ const postFields = groq`
   image {
     asset->,
     alt
+  },
+  seo {
+    metaTitle,
+    metaDescription,
+    keywords,
+    canonicalUrl,
+    ogImage { asset->, alt }
   }
 `;
 
@@ -420,6 +427,8 @@ const caseStudyFields = groq`
   industry,
   imcServices,
   aiStudioServices,
+  "imcServiceRefs": imcServiceRefs[]->{ _id, name },
+  "aiStudioServiceRefs": aiStudioServiceRefs[]->{ _id, name },
   completionDate,
   displayOrder,
   tagline,

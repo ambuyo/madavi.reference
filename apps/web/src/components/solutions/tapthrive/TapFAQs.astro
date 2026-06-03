@@ -1,0 +1,142 @@
+---
+import Text from "@/components/fundations/elements/Text.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+
+const faqs = [
+  {
+    q: "Is this really different from sharing my Google link?",
+    a: "Yes — and the difference is in what happens between the tap and the review. A shared link skips the sentiment filter (unhappy customers reach Google), doesn't capture WhatsApp numbers, and doesn't follow up. TapThrive does all three, automatically, every time.",
+  },
+  {
+    q: "Will my customers actually use it?",
+    a: "Most do, because one tap on their phone is all it takes — no app, no login, no typing a URL. Our average review conversion rate after a tap is 68%. That's not because customers suddenly became more generous. It's because we removed every barrier.",
+  },
+  {
+    q: "What if a customer taps and leaves a bad review anyway?",
+    a: "If they rate their experience as unhappy on the landing page, they're routed to a private feedback form — not Google. They'd have to actively go to Google separately to leave a public review. Most don't. The few who do were going to leave a review regardless — at least you now have their feedback privately.",
+  },
+  {
+    q: "Do I need to manage anything day-to-day?",
+    a: "No. Once setup is done, TapThrive runs in the background. You'll get a monthly report. You'll get an alert if a complaint comes in privately. For Tap + Glow clients, even review responses are handled. Your job is to serve great customers — ours is to make sure the world knows about it.",
+  },
+  {
+    q: "How long does setup take?",
+    a: "72 hours from sign-up to first live tap. We set up your landing page, configure your Google Business redirect, build your WhatsApp automation, and deliver your branded card(s). You don't need to do anything technical.",
+  },
+  {
+    q: "What happens to my customer data?",
+    a: "Customer WhatsApp numbers are stored securely and used only for the follow-up sequence you've approved. You own the data. Customers consent before their number is saved. We never share or sell customer data.",
+  },
+  {
+    q: "Can I pause or cancel?",
+    a: "Yes. We ask for 30 days notice before cancellation. There's no lock-in contract on Tap and Tap + Grow. Enterprise plans have a 3-month minimum commitment.",
+  },
+];
+---
+
+<section id="faqs" style="background:#f5f0e8;" class="py-24 lg:py-32">
+  <Wrapper variant="standard">
+    <div class="grid grid-cols-1 lg:grid-cols-[2fr_3fr] gap-12 lg:gap-20 items-start">
+
+      <!-- Left: label + heading + CTA -->
+      <div class="lg:sticky lg:top-28 flex flex-col gap-8">
+        <div>
+          <div class="flex items-center gap-2 mb-6">
+            <span class="size-1.5 rounded-full" style="background:#1a3a2a;"></span>
+            <Text tag="span" variant="textXS" class="font-medium uppercase tracking-widest text-base-600">FAQ</Text>
+          </div>
+
+          <Text
+            tag="h2"
+            variant="displayMD"
+            class="font-display font-bold leading-tight tracking-tight"
+            style="color:#1a3a2a;"
+          >
+            Honest answers before you get in touch.
+          </Text>
+        </div>
+
+        <a
+          href="https://wa.me/254718735565"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-3 rounded-full pl-5 pr-2 py-2 text-sm font-semibold text-white w-fit transition-opacity hover:opacity-80"
+          style="background:#1a3a2a;"
+        >
+          Chat with us
+          <span class="size-8 rounded-full flex items-center justify-center bg-white/20 shrink-0">
+            <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M17 7H7M17 7v10"/>
+            </svg>
+          </span>
+        </a>
+      </div>
+
+      <!-- Right: accordion -->
+      <div class="flex flex-col gap-3" id="tt-faq-list">
+        {faqs.map((faq, i) => (
+          <div
+            class="tt-faq-item rounded-2xl border border-base-200 overflow-hidden transition-all duration-200"
+            style="background:#fff;"
+            data-index={i}
+          >
+            <button
+              class="tt-faq-btn w-full flex items-center justify-between gap-4 px-6 py-5 text-left"
+              aria-expanded="false"
+            >
+              <Text tag="span" variant="textBase" class="font-semibold text-base-900 leading-snug">
+                {faq.q}
+              </Text>
+              <!-- Plus / X icon -->
+              <span class="tt-faq-icon shrink-0 size-7 rounded-full border border-base-200 flex items-center justify-center text-base-500 transition-all duration-200">
+                <svg class="tt-plus size-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path stroke-linecap="round" d="M8 3v10M3 8h10"/>
+                </svg>
+                <svg class="tt-x size-4 hidden" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path stroke-linecap="round" d="M4 4l8 8M12 4l-8 8"/>
+                </svg>
+              </span>
+            </button>
+
+            <div class="tt-faq-answer px-6 pb-0 max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+              <Text tag="p" variant="textSM" class="text-base-500 leading-relaxed pb-5">
+                {faq.a}
+              </Text>
+            </div>
+          </div>
+        ))}
+      </div>
+
+    </div>
+  </Wrapper>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>(".tt-faq-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const item    = btn.closest<HTMLElement>(".tt-faq-item")!;
+      const answer  = item.querySelector<HTMLElement>(".tt-faq-answer")!;
+      const plus    = btn.querySelector<SVGElement>(".tt-plus")!;
+      const x       = btn.querySelector<SVGElement>(".tt-x")!;
+      const isOpen  = btn.getAttribute("aria-expanded") === "true";
+
+      // Close all
+      document.querySelectorAll<HTMLElement>(".tt-faq-btn").forEach((b) => {
+        b.setAttribute("aria-expanded", "false");
+        b.closest<HTMLElement>(".tt-faq-item")!
+          .querySelector<HTMLElement>(".tt-faq-answer")!.style.maxHeight = "0";
+        b.querySelector<SVGElement>(".tt-plus")!.classList.remove("hidden");
+        b.querySelector<SVGElement>(".tt-x")!.classList.add("hidden");
+        b.closest<HTMLElement>(".tt-faq-item")!.style.background = "#fff";
+      });
+
+      if (!isOpen) {
+        btn.setAttribute("aria-expanded", "true");
+        answer.style.maxHeight = answer.scrollHeight + "px";
+        plus.classList.add("hidden");
+        x.classList.remove("hidden");
+        item.style.background = "#faf8f4";
+      }
+    });
+  });
+</script>

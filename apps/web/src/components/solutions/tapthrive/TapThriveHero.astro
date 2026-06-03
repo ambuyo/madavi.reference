@@ -1,0 +1,198 @@
+---
+import Text from "@/components/fundations/elements/Text.astro";
+import Button from "@/components/fundations/elements/Button.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+---
+
+<section class="relative overflow-hidden min-h-screen flex items-center" style="background-color: #F5F0E8;">
+
+  <!-- Subtle grid pattern -->
+  <div class="absolute inset-0 opacity-30" style="background-image: linear-gradient(#c9c0b0 1px, transparent 1px), linear-gradient(90deg, #c9c0b0 1px, transparent 1px); background-size: 48px 48px;"></div>
+
+  <!-- Floating 3D blobs -->
+  <div class="absolute top-16 right-[38%] w-16 h-16 md:w-20 md:h-20 pointer-events-none select-none z-10">
+    <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="40" cy="20" rx="14" ry="18" fill="#F5A623" opacity="0.9"/>
+      <ellipse cx="40" cy="60" rx="14" ry="18" fill="#9B59B6" opacity="0.9"/>
+      <ellipse cx="40" cy="40" rx="8" ry="22" fill="#C97D2E" opacity="0.6"/>
+    </svg>
+  </div>
+  <div class="absolute bottom-20 left-8 w-12 h-12 md:w-16 md:h-16 pointer-events-none select-none z-10">
+    <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="32" cy="16" rx="12" ry="15" fill="#7C4DFF" opacity="0.85"/>
+      <ellipse cx="32" cy="48" rx="12" ry="15" fill="#F5A623" opacity="0.85"/>
+      <ellipse cx="32" cy="32" rx="7" ry="18" fill="#9B59B6" opacity="0.5"/>
+    </svg>
+  </div>
+
+  <Wrapper variant="standard" class="py-24 lg:py-32 relative z-10">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+
+      <!-- Left: copy -->
+      <div class="flex flex-col gap-6">
+
+        <!-- Badge -->
+        <div class="flex items-center gap-2 w-fit border border-base-300 rounded-full px-4 py-2">
+          <span class="text-base-500 text-xs">+</span>
+          <Text tag="span" variant="textXS" class="text-base-600 font-medium tracking-wide">
+            Tap or Scan · Reputation Growth · By Madavi
+          </Text>
+          <span class="text-base-500 text-xs">+</span>
+        </div>
+
+        <!-- Outcome claim -->
+        <Text tag="p" variant="textSM" class="font-semibold" style="color:#c97d2e;">
+          Most businesses double their Google reviews in 90 days.
+        </Text>
+
+        <!-- Heading -->
+        <Text
+          tag="h1"
+          variant="displayLG"
+          class="font-display font-bold text-base-950 leading-tight tracking-tight"
+        >
+          Your happy customers are already leaving. Make sure they leave a review first.
+        </Text>
+
+        <!-- Subheadline -->
+        <Text tag="p" variant="textBase" class="text-base-500 max-w-md leading-relaxed">
+          TapThrive turns every visit into a five-star moment — automatically. One tap or scan,
+          a smart filter, and a WhatsApp follow-up that does the asking for you.
+        </Text>
+
+        <!-- CTAs -->
+        <div class="flex flex-wrap gap-3 mt-2">
+          <a
+            href="https://wa.me/254718735565"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white transition-colors hover:opacity-90"
+            style="background:#1a3a2a;"
+          >
+            <svg class="size-4" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+            </svg>
+            Chat with us on WhatsApp
+          </a>
+          <Button
+            variant="none"
+            size="md"
+            isLink={true}
+            href="#how-it-works"
+            class="rounded-full border border-base-300 text-base-700 hover:border-base-500 hover:text-base-950 transition-colors bg-transparent"
+          >
+            See how it works
+            <svg slot="right-icon" xmlns="http://www.w3.org/2000/svg" class="size-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </Button>
+        </div>
+
+        <!-- Trust signal -->
+        <Text tag="p" variant="textXS" class="text-base-400">
+          Built by Madavi · 50+ Kenyan businesses · Setup in 72 hours
+        </Text>
+
+      </div>
+
+      <!-- Right: device mockup -->
+      <div class="relative flex items-center justify-center lg:justify-end">
+
+        <!-- Tablet frame -->
+        <div class="relative w-full max-w-lg">
+          <!-- Shadow glow -->
+          <div class="absolute -inset-4 rounded-3xl blur-2xl opacity-20" style="background: radial-gradient(ellipse at 60% 40%, #C97D2E 0%, #1a3a2a 100%);"></div>
+
+          <!-- Tablet body -->
+          <div class="relative rounded-[2rem] shadow-2xl overflow-hidden border border-base-200" style="background:#fff; aspect-ratio: 4/3;">
+
+            <!-- Tablet top bar -->
+            <div class="flex items-center justify-between px-5 py-3 border-b border-base-100" style="background:#fafafa;">
+              <div class="flex items-center gap-2">
+                <div class="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold" style="background:#1a3a2a;">T</div>
+                <span class="text-xs font-semibold text-base-800">TapThrive</span>
+              </div>
+              <div class="flex gap-1.5">
+                <div class="w-2 h-2 rounded-full bg-base-200"></div>
+                <div class="w-2 h-2 rounded-full bg-base-200"></div>
+                <div class="w-2 h-2 rounded-full bg-base-200"></div>
+              </div>
+            </div>
+
+            <!-- Dashboard content -->
+            <div class="p-5 grid grid-cols-3 gap-3 h-full">
+
+              <!-- Stat cards row -->
+              <div class="col-span-3 grid grid-cols-3 gap-3">
+                <div class="rounded-xl p-3 flex flex-col gap-1" style="background:#1a3a2a;">
+                  <span class="text-[10px] text-green-300 font-medium">Google Rating</span>
+                  <span class="text-xl font-bold text-white font-display">4.8 ★</span>
+                  <span class="text-[9px] text-green-400">↑ +0.3 this month</span>
+                </div>
+                <div class="rounded-xl p-3 flex flex-col gap-1 border border-base-100">
+                  <span class="text-[10px] text-base-500 font-medium">Reviews</span>
+                  <span class="text-xl font-bold text-base-900 font-display">247</span>
+                  <span class="text-[9px] text-green-600">↑ +38 this month</span>
+                </div>
+                <div class="rounded-xl p-3 flex flex-col gap-1 border border-base-100">
+                  <span class="text-[10px] text-base-500 font-medium">Taps</span>
+                  <span class="text-xl font-bold text-base-900 font-display">1,204</span>
+                  <span class="text-[9px] text-base-400">last 30 days</span>
+                </div>
+              </div>
+
+              <!-- Chart area -->
+              <div class="col-span-2 rounded-xl border border-base-100 p-3 flex flex-col gap-2">
+                <span class="text-[10px] text-base-500 font-medium">Review Velocity</span>
+                <div class="flex items-end gap-1 h-12">
+                  {[3,5,4,7,6,9,8,11,10,13,12,15].map((h, i) => (
+                    <div
+                      class="flex-1 rounded-sm"
+                      style={`height:${(h/15)*100}%; background:${i >= 8 ? '#1a3a2a' : '#e8f0eb'};`}
+                    ></div>
+                  ))}
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-[9px] text-base-400">Jan</span>
+                  <span class="text-[9px] text-base-400">Jun</span>
+                </div>
+              </div>
+
+              <!-- Latest reviews -->
+              <div class="col-span-1 rounded-xl border border-base-100 p-3 flex flex-col gap-2">
+                <span class="text-[10px] text-base-500 font-medium">Latest</span>
+                {[
+                  { name: "Alex C.", stars: 5, text: "Amazing!" },
+                  { name: "Maria K.", stars: 5, text: "Loved it" },
+                  { name: "James O.", stars: 4, text: "Great!" },
+                ].map(r => (
+                  <div class="flex flex-col gap-0.5 border-b border-base-50 pb-1 last:border-0">
+                    <div class="flex items-center justify-between">
+                      <span class="text-[9px] font-semibold text-base-700">{r.name}</span>
+                      <span class="text-[9px]" style="color:#C97D2E;">{"★".repeat(r.stars)}</span>
+                    </div>
+                    <span class="text-[9px] text-base-400">{r.text}</span>
+                  </div>
+                ))}
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Floating review prompt card -->
+          <div class="absolute -bottom-4 -left-4 lg:-left-8 rounded-2xl shadow-xl p-4 w-52 border border-base-100" style="background:#fff;">
+            <div class="flex flex-col items-center gap-2 text-center">
+              <span class="text-xs font-semibold text-base-800">How was your visit?</span>
+              <span class="text-[10px] text-base-400">Java House, Westlands</span>
+              <span class="text-base tracking-widest" style="color:#C97D2E;">★★★★★</span>
+              <div class="w-full rounded-full text-center text-[10px] font-medium text-white py-1.5 px-3" style="background:#1a3a2a;">
+                Leave a Google review →
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </Wrapper>
+</section>

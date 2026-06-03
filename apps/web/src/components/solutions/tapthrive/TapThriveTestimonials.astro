@@ -1,0 +1,234 @@
+---
+import Text from "@/components/fundations/elements/Text.astro";
+import Kicker from "@/components/fundations/elements/Kicker.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+
+const testimonials = [
+  {
+    label: "Café Owner · Westlands",
+    name: "Wanjiku Muthoni",
+    role: "Brew & Bites Café",
+    initials: "WM",
+    color: "#d4edda",
+    stars: 5,
+    quote: "We went from 34 Google reviews to over 180 in three months. What surprised me was how personal it felt to customers — the WhatsApp follow-up didn't feel automated, it felt like we cared.",
+  },
+  {
+    label: "Medical · Kilimani",
+    name: "Dr. James Ochieng",
+    role: "Ochieng Family Clinic",
+    initials: "JO",
+    color: "#dde8f5",
+    stars: 5,
+    quote: "The complaint filter was the feature I didn't know I needed. Instead of a one-star Google review, the feedback came to me privately. We resolved it, the patient came back, and our 4.8 rating was never touched.",
+  },
+  {
+    label: "Salon · Karen",
+    name: "Amina Hassan",
+    role: "The Lush Salon",
+    initials: "AH",
+    color: "#f5e6d3",
+    stars: 5,
+    quote: "My clients were always happy but they just never reviewed. Now every satisfied client gets a tap at checkout and a WhatsApp nudge if they forget. We've built a contact list of 600+ real customers.",
+  },
+  {
+    label: "Hospitality · Nairobi CBD",
+    name: "Peter Kamau",
+    role: "Serene Suites Hotel",
+    initials: "PK",
+    color: "#e8f0eb",
+    stars: 5,
+    quote: "The multi-location dashboard gives me a Monday morning view of every branch. I catch service issues before they go public. My operations team now sees it as a management tool, not just a marketing one.",
+  },
+];
+
+const galleryImages = [
+  { src: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=300&h=300&fit=crop&q=80", alt: "Restaurant owner" },
+  { src: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=300&h=300&fit=crop&q=80", alt: "Clinic staff" },
+  { src: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=300&h=300&fit=crop&q=80", alt: "Business owner" },
+  { src: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=300&h=300&fit=crop&q=80", alt: "Doctor" },
+  { src: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=300&h=300&fit=crop&q=80", alt: "Manager" },
+  { src: "https://images.unsplash.com/photo-1614289371518-722f2615943d?w=300&h=300&fit=crop&q=80", alt: "Hotel staff" },
+];
+
+const sizes  = [128, 160, 208, 160, 144, 176];
+---
+
+<section id="testimonials" class="py-24 lg:py-32 overflow-hidden" style="background:#f8f8f8;">
+  <Wrapper variant="standard">
+
+    <!-- Section header + arrows -->
+    <div class="flex items-end justify-between mb-10 gap-6 flex-wrap">
+      <div class="flex flex-col gap-3">
+        <Kicker variant="pill">What businesses say</Kicker>
+        <Text tag="h2" variant="displayMD" class="font-display font-bold text-base-950 tracking-tight leading-tight">
+          50+ businesses across Kenya<br>already trust Madavi.
+        </Text>
+      </div>
+      <div class="flex items-center gap-3 mb-1">
+        <button id="tt-prev" aria-label="Previous testimonial" class="size-10 rounded-full border border-base-300 bg-white flex items-center justify-center hover:border-base-500 transition-all">
+          <svg xmlns="http://www.w3.org/2000/svg" class="size-4 text-base-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+          </svg>
+        </button>
+        <button id="tt-next" aria-label="Next testimonial" class="size-10 rounded-full border border-base-300 bg-white flex items-center justify-center hover:border-base-500 transition-all">
+          <svg xmlns="http://www.w3.org/2000/svg" class="size-4 text-base-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Card carousel -->
+    <div class="overflow-hidden">
+      <div id="tt-track" class="flex gap-4 transition-transform duration-500 ease-in-out">
+        {testimonials.map((t) => (
+          <div class="tt-slide shrink-0 w-[85vw] sm:w-[400px] lg:w-[320px] xl:w-[360px]">
+            <div
+              class="rounded-2xl p-6 h-full flex flex-col relative"
+              style="background:#fff; border:1px solid #efefef; box-shadow:0 2px 20px rgba(0,0,0,0.05);"
+            >
+              <!-- Category label -->
+              <Text tag="p" variant="textXS" class="uppercase tracking-widest font-medium text-base-400 mb-3">
+                {t.label}
+              </Text>
+
+              <!-- Quote body -->
+              <Text tag="p" variant="textBase" class="text-base-800 leading-relaxed flex-1">
+                {t.quote}
+              </Text>
+
+              <!-- Stars -->
+              <div class="flex items-center gap-0.5 mt-4">
+                {Array.from({ length: t.stars }).map(() => (
+                  <svg class="size-4" viewBox="0 0 20 20" fill="#F5A623">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                  </svg>
+                ))}
+              </div>
+
+              <!-- Large decorative quote mark -->
+              <div class="absolute bottom-16 right-5 select-none pointer-events-none text-base-100" style="font-size:3.5rem; line-height:1; font-family:Georgia,serif;">"</div>
+
+              <!-- Person -->
+              <div class="flex items-center gap-3 mt-5 pt-4 border-t border-base-100">
+                <div
+                  class="size-10 rounded-full flex items-center justify-center text-sm font-bold shrink-0"
+                  style={`background:${t.color}; color:#1a3a2a;`}
+                >
+                  {t.initials}
+                </div>
+                <div>
+                  <Text tag="p" variant="textSM" class="font-bold text-base-900">{t.name}</Text>
+                  <Text tag="p" variant="textXS" class="text-base-400">{t.role}</Text>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Counter -->
+    <div class="flex items-center justify-center gap-4 mt-6">
+      <div class="w-8 h-px bg-base-300"></div>
+      <Text tag="span" variant="textXS" class="text-base-500 font-medium tabular-nums" id="tt-counter">1 / {testimonials.length}</Text>
+      <div class="w-8 h-px bg-base-300"></div>
+    </div>
+
+  </Wrapper>
+
+  <!-- Social proof gallery -->
+  <div class="mt-20">
+    <!-- Draggable circle gallery -->
+    <div
+      id="tt-gallery"
+      class="flex items-end overflow-x-auto pb-6 cursor-grab active:cursor-grabbing select-none"
+      style="-webkit-overflow-scrolling:touch; scrollbar-width:none;"
+    >
+      <div class="shrink-0 w-12 lg:w-24"></div>
+
+      {galleryImages.map((img, i) => (
+        <div
+          class="shrink-0 rounded-full overflow-hidden border-4 border-white shadow-xl"
+          style={`width:${sizes[i]}px; height:${sizes[i]}px; margin-left:${i === 0 ? "0" : "-20px"}; z-index:${i}; position:relative;`}
+        >
+          <img
+            src={img.src}
+            alt={img.alt}
+            class="w-full h-full object-cover object-center"
+            loading="lazy"
+            draggable="false"
+          />
+        </div>
+      ))}
+
+      <!-- Stats card -->
+      <div class="shrink-0 ml-8 self-center bg-white rounded-2xl px-6 py-4 shadow-lg border border-base-100 flex flex-col gap-1">
+        <Text tag="p" variant="displaySM" class="font-display font-bold text-base-950">50+</Text>
+        <Text tag="p" variant="textXS" class="text-base-500 leading-snug" style="max-width:120px;">Kenyan businesses trust Madavi</Text>
+      </div>
+
+      <!-- CTA -->
+      <div class="shrink-0 ml-6 self-center">
+        <a
+          href="https://wa.me/254718735565"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold text-white shadow-lg hover:opacity-80 transition-opacity"
+          style="background:#1a3a2a;"
+        >
+          <svg class="size-4" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+          </svg>
+          Chat with us
+        </a>
+      </div>
+
+      <!-- Drag hint -->
+      <div class="shrink-0 ml-6 self-center">
+        <Text tag="p" variant="textXS" class="text-base-400 uppercase tracking-widest">‹ Drag ›</Text>
+      </div>
+
+      <div class="shrink-0 w-12 lg:w-24"></div>
+    </div>
+  </div>
+
+</section>
+
+<style>
+  #tt-gallery::-webkit-scrollbar { display: none; }
+</style>
+
+<script>
+  // Testimonial slide carousel
+  const track   = document.getElementById("tt-track") as HTMLElement;
+  const counter = document.getElementById("tt-counter") as HTMLElement;
+  const slides  = Array.from(track.querySelectorAll<HTMLElement>(".tt-slide"));
+  const total   = slides.length;
+  let current   = 0;
+
+  function slideWidth() { return slides[0].offsetWidth + 16; }
+
+  function goTo(idx: number) {
+    current = (idx + total) % total;
+    track.style.transform = `translateX(-${current * slideWidth()}px)`;
+    counter.textContent   = `${current + 1} / ${total}`;
+  }
+
+  document.getElementById("tt-prev")?.addEventListener("click", () => goTo(current - 1));
+  document.getElementById("tt-next")?.addEventListener("click", () => goTo(current + 1));
+
+  // Drag-to-scroll gallery
+  const gallery = document.getElementById("tt-gallery") as HTMLElement;
+  let isDown = false, startX = 0, scrollLeft = 0;
+
+  gallery.addEventListener("mousedown",  (e) => { isDown = true; startX = e.pageX - gallery.offsetLeft; scrollLeft = gallery.scrollLeft; });
+  gallery.addEventListener("mouseleave", ()  => { isDown = false; });
+  gallery.addEventListener("mouseup",    ()  => { isDown = false; });
+  gallery.addEventListener("mousemove",  (e) => {
+    if (!isDown) return;
+    e.preventDefault();
+    gallery.scrollLeft = scrollLeft - (e.pageX - gallery.offsetLeft - startX) * 1.5;
+  });
+</script>

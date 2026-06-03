@@ -8,6 +8,7 @@ export default {
       fontFamily: {
         display: '"Tiempos", serif',
         sans: '"DM Sans", sans-serif',
+        handwritten: '"DM Serif Display", serif',
       },
       animation: {
         'hover-wiggle': 'hover-wiggle 0.8s ease-in-out infinite',

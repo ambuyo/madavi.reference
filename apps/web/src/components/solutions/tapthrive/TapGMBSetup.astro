@@ -1,0 +1,152 @@
+---
+import Text from "@/components/fundations/elements/Text.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+
+const included = [
+  "Claim or create your Google Business listing",
+  "Business name, category, address, hours, phone, website & WhatsApp link",
+  "Upload 10–15 photos (interior, exterior, product/service)",
+  "Keyword-rich business description written for local search",
+  "Primary + secondary categories selected correctly",
+  "Products / services with descriptions and prices",
+  "Business attributes (parking, payment methods, accessibility etc.)",
+  "Q&A section populated with common customer questions",
+  "Google Messaging activated",
+  "Initial post published to activate the profile",
+  "Verification followed through — including handling Google's back-and-forth",
+];
+
+const pricing = [
+  {
+    label: "Already a TapThrive client",
+    price: "Included",
+    note: "Bundled in your KSh 5,000 setup fee. No extra charge.",
+    highlight: true,
+  },
+  {
+    label: "Existing client — GMB needs fixing",
+    price: "KSh 4,500",
+    note: "You're already on TapThrive but your profile needs proper optimisation.",
+    highlight: false,
+  },
+  {
+    label: "No GMB — full setup before onboarding",
+    price: "KSh 5,000",
+    note: "Separate from the TapThrive setup fee. Takes 3–7 days including verification.",
+    highlight: false,
+  },
+  {
+    label: "Multi-location (per branch)",
+    price: "KSh 3,000",
+    note: "Per location after the first, for clients setting up 3+ branches.",
+    highlight: false,
+  },
+];
+---
+
+<section id="gmb-setup" style="background:#faf8f5;" class="py-24 lg:py-32">
+  <Wrapper variant="standard">
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
+
+      <!-- Left: what's included -->
+      <div class="flex flex-col gap-6">
+        <div class="flex flex-col gap-4">
+          <Text tag="p" variant="textXS" class="uppercase tracking-widest font-semibold" style="color:#c97d2e; letter-spacing:.14em;">
+            Google Business Profile setup
+          </Text>
+          <Text tag="h2" variant="displayMD" class="font-display font-bold text-base-950 tracking-tight leading-tight">
+            No Google Business Profile? We'll build it — and build it properly.
+          </Text>
+          <Text tag="p" variant="textBase" class="text-base-500 leading-relaxed">
+            TapThrive works best when your Google Business Profile is verified, optimised, and active.
+            Most "setup" services fill in the basics and walk away. We don't — because wrong category
+            selection, skipped attributes, and unverified listings quietly kill your local search ranking.
+          </Text>
+        </div>
+
+        <!-- What's included list -->
+        <div class="rounded-2xl border border-base-200 overflow-hidden" style="background:#fff;">
+          <div class="px-6 py-4 border-b border-base-100" style="background:#1a3a2a;">
+            <Text tag="p" variant="textSM" class="font-semibold" style="color:#c2d9c9;">
+              What our full setup includes
+            </Text>
+          </div>
+          <ul class="divide-y divide-base-100">
+            {included.map((item) => (
+              <li class="flex items-start gap-3 px-6 py-3">
+                <svg class="size-4 shrink-0 mt-0.5" viewBox="0 0 16 16" fill="none">
+                  <path d="M3 8.5l3.5 3.5 6.5-7" stroke="#1a3a2a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <Text tag="span" variant="textSM" class="text-base-700">{item}</Text>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <!-- Honest note -->
+        <div class="rounded-xl px-5 py-4 border border-amber-200" style="background:#fdf6ee;">
+          <Text tag="p" variant="textXS" class="text-base-600 leading-relaxed">
+            <span class="font-semibold text-base-800">The honest reality:</span> GMB setup alone is a commodity — there are sellers doing it for KSh 500. What you're paying for is correct category selection (wrong choice kills local SEO), verification follow-through (Google's process is genuinely painful), and the depth of optimisation that most "setup" services skip entirely.
+          </Text>
+        </div>
+      </div>
+
+      <!-- Right: pricing -->
+      <div class="flex flex-col gap-4 lg:sticky lg:top-28">
+
+        <Text tag="h3" variant="displayXS" class="font-display font-bold text-base-950 leading-tight">
+          What it costs
+        </Text>
+        <Text tag="p" variant="textSM" class="text-base-500 mb-2">
+          Most TapThrive clients already have this covered in their setup fee. Here's how it works for every scenario.
+        </Text>
+
+        <div class="flex flex-col gap-3">
+          {pricing.map((tier) => (
+            <div
+              class={`rounded-xl p-5 border flex flex-col gap-2 ${tier.highlight ? "border-green-200" : "border-base-200"}`}
+              style={tier.highlight ? "background:#f0f7f2;" : "background:#fff;"}
+            >
+              <div class="flex items-start justify-between gap-3">
+                <Text tag="p" variant="textSM" class="font-semibold text-base-900 leading-snug">
+                  {tier.label}
+                </Text>
+                <span
+                  class={`text-sm font-bold shrink-0 ${tier.highlight ? "text-green-700" : "text-base-950"}`}
+                  style={!tier.highlight ? "color:#1a3a2a;" : ""}
+                >
+                  {tier.price}
+                </span>
+              </div>
+              <Text tag="p" variant="textXS" class="text-base-500 leading-relaxed">
+                {tier.note}
+              </Text>
+            </div>
+          ))}
+        </div>
+
+        <!-- CTA -->
+        <div class="mt-2 flex flex-col gap-3">
+          <a
+            href="https://wa.me/254718735565?text=Hi%2C%20I%27d%20like%20help%20setting%20up%20my%20Google%20Business%20Profile"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-80"
+            style="background:#1a3a2a;"
+          >
+            <svg class="size-4" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+            </svg>
+            Get your GMB set up — chat with us
+          </a>
+          <Text tag="p" variant="textXS" class="text-base-400 text-center">
+            Not sure if yours needs work? Send us your Google Business link and we'll tell you for free.
+          </Text>
+        </div>
+
+      </div>
+    </div>
+
+  </Wrapper>
+</section>

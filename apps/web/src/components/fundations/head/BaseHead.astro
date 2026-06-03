@@ -16,12 +16,13 @@ interface Props {
     publishedTime?: string;
     noindex?: boolean;
   };
+  skipSeo?: boolean;
 }
 
-const { seo } = Astro.props;
+const { seo, skipSeo = false } = Astro.props;
 ---
 
-<Seo {...seo} />
+{!skipSeo && <Seo {...seo} />}
 <Meta />
 <Fonts />
 <Favicons />

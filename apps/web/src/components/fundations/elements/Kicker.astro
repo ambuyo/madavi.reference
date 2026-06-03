@@ -1,17 +1,26 @@
 ---
 import Text from "@/components/fundations/elements/Text.astro";
 const { class: className = "", variant = "default", ...rest } = Astro.props;
+
 const variantColors = {
   default: "text-base-600",
   dark: "text-base-300",
 };
 ---
 
-<Text
-  tag="p"
-  variant="textSM"
-  class={`${variantColors[variant] || variantColors.default} font-alt uppercase font-medium w-fit ${className}`}
-  {...rest}
->
-  <slot />
-</Text>
+{variant === "pill" ? (
+  <div class={`flex items-center gap-2 border border-base-200 rounded-full px-4 py-1.5 w-fit bg-white ${className}`}>
+    <span class="text-base-400 text-xs select-none">✦</span>
+    <span class="text-base-600 font-medium tracking-wide text-xs"><slot /></span>
+    <span class="text-base-400 text-xs select-none">✦</span>
+  </div>
+) : (
+  <Text
+    tag="p"
+    variant="textSM"
+    class={`${variantColors[variant] || variantColors.default} font-alt uppercase font-medium w-fit ${className}`}
+    {...rest}
+  >
+    <slot />
+  </Text>
+)}

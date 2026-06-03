@@ -1,30 +1,21 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Turnstile } from "@marsidev/react-turnstile";
 import type { TurnstileInstance } from "@marsidev/react-turnstile";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface FormState {
-  // Section 1
   fullName: string; workEmail: string; companyName: string; jobTitle: string;
   industry: string; companySize: string; phone: string;
-  // Section 2
   aiAdoptionStage: string; aiToolsInUse: string[]; monthlyAISpend: string; dedicatedAITeam: string;
-  // Section 3
   primaryAIGoal: string; implementationTimeline: string; decisionAuthority: string; annualAIBudget: string;
-  // Section 4
   teamChangeReadiness: number; teamAILiteracy: number; leadershipBuyIn: string; ethicalConcerns: string[];
-  // Section 5
   topChallenges: string[]; immediateHelp: string; hearAboutUs: string;
-  // Section 6
   subscribeNewsletter: boolean; interestedIn: string[];
-  // Section 7
   dataAvailability: string; dataGovernance: string; dataChallenges: string[]; dataAccessibility: number;
-  // Section 8
   itInfrastructure: string; technicalTalent: string; integrationCapability: string; securityCompliance: string;
-  // Section 9
   successMeasurementClarity: string; metricsToTrack: string[]; baselineMeasurement: string; roiExpectation: string;
-  // Section 10
   aiGovernanceFramework: string; riskMitigationConcerns: string[]; complianceRequirements: string; riskAppetite: string;
 }
 
@@ -75,283 +66,233 @@ function calculateScore(f: FormState): number {
 
 function getReadiness(raw: number) {
   const pct = Math.round((raw / 470) * 100);
-  if (pct >= 90) return { pct, level: "AI-Ready Leader",   desc: "Scale mode—ready for enterprise-wide deployment", color: "#005B65" };
-  if (pct >= 75) return { pct, level: "Advanced Adopter",  desc: "Pilot → Scale—strong foundation, ready to expand", color: "#1EB49C" };
-  if (pct >= 60) return { pct, level: "Strategic Builder", desc: "Foundation → Pilot—building capabilities systematically", color: "#F59E0B" };
-  if (pct >= 40) return { pct, level: "Early Explorer",    desc: "Assessment → Foundation—early-stage exploration", color: "#F97316" };
-  return              { pct, level: "Getting Started",    desc: "Education → Planning—beginning the AI journey", color: "#EF4444" };
+  if (pct >= 90) return { pct, level: "AI-Ready Leader",   desc: "Scale mode — ready for enterprise-wide deployment.", color: "#005B65" };
+  if (pct >= 75) return { pct, level: "Advanced Adopter",  desc: "Strong foundation — ready to expand from pilot to scale.", color: "#1EB49C" };
+  if (pct >= 60) return { pct, level: "Strategic Builder", desc: "Building capabilities systematically toward your first pilot.", color: "#F59E0B" };
+  if (pct >= 40) return { pct, level: "Early Explorer",    desc: "Early-stage exploration — foundation work comes first.", color: "#F97316" };
+  return              { pct, level: "Getting Started",    desc: "Education and planning are the right next steps.", color: "#EF4444" };
 }
 
-// ─── Validation ───────────────────────────────────────────────────────────────
+// ─── Question definitions ─────────────────────────────────────────────────────
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+type QuestionType = "text" | "email" | "tel" | "select" | "radio" | "checkbox" | "slider" | "textarea" | "toggle";
 
-function validate(s: number, f: FormState): Record<string, string> {
-  const e: Record<string, string> = {};
-  if (s === 0) {
-    if (!f.fullName.trim())    e.fullName    = "Full name is required";
-    if (!f.workEmail.trim())   e.workEmail   = "Work email is required";
-    else if (!EMAIL_RE.test(f.workEmail)) e.workEmail = "Enter a valid email address";
-    if (!f.companyName.trim()) e.companyName = "Company name is required";
-    if (!f.jobTitle)           e.jobTitle    = "Please select your role";
-    if (!f.industry)           e.industry    = "Please select your industry";
-    if (!f.companySize)        e.companySize = "Please select company size";
-  }
-  if (s === 1) {
-    if (!f.aiAdoptionStage) e.aiAdoptionStage = "Please select an option";
-    if (!f.monthlyAISpend)  e.monthlyAISpend  = "Please select an option";
-    if (!f.dedicatedAITeam) e.dedicatedAITeam = "Please select an option";
-  }
-  if (s === 2) {
-    if (!f.primaryAIGoal)          e.primaryAIGoal          = "Please select an option";
-    if (!f.implementationTimeline) e.implementationTimeline = "Please select an option";
-    if (!f.decisionAuthority)      e.decisionAuthority      = "Please select an option";
-    if (!f.annualAIBudget)         e.annualAIBudget         = "Please select an option";
-  }
-  if (s === 3) {
-    if (!f.leadershipBuyIn) e.leadershipBuyIn = "Please select an option";
-  }
-  if (s === 4) {
-    if (!f.hearAboutUs) e.hearAboutUs = "Please select a source";
-  }
-  if (s === 6) {
-    if (!f.dataAvailability) e.dataAvailability = "Please select an option";
-    if (!f.dataGovernance)   e.dataGovernance   = "Please select an option";
-  }
-  if (s === 7) {
-    if (!f.itInfrastructure)      e.itInfrastructure      = "Please select an option";
-    if (!f.technicalTalent)       e.technicalTalent       = "Please select an option";
-    if (!f.integrationCapability) e.integrationCapability = "Please select an option";
-    if (!f.securityCompliance)    e.securityCompliance    = "Please select an option";
-  }
-  if (s === 8) {
-    if (!f.successMeasurementClarity) e.successMeasurementClarity = "Please select an option";
-    if (!f.baselineMeasurement)       e.baselineMeasurement       = "Please select an option";
-    if (!f.roiExpectation)            e.roiExpectation            = "Please select an option";
-  }
-  if (s === 9) {
-    if (!f.aiGovernanceFramework)  e.aiGovernanceFramework  = "Please select an option";
-    if (!f.complianceRequirements) e.complianceRequirements = "Please select an option";
-    if (!f.riskAppetite)           e.riskAppetite           = "Please select an option";
-  }
-  return e;
+interface Question {
+  id: keyof FormState;
+  label: string;
+  sublabel?: string;
+  type: QuestionType;
+  placeholder?: string;
+  options?: string[];
+  required?: boolean;
+  max?: number;
+  min?: number;
+  sliderLabels?: [string, string];
+  cols?: number;
 }
 
-// ─── Field components ─────────────────────────────────────────────────────────
-
-const ERR = "#EF4444";
-
-function Label({ children, required }: { children: React.ReactNode; required?: boolean }) {
-  return (
-    <p style={{ fontWeight: 600, fontSize: "14px", color: "#1B1B1B", marginBottom: "10px" }}>
-      {children}{required && <span style={{ color: ERR }}> *</span>}
-    </p>
-  );
-}
-
-function FieldError({ msg }: { msg?: string }) {
-  if (!msg) return null;
-  return <p style={{ color: ERR, fontSize: "12px", marginTop: "6px" }}>{msg}</p>;
-}
-
-function TextInput({ placeholder, value, onChange, type = "text", required, error }: any) {
-  return (
-    <div>
-      <input
-        type={type} placeholder={placeholder} value={value} required={required}
-        onChange={e => onChange(e.target.value)}
-        style={{
-          background: "#fff", border: `1.5px solid ${error ? ERR : "#E5E7EB"}`,
-          borderRadius: "8px", padding: "12px 14px", color: "#1B1B1B", fontSize: "15px",
-          width: "100%", fontFamily: "Inter, sans-serif", outline: "none",
-        }}
-      />
-      <FieldError msg={error} />
-    </div>
-  );
-}
-
-function SelectInput({ value, onChange, options, placeholder, error }: any) {
-  return (
-    <div style={{ position: "relative" }}>
-      <select
-        value={value} onChange={e => onChange(e.target.value)}
-        style={{
-          background: "#fff", border: `1.5px solid ${error ? ERR : "#E5E7EB"}`,
-          borderRadius: "8px", padding: "12px 40px 12px 14px",
-          color: value ? "#1B1B1B" : "#9CA3AF", fontSize: "15px",
-          width: "100%", fontFamily: "Inter, sans-serif", outline: "none", appearance: "none",
-        }}
-      >
-        <option value="">{placeholder}</option>
-        {options.map((o: string) => <option key={o} value={o}>{o}</option>)}
-      </select>
-      {/* dropdown arrow */}
-      <svg
-        style={{ position: "absolute", right: "14px", top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }}
-        width="16" height="16" viewBox="0 0 16 16" fill="none"
-      >
-        <path d="M4 6l4 4 4-4" stroke="#9CA3AF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-      </svg>
-      <FieldError msg={error} />
-    </div>
-  );
-}
-
-function RadioGroup({ options, value, onChange, error }: { options: { label: string; score?: number }[]; value: string; onChange: (v: string) => void; error?: string }) {
-  return (
-    <div>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
-        {options.map(opt => {
-          const sel = value === opt.label;
-          return (
-            <button key={opt.label} type="button" onClick={() => onChange(opt.label)}
-              style={{
-                display: "flex", alignItems: "center", gap: "12px",
-                background: sel ? "#EEF6F7" : "#fff",
-                border: `2px solid ${sel ? "#005B65" : error ? ERR : "#E5E7EB"}`,
-                borderRadius: "10px", padding: "14px 16px", cursor: "pointer",
-                textAlign: "left", transition: "all 0.15s",
-              }}
-            >
-              <div style={{
-                width: "18px", height: "18px", borderRadius: "50%",
-                border: `2px solid ${sel ? "#005B65" : "#D1D5DB"}`,
-                background: sel ? "#005B65" : "#fff", flexShrink: 0,
-                display: "flex", alignItems: "center", justifyContent: "center",
-              }}>
-                {sel && <div style={{ width: "7px", height: "7px", borderRadius: "50%", background: "#fff" }} />}
-              </div>
-              <span style={{ fontSize: "15px", color: "#1B1B1B", fontWeight: sel ? 600 : 400 }}>{opt.label}</span>
-            </button>
-          );
-        })}
-      </div>
-      <FieldError msg={error} />
-    </div>
-  );
-}
-
-function CheckboxGroup({ options, values, onChange, max }: { options: string[]; values: string[]; onChange: (v: string[]) => void; max?: number }) {
-  function toggle(opt: string) {
-    if (values.includes(opt)) { onChange(values.filter(v => v !== opt)); return; }
-    if (max && values.length >= max) return;
-    onChange([...values, opt]);
-  }
-  return (
-    <div>
-      {max && <p style={{ fontSize: "12px", color: "#9CA3AF", marginBottom: "8px" }}>Select up to {max}</p>}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
-      {options.map(opt => {
-        const sel = values.includes(opt);
-        return (
-          <button key={opt} type="button" onClick={() => toggle(opt)}
-            style={{
-              display: "flex", alignItems: "center", gap: "12px",
-              background: sel ? "#EEF6F7" : "#fff",
-              border: `2px solid ${sel ? "#005B65" : "#E5E7EB"}`,
-              borderRadius: "8px", padding: "12px 14px", cursor: "pointer",
-              textAlign: "left", transition: "all 0.15s",
-              opacity: (max && values.length >= max && !sel) ? 0.4 : 1,
-            }}
-          >
-            <div style={{
-              width: "18px", height: "18px", borderRadius: "4px",
-              border: `2px solid ${sel ? "#005B65" : "#D1D5DB"}`,
-              background: sel ? "#005B65" : "#fff", flexShrink: 0,
-              display: "flex", alignItems: "center", justifyContent: "center",
-            }}>
-              {sel && <svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>}
-            </div>
-            <span style={{ fontSize: "14px", color: "#1B1B1B" }}>{opt}</span>
-          </button>
-        );
-      })}
-      </div>
-    </div>
-  );
-}
-
-function SliderInput({ value, onChange, min = 1, max = 5, labels }: any) {
-  return (
-    <div>
-      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
-        {labels && labels.map((l: string, i: number) => <span key={i} style={{ fontSize: "12px", color: "#9CA3AF" }}>{l}</span>)}
-      </div>
-      <input type="range" min={min} max={max} value={value} onChange={e => onChange(Number(e.target.value))}
-        style={{ width: "100%", accentColor: "#005B65" }} />
-      <div style={{ textAlign: "center", marginTop: "8px", fontSize: "24px", fontWeight: 700, color: "#005B65" }}>{value} / {max}</div>
-    </div>
-  );
-}
-
-// ─── Section headers ──────────────────────────────────────────────────────────
-
-const SECTION_HEADERS = [
-  { num: "01", title: "Qualification & Contact",         sub: "Tell us about you and your organization." },
-  { num: "02", title: "Current AI Maturity",             sub: "Where are you today in your AI journey?" },
-  { num: "03", title: "Strategic Context",               sub: "Help us understand your goals, timeline, and authority." },
-  { num: "04", title: "HCAIF Readiness",                 sub: "Assessing your people and culture readiness for AI." },
-  { num: "05", title: "Pain Points & Intent",            sub: "What's holding you back, and how did you find us?" },
-  { num: "06", title: "Engagement Preferences",          sub: "How would you like to engage with Madavi?" },
-  { num: "07", title: "Data Infrastructure",             sub: "Data is the foundation of every successful AI initiative." },
-  { num: "08", title: "Technical Capabilities",          sub: "What does your current IT landscape look like?" },
-  { num: "09", title: "Success Metrics & KPIs",          sub: "How do you define and measure success?" },
-  { num: "10", title: "Risk Management & Governance",    sub: "How does your organization approach AI risk?" },
+const QUESTIONS: Question[] = [
+  { id: "fullName",    label: "What is your full name?",              type: "text",  placeholder: "Jane Smith",            required: true },
+  { id: "workEmail",   label: "What's your work email?",              type: "email", placeholder: "jane@company.com",      required: true },
+  { id: "companyName", label: "What company do you work for?",        type: "text",  placeholder: "Acme Inc.",             required: true },
+  { id: "jobTitle",    label: "What is your role?",                   type: "select", required: true,
+    options: ["C-Suite / Executive","VP / Director","Manager / Team Lead","Individual Contributor","Consultant / Advisor","Other"] },
+  { id: "industry",    label: "Which industry are you in?",           type: "select", required: true,
+    options: ["Law Firm","Healthcare","Nonprofit","E-commerce / Retail","African Enterprise","Financial Services","Technology","Education","Other"] },
+  { id: "companySize", label: "How large is your organization?",      type: "radio", required: true, cols: 2,
+    options: ["1–10","11–50","51–200","201–1,000","1,000+"] },
+  { id: "phone",       label: "Best phone number to reach you?",      type: "tel",   placeholder: "+254 7XX XXX XXX" },
+  { id: "aiAdoptionStage", label: "Where is your organization in its AI journey?", type: "radio", required: true, cols: 2,
+    options: ["Not started","Exploring","Piloting","Scaling","Optimizing"] },
+  { id: "aiToolsInUse", label: "Which AI tools is your team currently using?", type: "checkbox", cols: 2,
+    options: ["ChatGPT / LLMs","Microsoft Copilot","Google AI / Gemini","Industry-specific AI tools","Custom-built AI solutions","None","Other"] },
+  { id: "monthlyAISpend", label: "What is your approximate monthly AI spend?", type: "radio", required: true, cols: 2,
+    options: ["$0","Less than $500","$500–$2K","$2K–$10K","$10K+"] },
+  { id: "dedicatedAITeam", label: "Do you have dedicated AI resources or team?", type: "radio", required: true, cols: 2,
+    options: ["Full dedicated team","Part-time resources","Planning to hire","No team"] },
+  { id: "primaryAIGoal", label: "What is your primary goal for AI?", type: "radio", required: true,
+    options: ["Efficiency & cost reduction","Revenue growth","Customer experience","Competitive advantage"] },
+  { id: "implementationTimeline", label: "What is your implementation timeline?", type: "radio", required: true,
+    options: ["Ready now (0–3 months)","Planning (3–6 months)","Exploring (6–12+ months)"] },
+  { id: "decisionAuthority", label: "What is your decision-making authority?", type: "radio", required: true,
+    options: ["Decision-maker","Key influencer","Researcher/evaluator","Other"] },
+  { id: "annualAIBudget", label: "What is your annual budget for AI investment?", type: "radio", required: true,
+    options: ["Not yet determined","Under $25K","$25K–$100K","$100K–$500K","$500K+"] },
+  { id: "teamChangeReadiness", label: "How open is your team to changing how they work?", sublabel: "1 = Very resistant · 5 = Highly enthusiastic",
+    type: "slider", min: 1, max: 5, sliderLabels: ["Resistant", "Enthusiastic"] },
+  { id: "teamAILiteracy", label: "How well does your team understand AI?", sublabel: "1 = No knowledge · 5 = Expert level",
+    type: "slider", min: 1, max: 5, sliderLabels: ["No knowledge", "Expert"] },
+  { id: "leadershipBuyIn", label: "How strong is leadership buy-in for AI?", type: "radio", required: true, cols: 2,
+    options: ["Strong champion","Supportive","Neutral","Skeptical"] },
+  { id: "ethicalConcerns", label: "Any ethical or compliance concerns?", sublabel: "Select all that apply.", type: "checkbox", cols: 2,
+    options: ["Data privacy","Bias / fairness","Regulatory compliance","Job displacement","None of the above"] },
+  { id: "topChallenges", label: "What are your top challenges?", sublabel: "Pick up to 3.", type: "checkbox", max: 3, cols: 2,
+    options: ["Don't know where to start","Lack of internal expertise","Budget constraints","Resistance to change","Data quality issues","Unclear ROI","Vendor selection paralysis"] },
+  { id: "immediateHelp", label: "What immediate help are you looking for?", type: "textarea",
+    placeholder: "Describe your most pressing AI challenge…" },
+  { id: "hearAboutUs", label: "How did you hear about Madavi?", type: "select", required: true,
+    options: ["LinkedIn","Google / Search","Referral","Conference / Event","Email / Newsletter","Other"] },
+  { id: "interestedIn", label: "What are you most interested in?", sublabel: "Select all that apply.", type: "checkbox", cols: 2,
+    options: ["Free consultation call","AI case studies","Personalized AI roadmap","Executive briefing","Custom AI workshop"] },
+  { id: "dataAvailability", label: "How would you describe your organization's data?", type: "radio", required: true, cols: 2,
+    options: ["Clean and accessible","Exists, needs cleaning","Scattered/siloed","Limited infrastructure"] },
+  { id: "dataGovernance", label: "How mature is your data governance?", type: "radio", required: true, cols: 2,
+    options: ["Formal policies in place","Basic policies","Informal only","No framework"] },
+  { id: "dataChallenges", label: "What data challenges do you face?", sublabel: "Select all that apply.", type: "checkbox", cols: 2,
+    options: ["Data silos","Poor data quality","No data standards","Privacy concerns","Insufficient data volume","Legacy system integration"] },
+  { id: "dataAccessibility", label: "How easily can your team access the data they need?", sublabel: "1 = Very difficult · 5 = Instant access",
+    type: "slider", min: 1, max: 5, sliderLabels: ["Very difficult", "Instant access"] },
+  { id: "itInfrastructure", label: "How would you describe your IT infrastructure?", type: "radio", required: true, cols: 2,
+    options: ["Cloud-native, API-enabled","Mix of cloud/on-premise","Primarily on-premise","Legacy systems"] },
+  { id: "technicalTalent", label: "What is your team's technical AI capability?", type: "radio", required: true,
+    options: ["Strong team with AI experience","Capable team, learning AI","Basic IT, no AI expertise"] },
+  { id: "integrationCapability", label: "How strong are your integration capabilities?", type: "radio", required: true,
+    options: ["APIs well-established","Some integration capability","Manual processes","Siloed systems"] },
+  { id: "securityCompliance", label: "What is your security & compliance posture?", type: "radio", required: true,
+    options: ["Enterprise-grade framework","Standard practices","Basic measures","Ad-hoc approach"] },
+  { id: "successMeasurementClarity", label: "How clearly defined are your AI success metrics?", type: "radio", required: true,
+    options: ["Clear KPIs defined and tracked","KPIs identified, not tracked","General goals only","No measurement defined"] },
+  { id: "metricsToTrack", label: "Which metrics do you intend to track?", sublabel: "Select all that apply.", type: "checkbox",
+    options: ["Cost savings","Revenue impact","Customer satisfaction","Employee productivity","Cycle time / speed","Error reduction","Other"] },
+  { id: "baselineMeasurement", label: "Do you currently track performance baselines?", type: "radio", required: true,
+    options: ["Track current performance","Some baseline exists","Limited baseline","No baseline"] },
+  { id: "roiExpectation", label: "When do you expect to see ROI from AI?", type: "radio", required: true,
+    options: ["0–6 months","6–12 months","12–24 months","Beyond 24 months"] },
+  { id: "aiGovernanceFramework", label: "Do you have an AI governance framework?", type: "radio", required: true,
+    options: ["Formal governance established","In development","Informal oversight","No framework"] },
+  { id: "riskMitigationConcerns", label: "What are your top risk concerns?", sublabel: "Select all that apply.", type: "checkbox",
+    options: ["Model accuracy","Data privacy / security","Regulatory compliance","Ethical AI","Vendor risk","None"] },
+  { id: "complianceRequirements", label: "How regulated is your industry?", type: "radio", required: true,
+    options: ["Heavily regulated, critical compliance needs","Moderate requirements","Light requirements"] },
+  { id: "riskAppetite", label: "What best describes your organization's risk appetite?", type: "radio", required: true,
+    options: ["Willing to pilot and iterate","Cautious, need proven solutions","Risk-averse, need guarantees"] },
+  { id: "subscribeNewsletter", label: "Stay updated with AI insights", type: "toggle",
+    options: ["Subscribe to our newsletter"] },
 ];
+
+const TOTAL = QUESTIONS.length;
+
+// ─── Step groupings (10 steps, ~4 questions per step) ────────────────────────
+
+const STEPS = [
+  [0, 1, 2, 3, 4, 5, 6],                           // 1. Personal Info (7q)
+  [7, 8, 9, 10],                                   // 2. AI Adoption (4q)
+  [11, 12, 13, 14],                                // 3. AI Goals (4q)
+  [15, 16, 17, 18],                                // 4. Team & Leadership (4q)
+  [19, 20, 21, 22, 23],                            // 5. Challenges & Engagement (5q)
+  [24, 25, 26, 27],                                // 6. Data Foundation (4q)
+  [28, 29, 30, 31],                                // 7. Technical Infrastructure (4q)
+  [32, 33, 34, 35],                                // 8. Success Metrics (4q)
+  [36, 37, 38, 39],                                // 9. AI Governance & Risk (4q)
+];
+
+const STEP_NAMES = [
+  "About You",
+  "AI Adoption",
+  "AI Goals & Timeline",
+  "Team Capabilities",
+  "Your Challenges",
+  "Data Foundation",
+  "Technical Infrastructure",
+  "Success & Metrics",
+  "Governance & Risk",
+];
+
+const STEP_TOTAL = STEPS.length;
+
+const BRAND = "#005B65";
+
+// ─── Sub-components ───────────────────────────────────────────────────────────
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export default function AIAuditForm() {
-  const [step, setStep] = useState(0);
-  const [form, setForm] = useState<FormState>(INITIAL);
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [step, setStep]         = useState(0);
+  const [form, setForm]         = useState<FormState>(() => {
+    if (typeof window === "undefined") return INITIAL;
+    const saved = sessionStorage.getItem("auditFormData");
+    return saved ? JSON.parse(saved) : INITIAL;
+  });
+  const [error, setError]       = useState("");
+  const [dir, setDir]           = useState(1);
   const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+  const [submitted, setSubmitted]   = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const turnstileRef = useRef<TurnstileInstance>(null);
-  const blob1Ref = useRef<HTMLDivElement>(null);
-  const blob2Ref = useRef<HTMLDivElement>(null);
+  const inputRef     = useRef<HTMLInputElement | HTMLTextAreaElement | null>(null);
 
-  // Scroll to top of form on every step change
+  const currentStepQuestionIndices = STEPS[step];
+  const currentStepQuestions = currentStepQuestionIndices.map(i => QUESTIONS[i]);
+  const progress = Math.round(((step + 1) / STEP_TOTAL) * 100);
+  const stepName = STEP_NAMES[step];
+
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    setTimeout(() => { (inputRef.current as HTMLInputElement | null)?.focus(); }, 400);
   }, [step]);
 
-  // Parallax blobs — move at different rates as user scrolls
   useEffect(() => {
-    const onScroll = () => {
-      const y = window.scrollY;
-      if (blob1Ref.current) blob1Ref.current.style.transform = `translateY(${y * 0.38}px)`;
-      if (blob2Ref.current) blob2Ref.current.style.transform = `translateY(${y * 0.22}px)`;
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  const TOTAL = 10;
-  const progress = Math.round(((step + 1) / TOTAL) * 100);
-  const hdr = SECTION_HEADERS[step];
+    sessionStorage.setItem("auditFormData", JSON.stringify(form));
+  }, [form]);
 
   function set<K extends keyof FormState>(key: K, val: FormState[K]) {
-    setForm((f: FormState) => ({ ...f, [key]: val }));
-    setErrors((e) => { const n = { ...e }; delete n[key as string]; return n; });
+    setForm(f => ({ ...f, [key]: val }));
+    setError("");
   }
 
-  function goNext() {
-    const errs = validate(step, form);
-    if (Object.keys(errs).length > 0) {
-      setErrors(errs);
-      return;
+  function toggleCheckbox(key: keyof FormState, opt: string, max?: number) {
+    const arr = form[key] as string[];
+    if (arr.includes(opt)) { set(key, arr.filter(v => v !== opt) as any); return; }
+    if (max && arr.length >= max) return;
+    set(key, [...arr, opt] as any);
+  }
+
+  function validateStep(questions: Question[]): string {
+    for (const q of questions) {
+      if (!q.required) continue;
+      const val = form[q.id];
+      if (q.type === "text" || q.type === "email" || q.type === "tel" || q.type === "textarea") {
+        if (!(val as string).trim()) return `${q.label} is required.`;
+        if (q.type === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val as string)) return "Enter a valid email address.";
+      }
+      if (q.type === "select" || q.type === "radio") {
+        if (!(val as string)) return `Please select an option for: ${q.label}`;
+      }
     }
-    setErrors({});
-    setStep((s: number) => s + 1);
+    return "";
   }
 
-  async function submit() {
-    const errs = validate(9, form);
-    if (Object.keys(errs).length > 0) { setErrors(errs); return; }
+  function advance() {
+    const err = validateStep(currentStepQuestions);
+    if (err) { setError(err); return; }
+    setError("");
+    setDir(1);
+    if (step < STEP_TOTAL - 1) {
+      setStep(s => s + 1);
+    } else {
+      handleSubmit();
+    }
+  }
+
+  function back() {
+    setError("");
+    setDir(-1);
+    setStep(s => s - 1);
+  }
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key !== "Enter") return;
+      const hasMultilineInput = currentStepQuestions.some(q => ["radio","checkbox","slider","toggle"].includes(q.type));
+      if (hasMultilineInput) return;
+      e.preventDefault();
+      advance();
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [step, form]);
+
+  async function handleSubmit() {
     setSubmitting(true);
     setSubmitError("");
     try {
@@ -361,6 +302,7 @@ export default function AIAuditForm() {
         body: JSON.stringify({ ...form, turnstileToken }),
       });
       if (res.ok) {
+        sessionStorage.removeItem("auditFormData");
         setSubmitted(true);
       } else {
         const d = await res.json();
@@ -373,371 +315,243 @@ export default function AIAuditForm() {
     }
   }
 
-  // ── Success screen ──────────────────────────────────────────────────────────
   if (submitted) {
     const raw = calculateScore(form);
-    const r = getReadiness(raw);
+    const r   = getReadiness(raw);
     return (
-      <div style={{ maxWidth: "680px", margin: "80px auto", padding: "40px 24px", textAlign: "center" }}>
-        <div style={{ width: "80px", height: "80px", borderRadius: "50%", background: r.color, color: "#fff", fontSize: "32px", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 24px" }}>✓</div>
-        <h2 style={{ fontFamily: '"Lora", serif', fontSize: "clamp(1.8rem, 4vw, 2.8rem)", color: "#1B1B1B", fontWeight: 700, marginBottom: "12px" }}>Your Assessment is Complete</h2>
-        <div style={{ background: "#F9FAFB", border: "2px solid #E5E7EB", borderRadius: "16px", padding: "28px", margin: "24px 0" }}>
-          <p style={{ fontSize: "13px", color: "#9CA3AF", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "8px" }}>Your AI Readiness Score</p>
-          <div style={{ fontSize: "56px", fontWeight: 800, color: r.color, lineHeight: 1 }}>{r.pct}<span style={{ fontSize: "24px" }}>/100</span></div>
-          <p style={{ fontSize: "18px", fontWeight: 700, color: "#1B1B1B", marginTop: "12px" }}>{r.level}</p>
-          <p style={{ fontSize: "14px", color: "#6B7280", marginTop: "6px" }}>{r.desc}</p>
-        </div>
-        <p style={{ color: "#555", fontSize: "16px", lineHeight: 1.6 }}>Our team will review your results and reach out within 1 business day with your personalized AI readiness report.</p>
-        <a href="/" style={{ display: "inline-block", marginTop: "32px", background: "#005B65", color: "#fff", padding: "14px 32px", borderRadius: "9999px", textDecoration: "none", fontWeight: 600, fontSize: "15px" }}>Back to Home</a>
+      <div className="flex min-h-screen items-center justify-center bg-zinc-50 px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 32 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
+          className="w-full max-w-lg text-center"
+        >
+          <div className="size-20 rounded-full flex items-center justify-center text-white text-3xl mx-auto mb-8" style={{ background: r.color }}>✓</div>
+          <h2 className="font-display text-4xl font-bold text-zinc-900 mb-3">Your assessment is complete.</h2>
+          <p className="text-zinc-500 mb-8">Our team will review your results and reach out within 1 business day with your personalized AI readiness report.</p>
+          <div className="rounded-2xl border-2 border-zinc-100 p-8 mb-8" style={{ background: "#F9FAFB" }}>
+            <p className="text-xs uppercase tracking-widest text-zinc-400 mb-2">Your AI Readiness Score</p>
+            <div className="text-7xl font-black leading-none mb-3" style={{ color: r.color }}>{r.pct}<span className="text-3xl">/100</span></div>
+            <p className="text-xl font-bold text-zinc-900">{r.level}</p>
+            <p className="text-sm text-zinc-500 mt-1">{r.desc}</p>
+          </div>
+          <a href="/" className="inline-block rounded-full px-8 py-3 font-semibold text-white text-sm" style={{ background: BRAND }}>Back to Home</a>
+        </motion.div>
       </div>
     );
   }
 
-  // ── Form ────────────────────────────────────────────────────────────────────
   return (
-    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", position: "relative" }}>
-      {/* Parallax background blobs */}
-      <div aria-hidden="true" style={{ position: "absolute", inset: 0, overflow: "hidden", pointerEvents: "none" }}>
-        <div ref={blob1Ref} style={{
-          position: "absolute", top: "-40px", right: "-100px",
-          width: "560px", height: "560px", borderRadius: "50%",
-          background: "radial-gradient(circle at 45% 45%, rgba(0,91,101,0.07) 0%, transparent 68%)",
-          willChange: "transform",
-        }} />
-        <div ref={blob2Ref} style={{
-          position: "absolute", top: "280px", left: "-140px",
-          width: "640px", height: "640px", borderRadius: "50%",
-          background: "radial-gradient(circle at 55% 50%, rgba(30,180,156,0.05) 0%, transparent 65%)",
-          willChange: "transform",
-        }} />
+    <div className="relative flex min-h-screen flex-col bg-zinc-50 overflow-hidden">
+
+      {/* Top progress bar */}
+      <div className="fixed top-0 left-0 right-0 z-50 h-1 bg-zinc-200">
+        <motion.div
+          className="h-full"
+          style={{ background: BRAND }}
+          animate={{ width: `${progress}%` }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+        />
       </div>
 
-      {/* Progress */}
-      <div style={{ padding: "88px 40px 0", maxWidth: "860px", margin: "0 auto", width: "100%" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px" }}>
-          <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-            <span style={{ color: "#005B65", fontWeight: 700, fontSize: "12px", textTransform: "uppercase", letterSpacing: "0.1em" }}>Section {step + 1}</span>
-            <span style={{ color: "#9CA3AF", fontSize: "12px" }}>of {TOTAL}</span>
-          </div>
-          <span style={{ color: "#9CA3AF", fontSize: "12px" }}>{progress}% complete</span>
-        </div>
-        <div style={{ height: "3px", background: "#F3F4F6", borderRadius: "2px" }}>
-          <div style={{ height: "100%", width: `${progress}%`, background: "#005B65", borderRadius: "2px", transition: "width 0.4s ease" }} />
-        </div>
+      {/* Step counter top-right */}
+      <div className="fixed top-4 right-6 z-50 flex items-center gap-2 text-xs text-zinc-400 font-medium">
+        <span>{step + 1}</span>
+        <span>/</span>
+        <span>{STEP_TOTAL}</span>
       </div>
 
-      {/* Content */}
-      <div style={{ flex: 1, padding: "40px 40px 0", maxWidth: "860px", margin: "0 auto", width: "100%" }}>
-        {/* Section header */}
-        <div style={{ marginBottom: "36px" }}>
-          <h3 style={{ fontSize: "18px", color: "#005B65", fontWeight: 700, marginBottom: "8px" }}>{hdr.num} — {hdr.title}</h3>
-          <p style={{ color: "#6B7280", fontSize: "16px" }}>{hdr.sub}</p>
+      {/* Main question area — vertically centered */}
+      <div className="flex flex-1 flex-col items-center justify-center px-6 py-20">
+        <div className="w-full max-w-2xl">
+          <AnimatePresence mode="wait" custom={dir}>
+            <motion.div
+              key={step}
+              custom={dir}
+              initial={{ opacity: 0, y: dir > 0 ? 48 : -48 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: dir > 0 ? -48 : 48 }}
+              transition={{ duration: 0.35, ease: [0.32, 0, 0.67, 0] }}
+              className="flex flex-col gap-8"
+            >
+              {/* Step badge & title */}
+              <div>
+                <span className="text-sm font-bold tracking-wider flex items-center gap-1.5" style={{ color: BRAND }}>
+                  {step + 1} <svg className="size-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 8h10M9 4l4 4-4 4"/></svg>
+                </span>
+                <h2 className="text-3xl font-light tracking-tight text-zinc-800 mt-3 md:text-4xl">{stepName}</h2>
+              </div>
+
+              {/* Questions grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                {currentStepQuestions.map((q, idx) => (
+                  <div key={q.id} className={`flex flex-col gap-3 ${currentStepQuestions.length === 1 || (idx === currentStepQuestions.length - 1 && currentStepQuestions.length % 2 === 1) ? "sm:col-span-2" : ""}`}>
+                    <label className="text-sm font-medium text-zinc-700">
+                      {q.label}{q.required && <span className="ml-1 text-red-400">*</span>}
+                    </label>
+                    {q.sublabel && <p className="text-xs text-zinc-400 -mt-1">{q.sublabel}</p>}
+
+                    {/* ── Text / Email / Tel ── */}
+                    {(q.type === "text" || q.type === "email" || q.type === "tel") && (
+                      <input
+                        ref={idx === 0 ? (inputRef as React.RefObject<HTMLInputElement>) : null}
+                        type={q.type}
+                        placeholder={q.placeholder}
+                        value={form[q.id] as string}
+                        onChange={e => set(q.id, e.target.value as any)}
+                        className="w-full border-b border-zinc-300 bg-transparent py-2 text-base font-light focus:border-[#005B65] focus:outline-none transition-colors text-zinc-800 placeholder-zinc-300"
+                      />
+                    )}
+
+                    {/* ── Textarea ── */}
+                    {q.type === "textarea" && (
+                      <textarea
+                        ref={idx === 0 ? (inputRef as React.RefObject<HTMLTextAreaElement>) : null}
+                        placeholder={q.placeholder}
+                        value={form[q.id] as string}
+                        onChange={e => set(q.id, e.target.value as any)}
+                        rows={3}
+                        className="w-full border-b border-zinc-300 bg-transparent py-2 text-sm font-light focus:border-[#005B65] focus:outline-none transition-colors text-zinc-800 placeholder-zinc-300 resize-none"
+                      />
+                    )}
+
+                    {/* ── Select ── */}
+                    {q.type === "select" && (
+                      <div className="relative">
+                        <select
+                          value={form[q.id] as string}
+                          onChange={e => { set(q.id, e.target.value as any); }}
+                          className="w-full border-b border-zinc-300 bg-transparent py-2 text-base font-light appearance-none focus:border-[#005B65] focus:outline-none transition-colors text-zinc-800"
+                          style={{ color: form[q.id] ? "#27272a" : "#d4d4d8" }}
+                        >
+                          <option value="" disabled style={{ color: "#d4d4d8" }}>{q.placeholder ?? "Select…"}</option>
+                          {q.options!.map(o => <option key={o} value={o}>{o}</option>)}
+                        </select>
+                        <svg className="absolute right-2 bottom-2 pointer-events-none text-zinc-400" width="16" height="16" viewBox="0 0 20 20" fill="none">
+                          <path d="M5 8l5 5 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      </div>
+                    )}
+
+                    {/* ── Radio ── */}
+                    {q.type === "radio" && (
+                      <div style={q.cols ? { display: 'grid', gridTemplateColumns: `repeat(${q.cols}, 1fr)`, gap: '0.375rem' } : undefined} className={!q.cols ? "flex flex-col gap-1.5" : ""}>
+                        {q.options!.map(o => (
+                          <button key={o} type="button" onClick={() => { set(q.id, o as any); }}
+                            className={`flex items-center gap-2 rounded px-3 py-2 text-sm text-left transition-all ${
+                              form[q.id] === o ? "bg-[#EEF6F7] text-[#005B65] font-medium" : "text-zinc-700 hover:bg-zinc-50"
+                            }`}
+                          >
+                            <span className={`size-4 rounded-full border-2 shrink-0 flex items-center justify-center transition-colors ${form[q.id] === o ? "border-[#005B65] bg-[#005B65]" : "border-zinc-300 bg-white"}`}>
+                              {form[q.id] === o && <span className="size-1.5 rounded-full bg-white" />}
+                            </span>
+                            {o}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* ── Checkbox ── */}
+                    {q.type === "checkbox" && (
+                      <div style={q.cols ? { display: 'grid', gridTemplateColumns: `repeat(${q.cols}, 1fr)`, gap: '0.375rem' } : undefined} className={!q.cols ? "flex flex-col gap-1.5" : ""}>
+                        {q.options!.map(o => {
+                          const arr = form[q.id] as string[];
+                          const sel = arr.includes(o);
+                          const dis = !!q.max && arr.length >= q.max && !sel;
+                          return (
+                            <button key={o} type="button" onClick={() => toggleCheckbox(q.id, o, q.max)} disabled={dis}
+                              className={`flex items-center gap-2 rounded px-3 py-2 text-sm text-left transition-all ${
+                                sel ? "bg-[#EEF6F7] text-[#005B65] font-medium" : dis ? "bg-zinc-50 text-zinc-300 cursor-not-allowed" : "text-zinc-700 hover:bg-zinc-50"
+                              }`}
+                            >
+                              <span className={`size-4 rounded border shrink-0 flex items-center justify-center transition-colors ${sel ? "border-[#005B65] bg-[#005B65]" : "border-zinc-300 bg-white"}`}>
+                                {sel && <svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+                              </span>
+                              {o}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+
+                    {/* ── Slider ── */}
+                    {q.type === "slider" && (
+                      <div className="flex flex-col gap-2">
+                        <div className="flex justify-between text-xs text-zinc-400">
+                          {q.sliderLabels?.map((l, i) => <span key={i}>{l}</span>)}
+                        </div>
+                        <input type="range" min={q.min ?? 1} max={q.max ?? 5}
+                          value={form[q.id] as number}
+                          onChange={e => set(q.id, Number(e.target.value) as any)}
+                          className="w-full accent-[#005B65]"
+                        />
+                        <div className="text-center text-2xl font-bold" style={{ color: BRAND }}>
+                          {form[q.id]}<span className="text-sm text-zinc-400 font-normal"> / {q.max ?? 5}</span>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* ── Toggle ── */}
+                    {q.type === "toggle" && (
+                      <button
+                        type="button"
+                        onClick={() => set(q.id, !(form[q.id] as boolean) as any)}
+                        className={`flex items-center gap-3 rounded-lg border-2 px-4 py-3 text-left text-sm transition-all w-fit ${
+                          form[q.id] ? "border-[#005B65] bg-[#EEF6F7] text-[#005B65] font-medium" : "border-zinc-200 bg-white text-zinc-800 hover:border-zinc-400"
+                        }`}
+                      >
+                        <span className={`w-10 h-6 rounded-full shrink-0 flex items-center transition-colors ${form[q.id] ? "bg-[#005B65]" : "bg-zinc-300"}`}>
+                          <span className={`w-5 h-5 rounded-full bg-white transition-transform ${form[q.id] ? "translate-x-5" : "translate-x-0"}`} />
+                        </span>
+                        {q.options?.[0] || "Enable"}
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              {/* Error */}
+              {error && (
+                <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-sm text-red-500 font-medium">
+                  {error}
+                </motion.p>
+              )}
+
+              {/* CTA row */}
+              <div className="flex items-center gap-4 mt-4 pt-6 border-t border-zinc-200">
+                {step > 0 && (
+                  <button onClick={back} type="button"
+                    className="text-sm text-zinc-400 hover:text-zinc-600 transition-colors font-medium">
+                    ← Back
+                  </button>
+                )}
+
+                {/* Turnstile — only on last step */}
+                {step === STEP_TOTAL - 1 && (
+                  <Turnstile
+                    ref={turnstileRef}
+                    siteKey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "1x00000000000000000000AA"}
+                    onSuccess={setTurnstileToken}
+                    onExpire={() => setTurnstileToken(null)}
+                    options={{ theme: "light" }}
+                  />
+                )}
+
+                <button
+                  type="button"
+                  onClick={advance}
+                  disabled={step === STEP_TOTAL - 1 && !turnstileToken}
+                  className="rounded px-6 py-2.5 text-sm font-semibold text-white transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-40"
+                  style={{ background: BRAND }}
+                >
+                  {step === STEP_TOTAL - 1
+                    ? (submitting ? "Submitting…" : "Get My AI Report →")
+                    : "Next ✓"}
+                </button>
+              </div>
+
+              {submitError && <p className="text-sm text-red-500">{submitError}</p>}
+            </motion.div>
+          </AnimatePresence>
         </div>
-
-        {/* ── Section 1 ── */}
-        {step === 0 && (
-          <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-              <div>
-                <Label required>Full Name</Label>
-                <TextInput placeholder="Jane Smith" value={form.fullName} onChange={(v: string) => set("fullName", v)} required error={errors.fullName} />
-              </div>
-              <div>
-                <Label required>Work Email</Label>
-                <TextInput type="email" placeholder="jane@company.com" value={form.workEmail} onChange={(v: string) => set("workEmail", v)} required error={errors.workEmail} />
-              </div>
-              <div>
-                <Label required>Company Name</Label>
-                <TextInput placeholder="Acme Inc." value={form.companyName} onChange={(v: string) => set("companyName", v)} required error={errors.companyName} />
-              </div>
-              <div>
-                <Label required>Job Title / Role</Label>
-                <SelectInput value={form.jobTitle} onChange={(v: string) => set("jobTitle", v)} placeholder="Select your role" error={errors.jobTitle}
-                  options={["C-Suite / Executive","VP / Director","Manager / Team Lead","Individual Contributor","Consultant / Advisor","Other"]} />
-              </div>
-              <div>
-                <Label required>Industry Vertical</Label>
-                <SelectInput value={form.industry} onChange={(v: string) => set("industry", v)} placeholder="Select your industry" error={errors.industry}
-                  options={["Law Firm","Healthcare","Nonprofit","E-commerce / Retail","African Enterprise","Financial Services","Technology","Education","Other"]} />
-              </div>
-              <div>
-                <Label required>Company Size</Label>
-                <SelectInput value={form.companySize} onChange={(v: string) => set("companySize", v)} placeholder="Select size" error={errors.companySize}
-                  options={["1–10 employees","11–50 employees","51–200 employees","201–1,000 employees","1,000+ employees"]} />
-              </div>
-            </div>
-            <div style={{ maxWidth: "50%" }}>
-              <Label>Phone Number</Label>
-              <TextInput type="tel" placeholder="+1 555 000 0000" value={form.phone} onChange={(v: string) => set("phone", v)} />
-            </div>
-          </div>
-        )}
-
-        {/* ── Section 2 ── */}
-        {step === 1 && (
-          <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
-            <div>
-              <Label required>Where is your organization in AI adoption?</Label>
-              <RadioGroup value={form.aiAdoptionStage} onChange={v => set("aiAdoptionStage", v)} error={errors.aiAdoptionStage}
-                options={[{ label: "Not started", score: 0 },{ label: "Exploring", score: 5 },{ label: "Piloting", score: 10 },{ label: "Scaling", score: 15 },{ label: "Optimizing", score: 20 }]} />
-            </div>
-            <div>
-              <Label>AI tools currently in use</Label>
-              <CheckboxGroup values={form.aiToolsInUse} onChange={v => set("aiToolsInUse", v)}
-                options={["ChatGPT / LLMs","Microsoft Copilot","Google AI / Gemini","Industry-specific AI tools","Custom-built AI solutions","None","Other"]} />
-            </div>
-            <div>
-              <Label required>Monthly AI spend</Label>
-              <RadioGroup value={form.monthlyAISpend} onChange={v => set("monthlyAISpend", v)} error={errors.monthlyAISpend}
-                options={[{ label: "$0", score: 0 },{ label: "Less than $500", score: 5 },{ label: "$500–$2K", score: 10 },{ label: "$2K–$10K", score: 15 },{ label: "$10K+", score: 20 }]} />
-            </div>
-            <div>
-              <Label required>Dedicated AI team or resources</Label>
-              <RadioGroup value={form.dedicatedAITeam} onChange={v => set("dedicatedAITeam", v)} error={errors.dedicatedAITeam}
-                options={[{ label: "Full dedicated team", score: 15 },{ label: "Part-time resources", score: 10 },{ label: "Planning to hire", score: 5 },{ label: "No team", score: 0 }]} />
-            </div>
-          </div>
-        )}
-
-        {/* ── Section 3 ── */}
-        {step === 2 && (
-          <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
-            <div>
-              <Label required>Primary AI goal</Label>
-              <RadioGroup value={form.primaryAIGoal} onChange={v => set("primaryAIGoal", v)} error={errors.primaryAIGoal}
-                options={[{ label: "Efficiency & cost reduction", score: 10 },{ label: "Revenue growth", score: 15 },{ label: "Customer experience", score: 10 },{ label: "Competitive advantage", score: 15 }]} />
-            </div>
-            <div>
-              <Label required>Implementation timeline</Label>
-              <RadioGroup value={form.implementationTimeline} onChange={v => set("implementationTimeline", v)} error={errors.implementationTimeline}
-                options={[{ label: "Exploring (6–12+ months)", score: 5 },{ label: "Planning (3–6 months)", score: 10 },{ label: "Ready now (0–3 months)", score: 20 }]} />
-            </div>
-            <div>
-              <Label required>Your decision authority</Label>
-              <RadioGroup value={form.decisionAuthority} onChange={v => set("decisionAuthority", v)} error={errors.decisionAuthority}
-                options={[{ label: "Decision-maker", score: 20 },{ label: "Key influencer", score: 15 },{ label: "Researcher/evaluator", score: 5 },{ label: "Other", score: 0 }]} />
-            </div>
-            <div>
-              <Label required>Annual AI investment budget</Label>
-              <RadioGroup value={form.annualAIBudget} onChange={v => set("annualAIBudget", v)} error={errors.annualAIBudget}
-                options={[{ label: "Not yet determined", score: 0 },{ label: "Under $25K", score: 5 },{ label: "$25K–$100K", score: 10 },{ label: "$100K–$500K", score: 15 },{ label: "$500K+", score: 20 }]} />
-            </div>
-          </div>
-        )}
-
-        {/* ── Section 4 ── */}
-        {step === 3 && (
-          <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
-            <div>
-              <Label required>Team change readiness</Label>
-              <p style={{ fontSize: "13px", color: "#9CA3AF", marginBottom: "12px" }}>How open is your team to changing the way they work? (1 = Very resistant, 5 = Highly enthusiastic)</p>
-              <SliderInput value={form.teamChangeReadiness} onChange={(v: number) => set("teamChangeReadiness", v)} labels={["1 — Resistant", "5 — Enthusiastic"]} />
-            </div>
-            <div>
-              <Label required>Team AI literacy</Label>
-              <p style={{ fontSize: "13px", color: "#9CA3AF", marginBottom: "12px" }}>How well does your team understand AI concepts and capabilities? (1 = No knowledge, 5 = Expert level)</p>
-              <SliderInput value={form.teamAILiteracy} onChange={(v: number) => set("teamAILiteracy", v)} labels={["1 — No knowledge", "5 — Expert"]} />
-            </div>
-            <div>
-              <Label required>Leadership buy-in for AI initiatives</Label>
-              <RadioGroup value={form.leadershipBuyIn} onChange={v => set("leadershipBuyIn", v)} error={errors.leadershipBuyIn}
-                options={[{ label: "Strong champion", score: 15 },{ label: "Supportive", score: 10 },{ label: "Neutral", score: 5 },{ label: "Skeptical", score: 0 }]} />
-            </div>
-            <div>
-              <Label>Ethical or compliance concerns (select all that apply)</Label>
-              <CheckboxGroup values={form.ethicalConcerns} onChange={v => set("ethicalConcerns", v)}
-                options={["Data privacy","Bias / fairness","Regulatory compliance","Job displacement","None of the above"]} />
-            </div>
-          </div>
-        )}
-
-        {/* ── Section 5 ── */}
-        {step === 4 && (
-          <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
-            <div>
-              <Label>Top challenges (select up to 3)</Label>
-              <CheckboxGroup values={form.topChallenges} onChange={v => set("topChallenges", v)} max={3}
-                options={["Don't know where to start","Lack of internal expertise","Budget constraints","Resistance to change","Data quality issues","Unclear ROI","Vendor selection paralysis"]} />
-            </div>
-            <div>
-              <Label>What immediate help are you looking for?</Label>
-              <textarea
-                placeholder="Describe your most pressing AI challenge or question…"
-                value={form.immediateHelp} onChange={e => set("immediateHelp", e.target.value)} rows={4}
-                style={{ background: "#fff", border: "1.5px solid #E5E7EB", borderRadius: "8px", padding: "12px 14px", color: "#1B1B1B", fontSize: "15px", width: "100%", fontFamily: "Inter, sans-serif", outline: "none", resize: "none" }}
-              />
-            </div>
-            <div>
-              <Label required>How did you hear about Madavi?</Label>
-              <SelectInput value={form.hearAboutUs} onChange={(v: string) => set("hearAboutUs", v)} placeholder="Select source" error={errors.hearAboutUs}
-                options={["LinkedIn","Google / Search","Referral","Conference / Event","Email / Newsletter","Other"]} />
-            </div>
-          </div>
-        )}
-
-        {/* ── Section 6 ── */}
-        {step === 5 && (
-          <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
-            <div>
-              <button type="button" onClick={() => set("subscribeNewsletter", !form.subscribeNewsletter)}
-                style={{ display: "flex", alignItems: "center", gap: "14px", background: form.subscribeNewsletter ? "#EEF6F7" : "#fff", border: `2px solid ${form.subscribeNewsletter ? "#005B65" : "#E5E7EB"}`, borderRadius: "10px", padding: "16px 18px", cursor: "pointer", width: "100%" }}>
-                <div style={{ width: "20px", height: "20px", borderRadius: "4px", border: `2px solid ${form.subscribeNewsletter ? "#005B65" : "#D1D5DB"}`, background: form.subscribeNewsletter ? "#005B65" : "#fff", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  {form.subscribeNewsletter && <svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>}
-                </div>
-                <div style={{ textAlign: "left" }}>
-                  <p style={{ fontWeight: 600, fontSize: "15px", color: "#1B1B1B" }}>Subscribe to Madavi's newsletter</p>
-                  <p style={{ fontSize: "13px", color: "#6B7280", marginTop: "2px" }}>AI insights, case studies, and strategic updates — delivered monthly.</p>
-                </div>
-              </button>
-            </div>
-            <div>
-              <Label>I'm interested in (select all that apply)</Label>
-              <CheckboxGroup values={form.interestedIn} onChange={v => set("interestedIn", v)}
-                options={["Free consultation call","AI case studies","Personalized AI roadmap","Executive briefing","Custom AI workshop"]} />
-            </div>
-          </div>
-        )}
-
-        {/* ── Section 7 ── */}
-        {step === 6 && (
-          <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
-            <div>
-              <Label required>Data availability in your organization</Label>
-              <RadioGroup value={form.dataAvailability} onChange={v => set("dataAvailability", v)} error={errors.dataAvailability}
-                options={[{ label: "Clean and accessible", score: 20 },{ label: "Exists, needs cleaning", score: 15 },{ label: "Scattered/siloed", score: 10 },{ label: "Limited infrastructure", score: 0 }]} />
-            </div>
-            <div>
-              <Label required>Data governance maturity</Label>
-              <RadioGroup value={form.dataGovernance} onChange={v => set("dataGovernance", v)} error={errors.dataGovernance}
-                options={[{ label: "Formal policies in place", score: 15 },{ label: "Basic policies", score: 10 },{ label: "Informal only", score: 5 },{ label: "No framework", score: 0 }]} />
-            </div>
-            <div>
-              <Label>Data challenges (select all that apply)</Label>
-              <CheckboxGroup values={form.dataChallenges} onChange={v => set("dataChallenges", v)}
-                options={["Data silos","Poor data quality","No data standards","Privacy concerns","Insufficient data volume","Legacy system integration"]} />
-            </div>
-            <div>
-              <Label required>How easily can your team access needed data?</Label>
-              <p style={{ fontSize: "13px", color: "#9CA3AF", marginBottom: "12px" }}>(1 = Very difficult, 5 = Instant access)</p>
-              <SliderInput value={form.dataAccessibility} onChange={(v: number) => set("dataAccessibility", v)} labels={["1 — Very difficult", "5 — Instant access"]} />
-            </div>
-          </div>
-        )}
-
-        {/* ── Section 8 ── */}
-        {step === 7 && (
-          <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
-            <div>
-              <Label required>Current IT infrastructure</Label>
-              <RadioGroup value={form.itInfrastructure} onChange={v => set("itInfrastructure", v)} error={errors.itInfrastructure}
-                options={[{ label: "Cloud-native, API-enabled", score: 20 },{ label: "Mix of cloud/on-premise", score: 15 },{ label: "Primarily on-premise", score: 10 },{ label: "Legacy systems", score: 0 }]} />
-            </div>
-            <div>
-              <Label required>Technical talent in your team</Label>
-              <RadioGroup value={form.technicalTalent} onChange={v => set("technicalTalent", v)} error={errors.technicalTalent}
-                options={[{ label: "Strong team with AI experience", score: 15 },{ label: "Capable team, learning AI", score: 10 },{ label: "Basic IT, no AI expertise", score: 0 }]} />
-            </div>
-            <div>
-              <Label required>Integration capability</Label>
-              <RadioGroup value={form.integrationCapability} onChange={v => set("integrationCapability", v)} error={errors.integrationCapability}
-                options={[{ label: "APIs well-established", score: 15 },{ label: "Some integration capability", score: 10 },{ label: "Manual processes", score: 5 },{ label: "Siloed systems", score: 0 }]} />
-            </div>
-            <div>
-              <Label required>Security & compliance posture</Label>
-              <RadioGroup value={form.securityCompliance} onChange={v => set("securityCompliance", v)} error={errors.securityCompliance}
-                options={[{ label: "Enterprise-grade framework", score: 10 },{ label: "Standard practices", score: 7 },{ label: "Basic measures", score: 4 },{ label: "Ad-hoc approach", score: 0 }]} />
-            </div>
-          </div>
-        )}
-
-        {/* ── Section 9 ── */}
-        {step === 8 && (
-          <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
-            <div>
-              <Label required>How clearly defined are your success metrics?</Label>
-              <RadioGroup value={form.successMeasurementClarity} onChange={v => set("successMeasurementClarity", v)} error={errors.successMeasurementClarity}
-                options={[{ label: "Clear KPIs defined and tracked", score: 20 },{ label: "KPIs identified, not tracked", score: 15 },{ label: "General goals only", score: 5 },{ label: "No measurement defined", score: 0 }]} />
-            </div>
-            <div>
-              <Label>Metrics you intend to track (select all that apply)</Label>
-              <CheckboxGroup values={form.metricsToTrack} onChange={v => set("metricsToTrack", v)}
-                options={["Cost savings","Revenue impact","Customer satisfaction","Employee productivity","Cycle time / speed","Error reduction","Other"]} />
-            </div>
-            <div>
-              <Label required>Current performance baseline</Label>
-              <RadioGroup value={form.baselineMeasurement} onChange={v => set("baselineMeasurement", v)} error={errors.baselineMeasurement}
-                options={[{ label: "Track current performance", score: 15 },{ label: "Some baseline exists", score: 10 },{ label: "Limited baseline", score: 5 },{ label: "No baseline", score: 0 }]} />
-            </div>
-            <div>
-              <Label required>Expected ROI timeline</Label>
-              <RadioGroup value={form.roiExpectation} onChange={v => set("roiExpectation", v)} error={errors.roiExpectation}
-                options={[{ label: "0–6 months", score: 15 },{ label: "6–12 months", score: 10 },{ label: "12–24 months", score: 5 },{ label: "Beyond 24 months", score: 0 }]} />
-            </div>
-          </div>
-        )}
-
-        {/* ── Section 10 ── */}
-        {step === 9 && (
-          <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
-            <div>
-              <Label required>AI governance framework</Label>
-              <RadioGroup value={form.aiGovernanceFramework} onChange={v => set("aiGovernanceFramework", v)} error={errors.aiGovernanceFramework}
-                options={[{ label: "Formal governance established", score: 20 },{ label: "In development", score: 15 },{ label: "Informal oversight", score: 10 },{ label: "No framework", score: 0 }]} />
-            </div>
-            <div>
-              <Label>Risk mitigation concerns (select all that apply)</Label>
-              <CheckboxGroup values={form.riskMitigationConcerns} onChange={v => set("riskMitigationConcerns", v)}
-                options={["Model accuracy","Data privacy / security","Regulatory compliance","Ethical AI","Vendor risk","None"]} />
-            </div>
-            <div>
-              <Label required>Compliance requirements</Label>
-              <RadioGroup value={form.complianceRequirements} onChange={v => set("complianceRequirements", v)} error={errors.complianceRequirements}
-                options={[{ label: "Heavily regulated, critical compliance needs", score: 10 },{ label: "Moderate requirements", score: 7 },{ label: "Light requirements", score: 4 }]} />
-            </div>
-            <div>
-              <Label required>Risk appetite</Label>
-              <RadioGroup value={form.riskAppetite} onChange={v => set("riskAppetite", v)} error={errors.riskAppetite}
-                options={[{ label: "Willing to pilot and iterate", score: 15 },{ label: "Cautious, need proven solutions", score: 10 },{ label: "Risk-averse, need guarantees", score: 0 }]} />
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Turnstile — shown only on final step */}
-      {step === 9 && (
-        <div style={{ padding: "0 40px", maxWidth: "860px", margin: "24px auto 0", width: "100%" }}>
-          <Turnstile
-            ref={turnstileRef}
-            siteKey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "1x00000000000000000000AA"}
-            onSuccess={setTurnstileToken}
-            onExpire={() => setTurnstileToken(null)}
-            options={{ theme: "light" }}
-          />
-        </div>
-      )}
-
-      {/* Navigation */}
-      <div style={{ borderTop: "1px solid #F3F4F6", padding: "20px 40px", maxWidth: "860px", margin: "32px auto 0", width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        {step > 0 ? (
-          <button onClick={() => { setErrors({}); setStep((s: number) => s - 1); }}
-            style={{ background: "none", color: "#6B7280", border: "1.5px solid #E5E7EB", borderRadius: "9999px", fontSize: "14px", fontWeight: 500, cursor: "pointer", padding: "10px 20px" }}>
-            ← Back
-          </button>
-        ) : (
-          <div />
-        )}
-        {submitError && <p style={{ color: ERR, fontSize: "13px", maxWidth: "260px", textAlign: "center" }}>{submitError}</p>}
-        {step < 9 ? (
-          <button onClick={goNext}
-            style={{ background: "#005B65", color: "#fff", border: "none", borderRadius: "9999px", padding: "14px 28px", fontSize: "15px", fontWeight: 600, cursor: "pointer" }}>
-            Next →
-          </button>
-        ) : (
-          <button onClick={submit} disabled={submitting || !turnstileToken}
-            style={{ background: "#005B65", color: "#fff", border: "none", borderRadius: "9999px", padding: "14px 28px", fontSize: "15px", fontWeight: 600, cursor: "pointer", opacity: (submitting || !turnstileToken) ? 0.5 : 1 }}>
-            {submitting ? "Submitting…" : "Get My AI Readiness Report →"}
-          </button>
-        )}
       </div>
     </div>
   );

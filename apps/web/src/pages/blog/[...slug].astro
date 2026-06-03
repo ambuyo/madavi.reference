@@ -24,6 +24,10 @@ const readingTime = readingTimeMinutes < 1 ? "1 min" : `${readingTimeMinutes} mi
 const authorName = post.data.team || post.data.author?.name || "Madavi";
 const authorAvatar = post.data.author?.avatar;
 const authorSlug = post.data.author?.slug;
+
+const seoTitle = post.data.seo?.metaTitle || post.data.title;
+const seoDescription = post.data.seo?.metaDescription || post.data.description;
+const seoImage = post.data.seo?.ogImage?.asset?.url || imageUrl;
 ---
 
 <SingleBlogLayout
@@ -34,9 +38,9 @@ const authorSlug = post.data.author?.slug;
   readingTime={readingTime}
   image={imageUrl}
   description={post.data.description}
-  seoTitle={post.data.title}
-  seoDescription={post.data.description}
-  seoImage={imageUrl}
+  seoTitle={seoTitle}
+  seoDescription={seoDescription}
+  seoImage={seoImage}
   compiledBy={authorName}
   authorAvatar={authorAvatar}
   authorSlug={authorSlug}

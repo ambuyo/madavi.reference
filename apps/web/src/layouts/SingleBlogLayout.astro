@@ -2,7 +2,6 @@
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import Text from "@/components/fundations/elements/Text.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
-import Seo from "@/components/fundations/head/Seo.astro";
 
 interface Props {
   title: string;
@@ -52,13 +51,12 @@ const seoImageUrl = typeof seoImage === "string" ? seoImage : seoImage?.url || s
 const imageUrl = typeof image === "string" ? image : image?.url || image?.src;
 ---
 
-<BaseLayout>
-  <Seo
-    title={seoTitle || title}
-    description={seoDescription || description}
-    image={seoImageUrl}
-    type="article"
-  />
+<BaseLayout
+  title={seoTitle || title}
+  description={seoDescription || description}
+  seoType="article"
+  image={seoImageUrl}
+>
 
   <section>
     <Wrapper variant="standard" class="py-24 lg:pt-48">

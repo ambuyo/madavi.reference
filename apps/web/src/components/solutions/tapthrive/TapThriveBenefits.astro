@@ -1,0 +1,137 @@
+---
+import Text from "@/components/fundations/elements/Text.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+
+const benefits = [
+  {
+    title: "Negative Review Filter",
+    body: "Unhappy customers are routed to private feedback — not Google. Protect your rating before the damage is done.",
+    icon: `<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" class="size-10">
+      <circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="1.5"/>
+      <path d="M16 24l6 6 10-12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="24" cy="24" r="10" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 3"/>
+    </svg>`,
+  },
+  {
+    title: "WhatsApp Follow-Up",
+    body: "Automated messages reach customers where they already are. No app download. No friction. Just a nudge at the right moment.",
+    icon: `<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" class="size-10">
+      <path d="M8 38l3.5-8A16 16 0 1 1 18 35.5L8 38z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M18 20c0-1 1.5-3 3-2s2 2 1 4-4 4-4 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      <circle cx="18" cy="30" r="1" fill="currentColor"/>
+    </svg>`,
+  },
+  {
+    title: "AI Review Responses",
+    body: "Every new review gets a thoughtful, on-brand response — drafted by AI, approved by you, or sent automatically.",
+    icon: `<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" class="size-10">
+      <rect x="8" y="12" width="32" height="24" rx="4" stroke="currentColor" stroke-width="1.5"/>
+      <path d="M16 20h16M16 26h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      <circle cx="36" cy="36" r="6" fill="white" stroke="currentColor" stroke-width="1.5"/>
+      <path d="M33 36l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>`,
+  },
+  {
+    title: "Monthly Reputation Report",
+    body: "Review velocity, rating trends, competitor comparison — delivered in plain language, not jargon, every month.",
+    icon: `<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" class="size-10">
+      <rect x="8" y="8" width="32" height="32" rx="3" stroke="currentColor" stroke-width="1.5"/>
+      <path d="M16 32l6-8 6 4 6-10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M14 14h20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>`,
+  },
+  {
+    title: "Multi-Location Dashboard",
+    body: "Manage all branches from one place. See which locations are thriving and which need attention — instantly.",
+    icon: `<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" class="size-10">
+      <circle cx="24" cy="14" r="5" stroke="currentColor" stroke-width="1.5"/>
+      <circle cx="10" cy="34" r="5" stroke="currentColor" stroke-width="1.5"/>
+      <circle cx="38" cy="34" r="5" stroke="currentColor" stroke-width="1.5"/>
+      <path d="M24 19v4M24 23l-11 6M24 23l11 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>`,
+  },
+  {
+    title: "Customer Contact Database",
+    body: "Every tap builds your contact list — real customers who've engaged with your brand, ready for future marketing.",
+    icon: `<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" class="size-10">
+      <ellipse cx="24" cy="14" rx="12" ry="5" stroke="currentColor" stroke-width="1.5"/>
+      <path d="M12 14v8c0 2.76 5.37 5 12 5s12-2.24 12-5v-8" stroke="currentColor" stroke-width="1.5"/>
+      <path d="M12 22v8c0 2.76 5.37 5 12 5s12-2.24 12-5v-8" stroke="currentColor" stroke-width="1.5"/>
+    </svg>`,
+  },
+];
+---
+
+<section id="benefits" class="py-24 lg:py-32" style="background: linear-gradient(160deg, #f8f8fc 0%, #fdf6ee 100%);">
+  <Wrapper variant="standard">
+
+    <!-- Header -->
+    <div class="flex flex-col items-start gap-4 mb-16">
+      <div class="flex items-center gap-2 border border-base-200 rounded-full px-4 py-1.5">
+        <span class="text-base-400 text-xs">✦</span>
+        <Text tag="span" variant="textXS" class="text-base-500 font-medium tracking-wide">
+          Why it works
+        </Text>
+        <span class="text-base-400 text-xs">✦</span>
+      </div>
+
+      <Text
+        tag="h2"
+        variant="displayMD"
+        class="font-display font-bold text-base-950 tracking-tight max-w-2xl"
+      >
+        Everything your reputation needs.<br>Nothing it doesn't.
+      </Text>
+
+      <Text tag="p" variant="textSM" class="text-base-500 max-w-xl leading-relaxed">
+        TapThrive is built by a marketing agency, not a tech startup. Every feature exists
+        because we've seen what actually moves the needle for local businesses.
+      </Text>
+    </div>
+
+    <!-- Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-base-200 rounded-2xl overflow-hidden border border-base-200">
+      {benefits.map((benefit) => (
+        <div class="tt-benefit-card bg-white p-8 flex flex-col gap-5 group transition-all duration-300">
+
+          <!-- Icon -->
+          <div class="text-base-700 group-hover:text-base-950 transition-colors duration-300">
+            <Fragment set:html={benefit.icon} />
+          </div>
+
+          <!-- Title + body -->
+          <div class="flex flex-col gap-3">
+            <Text tag="h3" variant="textBase" class="font-semibold text-base-900">
+              {benefit.title}
+            </Text>
+            <Text tag="p" variant="textXS" class="text-base-500 leading-relaxed">
+              {benefit.body}
+            </Text>
+          </div>
+
+          <!-- Read more -->
+          <a
+            href="#contact"
+            class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest text-base-800 hover:text-base-950 transition-colors mt-auto group/link"
+          >
+            Learn more
+            <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5 transition-transform group-hover/link:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
+          </a>
+
+        </div>
+      ))}
+    </div>
+
+  </Wrapper>
+</section>
+
+<style>
+  .tt-benefit-card {
+    background: #ffffff;
+  }
+  .tt-benefit-card:hover {
+    background: linear-gradient(135deg, #f0f7f2 0%, #fdf6ee 60%, #fef9f5 100%);
+  }
+</style>

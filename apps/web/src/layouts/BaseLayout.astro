@@ -84,7 +84,7 @@ const seoPublishedTime = publishDate || (seo?.publishedTime ? new Date(seo.publi
 <html lang="en" class="scroll-smooth">
   <head>
     <!-- Legacy head components (kept for backward compatibility) -->
-    <BaseHead seo={seo} />
+    <BaseHead seo={seo} skipSeo={!!seoTitle} />
 
     <!-- Enhanced SEO head with meta tags (LLM-optimized) -->
     {seoTitle && (

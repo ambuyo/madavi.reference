@@ -1,0 +1,146 @@
+---
+import Text from "@/components/fundations/elements/Text.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+import { getPostsByCategory } from "@/lib/data";
+
+const all   = await getPostsByCategory("tapthrive", 4);
+const featured = all[0] ?? null;
+const rest     = all.slice(1);
+
+function formatDate(d: Date | string) {
+  return new Date(d).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+}
+
+const fallbackPosts = [
+  {
+    slug: "blog",
+    data: {
+      title: "Why your Google rating matters more than your social media following",
+      description: "High search intent. The case for reputation over reach.",
+      pubDate: new Date("2025-05-01"),
+      image: { src: "https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?w=800&h=500&fit=crop&q=80" },
+    },
+  },
+  {
+    slug: "blog",
+    data: {
+      title: "How to respond to a bad Google review without making it worse",
+      description: "A step-by-step guide for business owners in Kenya.",
+      pubDate: new Date("2025-04-18"),
+      image: { src: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop&q=80" },
+    },
+  },
+  {
+    slug: "blog",
+    data: {
+      title: "WhatsApp vs. SMS for customer follow-up: what actually works in Kenya",
+      description: "Why WhatsApp wins every time for review conversion.",
+      pubDate: new Date("2025-04-05"),
+      image: { src: "https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=400&h=300&fit=crop&q=80" },
+    },
+  },
+  {
+    slug: "blog",
+    data: {
+      title: "How much is a one-star drop on Google costing your restaurant?",
+      description: "The numbers behind local search visibility and revenue.",
+      pubDate: new Date("2025-03-22"),
+      image: { src: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=300&fit=crop&q=80" },
+    },
+  },
+];
+
+const featuredPost = featured ?? fallbackPosts[0];
+const listPosts    = rest.length >= 3 ? rest : fallbackPosts.slice(1, 4);
+---
+
+<section id="blog" class="py-24 lg:py-32" style="background:#ffffff;">
+  <Wrapper variant="standard">
+
+    <!-- Header -->
+    <div class="flex flex-col gap-3 mb-12">
+      <div class="flex items-center gap-2 border border-base-200 rounded-full px-4 py-1.5 w-fit">
+        <span class="text-base-400 text-xs">✦</span>
+        <Text tag="span" variant="textXS" class="text-base-500 font-medium tracking-wide">From the TapThrive blog</Text>
+        <span class="text-base-400 text-xs">✦</span>
+      </div>
+      <Text
+        tag="h2"
+        variant="displayLG"
+        class="font-display font-bold text-base-950 tracking-tight leading-tight max-w-2xl"
+      >
+        Practical reads for local<br>business owners.
+      </Text>
+    </div>
+
+    <!-- Grid: featured left + list right -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-0 border border-base-100 rounded-2xl overflow-hidden">
+
+      <!-- Featured post (left) -->
+      <div class="border-r border-base-100 flex flex-col">
+        <a href={`/blog/${featuredPost.slug}`} class="group flex flex-col flex-1">
+          <!-- Image — grows to fill remaining height -->
+          <div class="overflow-hidden flex-1 min-h-[200px]">
+            {(featuredPost.data.image?.src || featuredPost.data.image?.url) ? (
+              <img
+                src={featuredPost.data.image?.src ?? featuredPost.data.image?.url}
+                alt={featuredPost.data.title}
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                loading="lazy"
+              />
+            ) : (
+              <div class="w-full h-full" style="background:linear-gradient(135deg,#e8f0eb,#f5e6cc);"></div>
+            )}
+          </div>
+          <!-- Meta + text — fixed height at bottom -->
+          <div class="p-6 flex flex-col gap-3 shrink-0">
+            <Text tag="p" variant="textXS" class="text-base-400">
+              {formatDate(featuredPost.data.pubDate)}
+            </Text>
+            <Text tag="h3" variant="displayXS" class="font-display font-bold text-base-950 leading-snug group-hover:text-base-700 transition-colors">
+              {featuredPost.data.title}
+            </Text>
+            <Text tag="p" variant="textSM" class="text-base-500 leading-relaxed">
+              {featuredPost.data.description}
+            </Text>
+          </div>
+        </a>
+      </div>
+
+      <!-- List posts (right) -->
+      <div class="flex flex-col divide-y divide-base-100">
+        {listPosts.map((post) => (
+          <a href={`/blog/${post.slug}`} class="group flex gap-4 p-5 hover:bg-base-50 transition-colors">
+            <!-- Thumbnail -->
+            <div class="shrink-0 rounded-xl overflow-hidden" style="width:140px; height:100px;">
+              {(post.data.image?.src || post.data.image?.url) ? (
+                <img
+                  src={post.data.image?.src ?? post.data.image?.url}
+                  alt={post.data.title}
+                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  loading="lazy"
+                />
+              ) : (
+                <div class="w-full h-full" style="background:linear-gradient(135deg,#e8f0eb,#f5e6cc);"></div>
+              )}
+            </div>
+            <!-- Text -->
+            <div class="flex flex-col gap-1.5 flex-1 min-w-0">
+              <Text tag="p" variant="textXS" class="text-base-400">
+                {formatDate(post.data.pubDate)}
+              </Text>
+              <Text tag="h3" variant="textBase" class="font-semibold text-base-950 leading-snug group-hover:text-base-700 transition-colors line-clamp-2">
+                {post.data.title}
+              </Text>
+              <Text tag="p" variant="textXS" class="text-base-500 leading-relaxed line-clamp-2">
+                {post.data.description}
+              </Text>
+            </div>
+          </a>
+        ))}
+      </div>
+
+    </div>
+
+  </Wrapper>
+</section>

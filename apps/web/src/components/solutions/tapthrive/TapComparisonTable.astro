@@ -1,0 +1,70 @@
+---
+import Text from "@/components/fundations/elements/Text.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+
+const rows = [
+  { feature: "Captures the moment",          link: false, tapthrive: true,  linkNote: "Sent later — motivation gone",          tapthriveNote: "Tap or scan at point of experience" },
+  { feature: "Filters unhappy customers",     link: false, tapthrive: true,  linkNote: "Everyone goes to Google",               tapthriveNote: "Complaints routed privately" },
+  { feature: "Captures WhatsApp numbers",     link: false, tapthrive: true,  linkNote: "Not possible",                          tapthriveNote: "With consent, every tap" },
+  { feature: "Follows up automatically",      link: false, tapthrive: true,  linkNote: "You have to remember",                  tapthriveNote: "n8n-powered, 2-hour nudge" },
+  { feature: "Responds to reviews",           link: false, tapthrive: true,  linkNote: "Manual, easy to forget",                tapthriveNote: "AI-drafted, on-brand responses" },
+  { feature: "Monthly performance report",    link: false, tapthrive: true,  linkNote: "Log into Google manually",              tapthriveNote: "Delivered to you, plain language" },
+  { feature: "Tracks competitor reviews",     link: false, tapthrive: true,  linkNote: "No",                                    tapthriveNote: "Tap + Glow plan" },
+  { feature: "Multi-location dashboard",      link: false, tapthrive: true,  linkNote: "No",                                    tapthriveNote: "All branches, one view" },
+];
+---
+
+<section style="background:#ffffff;" class="py-24 lg:py-32">
+  <Wrapper variant="standard">
+
+    <div class="flex flex-col gap-4 mb-12 max-w-xl">
+      <Text tag="p" variant="textXS" class="uppercase tracking-widest font-semibold" style="color:#c97d2e; letter-spacing:.14em;">
+        The TapThrive difference
+      </Text>
+      <Text tag="h2" variant="displayMD" class="font-display font-bold text-base-950 tracking-tight leading-tight">
+        Your Google link asks.<br>TapThrive converts.
+      </Text>
+      <Text tag="p" variant="textBase" class="text-base-500 leading-relaxed">
+        Sharing a Google review link is a good intention. TapThrive is a system. Here's what the system adds that a link never can.
+      </Text>
+    </div>
+
+    <div class="rounded-2xl overflow-hidden border border-base-200">
+      <table class="w-full border-collapse">
+        <thead>
+          <tr style="background:#f8f8f8;">
+            <th class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-base-500 w-1/3">Feature</th>
+            <th class="px-5 py-4 text-center text-xs font-semibold uppercase tracking-wider text-base-400 w-1/3">Sharing your Google link</th>
+            <th class="px-5 py-4 text-center text-xs font-semibold uppercase tracking-wider w-1/3" style="color:#1a3a2a;">TapThrive</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row, i) => (
+            <tr class="border-t border-base-100 hover:bg-base-50 transition-colors" style={i % 2 === 0 ? "background:#fff;" : "background:#fafafa;"}>
+              <td class="px-5 py-4">
+                <Text tag="span" variant="textSM" class="font-medium text-base-800">{row.feature}</Text>
+              </td>
+              <td class="px-5 py-4 text-center">
+                <div class="flex flex-col items-center gap-1">
+                  <svg class="size-5 text-base-300" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                  </svg>
+                  <Text tag="span" variant="textXS" class="text-base-400">{row.linkNote}</Text>
+                </div>
+              </td>
+              <td class="px-5 py-4 text-center">
+                <div class="flex flex-col items-center gap-1">
+                  <svg class="size-5" viewBox="0 0 20 20" fill="#1a3a2a">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                  </svg>
+                  <Text tag="span" variant="textXS" class="text-base-600">{row.tapthriveNote}</Text>
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+  </Wrapper>
+</section>
