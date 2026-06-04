@@ -30,22 +30,22 @@ export function CreativePricing({
   return (
     <div className="w-full max-w-6xl mx-auto px-4">
       <div className="text-center space-y-6 mb-16">
-        <div className="font-handwritten text-xl rotate-[-1deg]" style={{ color: "#c97d2e" }}>
+        <div className="font-handwritten text-xl rotate-[-1deg]" style={{ color: "#fff" }}>
           {tag}
         </div>
         <div className="relative">
-          <h2 className="text-4xl md:text-5xl font-bold font-handwritten text-zinc-900 dark:text-white rotate-[-1deg]">
+          <h2 className="text-4xl md:text-5xl font-bold font-handwritten rotate-[-1deg]" style={{ color: "#fff" }}>
             {title}
-            <div className="absolute -right-12 top-0 rotate-12" style={{ color: "#c97d2e" }}>
+            <div className="absolute -right-12 top-0 rotate-12" style={{ color: "#fff" }}>
               ✨
             </div>
-            <div className="absolute -left-8 bottom-0 -rotate-12" style={{ color: "#1a3a2a" }}>
+            <div className="absolute -left-8 bottom-0 -rotate-12" style={{ color: "#fff" }}>
               ⭐️
             </div>
           </h2>
-          <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-44 h-3 rounded-full blur-sm rotate-[-1deg]" style={{ background: "rgba(201,125,46,0.2)" }} />
+          <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-44 h-3 rounded-full blur-sm rotate-[-1deg]" style={{ background: "rgba(246,140,43,0.3)" }} />
         </div>
-        <p className="font-handwritten text-xl text-zinc-600 dark:text-zinc-400 rotate-[-1deg]">
+        <p className="font-handwritten text-xl rotate-[-1deg]" style={{ color: "#fff" }}>
           {description}
         </p>
       </div>
@@ -78,7 +78,7 @@ export function CreativePricing({
               {tier.popular && (
                 <div
                   className="absolute -top-3 -right-2 font-handwritten px-3 py-1 rounded-full rotate-12 text-sm border-2 border-zinc-900 font-semibold"
-                  style={{ background: "#c97d2e", color: "#fff" }}
+                  style={{ background: "#FF5000", color: "#fff" }}
                 >
                   Popular!
                 </div>
@@ -142,7 +142,7 @@ export function CreativePricing({
                       ? "text-white"
                       : "bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-white hover:bg-white"
                   )}
-                  style={tier.popular ? { background: "#1a3a2a" } : undefined}
+                  style={tier.popular ? { background: "#FF5000" } : undefined}
                 >
                   {tier.ctaLabel ?? "Get Started"}
                 </a>
@@ -157,7 +157,7 @@ export function CreativePricing({
                       ? "text-white hover:opacity-90"
                       : "bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-white hover:bg-white"
                   )}
-                  style={tier.popular ? { background: "#1a3a2a" } : undefined}
+                  style={tier.popular ? { background: "#FF5000" } : undefined}
                 >
                   {tier.ctaLabel ?? "Get Started"}
                 </Button>

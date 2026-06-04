@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Turnstile } from "@marsidev/react-turnstile";
 import type { TurnstileInstance } from "@marsidev/react-turnstile";
 
@@ -32,14 +32,23 @@ const businessTypes = [
 ];
 
 const inputClass =
-  "w-full px-4 py-3 border-b border-base-800 placeholder-white text-white border-x-0 border-t-0 focus:ring-0 focus:outline-none focus:border-base-800 transition-colors bg-white/5 focus:bg-white/10";
+  "w-full px-4 py-3 border-b border-[#f68c2b] placeholder-base-400 text-base-900 border-x-0 border-t-0 focus:ring-0 focus:outline-none focus:border-[#f68c2b] transition-colors bg-transparent";
 
-const labelClass = "block text-sm font-medium text-white mb-2";
+const labelClass = "block text-sm font-medium text-base-900 mb-2";
 
 export function TapThriveContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
   const [submitMessage, setSubmitMessage] = useState("");
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    if (submitStatus === "idle") return;
+    setVisible(true);
+    const fade = setTimeout(() => setVisible(false), 7000);
+    const clear = setTimeout(() => setSubmitStatus("idle"), 7600);
+    return () => { clearTimeout(fade); clearTimeout(clear); };
+  }, [submitStatus, submitMessage]);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const turnstileRef = useRef<TurnstileInstance>(null);
 
@@ -58,17 +67,19 @@ export function TapThriveContactForm() {
     setSubmitStatus("idle");
 
     try {
-      const response = await fetch("/api/contact", {
+      const response = await fetch("/api/tapthrive-contact.json", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: data.name,
-          phone: data.whatsapp,
-          company: data.business,
-          service: `TapThrive — ${data.plan || "enquiry"}`,
-          subject: `TapThrive enquiry — ${data.business}`,
-          message: `Business type: ${data.businessType || "Not specified"}\nLocations: ${data.locations || "Not specified"}\nPlan: ${data.plan || "Not specified"}\nGoogle Business Profile: ${data.hasGMB || "Not specified"}\nQuestion: ${data.question || "None"}`,
-          email: `tapthrive+${data.whatsapp.replace(/\D/g,"")}@madavi.co.ke`,
+          name:         data.name,
+          whatsapp:     data.whatsapp,
+          business:     data.business,
+          businessType: data.businessType,
+          plan:         data.plan,
+          locations:    data.locations,
+          hasGMB:       data.hasGMB,
+          question:     data.question,
+          privacy:      data.privacy,
           turnstileToken,
         }),
       });
@@ -82,10 +93,12 @@ export function TapThriveContactForm() {
         setTurnstileToken(null);
         turnstileRef.current?.reset();
       } else {
+        console.error("TapThrive API error:", result);
         setSubmitStatus("error");
-        setSubmitMessage(result.message || "Failed to send message. Please try again.");
+        setSubmitMessage(result.detail || result.error || result.message || "Failed to send message. Please try again.");
       }
-    } catch {
+    } catch (err) {
+      console.error("TapThrive form error:", err);
       setSubmitStatus("error");
       setSubmitMessage("An error occurred. Please try again.");
     } finally {
@@ -94,7 +107,7 @@ export function TapThriveContactForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 bg-base-80 p-8">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 p-8" style={{ backgroundColor: "#FAF5EF" }}>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Full Name */}
@@ -112,7 +125,7 @@ export function TapThriveContactForm() {
 
         {/* WhatsApp */}
         <div>
-          <label htmlFor="tt-whatsapp" className={labelClass}>WhatsApp Number * <span className="text-white/40 font-normal">(We'll reply here)</span></label>
+          <label htmlFor="tt-whatsapp" className={labelClass}>WhatsApp Number * <span className="text-base-400 font-normal">(We'll reply here)</span></label>
           <input
             {...register("whatsapp")}
             type="tel"
@@ -156,6 +169,7 @@ export function TapThriveContactForm() {
           <label htmlFor="tt-plan" className={labelClass}>Plan of interest</label>
           <select {...register("plan")} id="tt-plan" className={inputClass}>
             <option value="">Select a plan</option>
+            <option value="TapThrive NFC Review Card only — KSh 4,500 (one-off)">TapThrive NFC Review Card only — KSh 4,500 (one-off)</option>
             <option value="Tap — KSh 2,500/mo">Tap — KSh 2,500/mo</option>
             <option value="Tap + Grow — KSh 5,000/mo">Tap + Grow — KSh 5,000/mo</option>
             <option value="Tap + Glow — KSh 9,000/mo">Tap + Glow — KSh 9,000/mo</option>
@@ -197,7 +211,7 @@ export function TapThriveContactForm() {
 
       {/* Optional question */}
       <div>
-        <label htmlFor="tt-question" className={labelClass}>Anything specific you want to know? <span className="text-white/40 font-normal">(optional)</span></label>
+        <label htmlFor="tt-question" className={labelClass}>Anything specific you want to know? <span className="text-base-400 font-normal">(optional)</span></label>
         <textarea
           {...register("question")}
           id="tt-question"
@@ -213,9 +227,9 @@ export function TapThriveContactForm() {
           {...register("privacy")}
           type="checkbox"
           id="tt-privacy"
-          className="mt-1 h-4 w-4 text-accent-600 focus:ring-accent-500 border-base-300 rounded"
+          className="mt-1 h-4 w-4 accent-[#f68c2b] border-[#f68c2b] rounded"
         />
-        <label htmlFor="tt-privacy" className="text-sm text-white">
+        <label htmlFor="tt-privacy" className="text-sm text-base-700">
           I agree to the{" "}
           <a href="/legal/privacy-policy" className="underline hover:opacity-80">
             Privacy Policy
@@ -226,34 +240,40 @@ export function TapThriveContactForm() {
       {errors.privacy && <p className="text-red-500 text-xs">{errors.privacy.message}</p>}
 
       {/* Status messages */}
-      {submitStatus === "success" && (
-        <div className="p-4 bg-green-900/20 border border-green-700 rounded text-green-400 text-sm">
-          {submitMessage}
-        </div>
-      )}
-      {submitStatus === "error" && (
-        <div className="p-4 bg-red-900/20 border border-red-700 rounded text-red-400 text-sm">
+      {submitStatus !== "idle" && (
+        <div
+          className={`p-4 rounded-lg text-sm font-medium shadow-lg transition-all duration-600 ${
+            submitStatus === "success"
+              ? "bg-green-50 border border-green-200 text-green-700"
+              : "bg-red-50 border border-red-200 text-red-700"
+          }`}
+          style={{
+            opacity: visible ? 1 : 0,
+            transform: visible ? "translateY(0)" : "translateY(-6px)",
+            transition: "opacity 0.6s ease, transform 0.6s ease",
+          }}
+        >
           {submitMessage}
         </div>
       )}
 
-      {/* Turnstile */}
-      <Turnstile
+      {/* Turnstile — temporarily disabled */}
+      {/* <Turnstile
         ref={turnstileRef}
         siteKey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "1x00000000000000000000AA"}
         onSuccess={setTurnstileToken}
         onExpire={() => setTurnstileToken(null)}
-        options={{ theme: "dark" }}
-      />
+        options={{ theme: "light" }}
+      /> */}
 
       {/* Submit */}
       <button
         type="submit"
-        disabled={isSubmitting || !turnstileToken}
-        className="w-full px-6 py-3 text-black font-semibold rounded hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
-        style={{ backgroundColor: "#fff" }}
+        disabled={isSubmitting}
+        className="w-full px-6 py-3 text-white font-semibold rounded hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+        style={{ backgroundColor: "#f68c2b" }}
       >
-        {isSubmitting ? "Sending..." : "Send my details on WhatsApp"}
+        {isSubmitting ? "Sending..." : "Book A Demo"}
       </button>
 
     </form>
