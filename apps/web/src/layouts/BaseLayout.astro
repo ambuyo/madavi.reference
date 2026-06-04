@@ -13,6 +13,7 @@ import StructuredData from "@/components/StructuredData.astro";
 // Analytics Components
 import GoogleAnalytics from "@/components/fundations/scripts/GoogleAnalytics.astro";
 import LLMAnalytics from "@/components/fundations/scripts/LLMAnalytics.astro";
+import Hotjar from "@/components/fundations/scripts/Hotjar.astro";
 
 // Layout Components
 import MainCta from "@/components/ctas/MainCta.astro";
@@ -125,6 +126,7 @@ const seoPublishedTime = publishDate || (seo?.publishedTime ? new Date(seo.publi
     <!-- Analytics -->
     <GoogleAnalytics />
     <LLMAnalytics />
+    <Hotjar />
   </head>
 
   <body class={`flex flex-col bg-white min-h-svh ${navVariant === "transparent" ? "" : "pt-24"}`}>

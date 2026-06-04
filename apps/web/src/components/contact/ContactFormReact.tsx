@@ -1,17 +1,31 @@
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useState, useRef } from "react";
 import { Turnstile } from "@marsidev/react-turnstile";
 import type { TurnstileInstance } from "@marsidev/react-turnstile";
 
+const SERVICES = [
+  "AI Readiness Assessment",
+  "Executive Advisory Retainer",
+  "Leadership AI Fluency Cohort",
+  "AI Agent Development",
+  "Keynotes & Licensing",
+  "Brand Strategy",
+  "Brand Communication",
+  "Brand Management",
+  "Website Design",
+  "SEO Services",
+  "Other",
+];
+
 const contactSchema = z.object({
   name: z.string().min(1, "Full name is required"),
   email: z.string().email("Invalid email address"),
   phone: z.string().optional().default(""),
   company: z.string().optional().default(""),
-  service: z.string().optional().default(""),
-  budget: z.string().optional().default(""),
+  services: z.array(z.string()).max(3, "Select up to 3 services").optional().default([]),
+  budget: z.string().optional().default("2k-5k"),
   subject: z.string().min(1, "Subject is required"),
   message: z.string().min(10, "Message must be at least 10 characters"),
   privacy: z.boolean().refine((val) => val === true, {
@@ -33,12 +47,17 @@ export function ContactFormReact() {
   const {
     register,
     handleSubmit,
+    control,
+    watch,
     formState: { errors, isValid },
     reset,
   } = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
     mode: "onBlur",
+    defaultValues: { services: [], budget: "2k-5k" },
   });
+
+  const selectedServices = watch("services") ?? [];
 
   const onSubmit = async (data: ContactFormData) => {
     setIsSubmitting(true);
@@ -50,7 +69,7 @@ export function ContactFormReact() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ ...data, turnstileToken }),
+        body: JSON.stringify({ ...data, service: data.services?.join(", "), turnstileToken }),
       });
 
       const result = await response.json();
@@ -142,26 +161,63 @@ export function ContactFormReact() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Service */}
-        <div>
-          <label htmlFor="service" className="block text-sm font-medium text-white mb-2">
-            Service Interested In
-          </label>
-          <select
-            {...register("service")}
-            id="service"
-            className="w-full px-4 py-3 border-b border-base-800 placeholder-white text-white border-x-0 border-t-0 focus:ring-0 focus:outline-none focus:border-base-800 transition-colors bg-white/5 focus:bg-white/10"
-          >
-            <option value="">Select a service</option>
-            <option value="ai-strategy">AI Strategy</option>
-            <option value="ai-readiness">AI Readiness Assessment</option>
-            <option value="implementation">AI Implementation</option>
-            <option value="training">Team Training</option>
-            <option value="other">Other</option>
-          </select>
-        </div>
+      {/* Services */}
+      <div>
+        <p className="block text-sm font-medium text-white mb-1">
+          Which services are you interested in?
+        </p>
+        <p className="text-xs text-white/50 mb-3">Select up to 3</p>
+        <Controller
+          name="services"
+          control={control}
+          render={({ field }) => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {SERVICES.map((s) => {
+                const checked = field.value?.includes(s) ?? false;
+                const atMax = (field.value?.length ?? 0) >= 3;
+                return (
+                  <label
+                    key={s}
+                    className={`flex items-center gap-3 px-4 py-3 border transition-colors cursor-pointer select-none ${
+                      checked
+                        ? "border-[#1EB49C] bg-[#1EB49C]/10 text-white"
+                        : atMax && !checked
+                        ? "border-white/10 bg-white/5 text-white/30 cursor-not-allowed"
+                        : "border-white/20 bg-white/5 text-white/80 hover:border-white/40"
+                    }`}
+                  >
+                    <input
+                      type="checkbox"
+                      className="sr-only"
+                      checked={checked}
+                      disabled={atMax && !checked}
+                      onChange={() => {
+                        const next = checked
+                          ? field.value?.filter((v) => v !== s) ?? []
+                          : [...(field.value ?? []), s];
+                        field.onChange(next);
+                      }}
+                    />
+                    <span className={`flex-shrink-0 w-4 h-4 border rounded-sm flex items-center justify-center ${checked ? "bg-[#1EB49C] border-[#1EB49C]" : "border-white/30"}`}>
+                      {checked && (
+                        <svg className="w-3 h-3 text-white" viewBox="0 0 12 12" fill="none">
+                          <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      )}
+                    </span>
+                    <span className="text-sm">{s}</span>
+                  </label>
+                );
+              })}
+            </div>
+          )}
+        />
+        {errors.services && (
+          <p className="text-red-500 text-xs mt-1">{errors.services.message}</p>
+        )}
+      </div>
 
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Budget */}
         <div>
           <label htmlFor="budget" className="block text-sm font-medium text-white mb-2">
@@ -179,23 +235,23 @@ export function ContactFormReact() {
             <option value="50k-plus">$50k+</option>
           </select>
         </div>
-      </div>
 
-      {/* Subject */}
-      <div>
-        <label htmlFor="subject" className="block text-sm font-medium text-white mb-2">
-          Subject *
-        </label>
-        <input
-          {...register("subject")}
-          type="text"
-          id="subject"
-          placeholder="Brief description of your inquiry"
-          className="w-full px-4 py-3 border-b border-base-800 placeholder-white text-white border-x-0 border-t-0 focus:ring-0 focus:outline-none focus:border-base-800 transition-colors bg-white/5 focus:bg-white/10"
-        />
-        {errors.subject && (
-          <p className="text-red-500 text-xs mt-1">{errors.subject.message}</p>
-        )}
+        {/* Subject */}
+        <div>
+          <label htmlFor="subject" className="block text-sm font-medium text-white mb-2">
+            Subject *
+          </label>
+          <input
+            {...register("subject")}
+            type="text"
+            id="subject"
+            placeholder="Brief description of your inquiry"
+            className="w-full px-4 py-3 border-b border-base-800 placeholder-white text-white border-x-0 border-t-0 focus:ring-0 focus:outline-none focus:border-base-800 transition-colors bg-white/5 focus:bg-white/10"
+          />
+          {errors.subject && (
+            <p className="text-red-500 text-xs mt-1">{errors.subject.message}</p>
+          )}
+        </div>
       </div>
 
       {/* Message */}

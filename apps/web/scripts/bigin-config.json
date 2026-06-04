@@ -1,0 +1,25 @@
+{
+  "fields": {
+    "AI Readiness Score": "AI_Readiness_Score",
+    "Readiness Level": "Readiness_Level",
+    "AI Adoption Stage": "AI_Adoption_Stage",
+    "Decision Authority": "Decision_Authority",
+    "Annual AI Budget": "Annual_AI_Budget",
+    "Implementation Timeline": "Implementation_Timeline",
+    "Primary AI Goal": "Primary_AI_Goal",
+    "Monthly AI Spend": "Monthly_AI_Spend",
+    "Dedicated AI Team": "Dedicated_AI_Team",
+    "Team Change Readiness": "Team_Change_Readiness",
+    "Team AI Literacy": "Team_AI_Literacy",
+    "Leadership Buy In": "Leadership_Buy_In",
+    "Data Availability": "Data_Availability",
+    "IT Infrastructure": "IT_Infrastructure",
+    "Risk Appetite": "Risk_Appetite",
+    "Top Challenges": "Top_Challenges",
+    "Interested In": "Interested_In",
+    "Audit Source": "Audit_Source"
+  },
+  "pipelineId": "6692838000000650023",
+  "subPipelineId": "6692838000000650183",
+  "subPipeline": "AI Audit Leads Standard"
+}

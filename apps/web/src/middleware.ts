@@ -12,10 +12,17 @@ export const onRequest = defineMiddleware((context, next) => {
   const host = context.request.headers.get("host") ?? "";
   const proto = context.request.headers.get("x-forwarded-proto") ?? url.protocol.replace(":", "");
 
+  const isLocalhost = host.startsWith("localhost") || host.startsWith("127.") ||
+                      url.hostname === "localhost" || url.hostname.startsWith("127.");
   const hasWww = host.startsWith("www.");
   const isHttp = proto === "http";
 
-  if (hasWww || isHttp) {
+  if (isLocalhost) {
+    if (url.protocol === "https:") {
+      url.protocol = "http:";
+      return Response.redirect(url.toString(), 302);
+    }
+  } else if (hasWww || isHttp) {
     url.protocol = "https:";
     url.host = hasWww ? host.slice(4) : host;
     return Response.redirect(url.toString(), 301);

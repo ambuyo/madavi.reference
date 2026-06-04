@@ -445,64 +445,19 @@ export async function getTeamMemberBySlug(
  * Get all services
  */
 export async function getServices(limit?: number): Promise<Service[]> {
-  if (USE_SANITY) {
-    const { sanityFetch, queries, transforms } = await getSanityModules();
-    const services = await sanityFetch<any[]>(queries.allServicesQuery);
-    const result = services.filter(Boolean).map(transforms.transformService).filter((s: any) => s?.slug);
-    return limit ? result.slice(0, limit) : result;
-  }
-
-  const services = await getCollection("services");
-  return services
-    .filter((service: any) => service?.data?.title)
-    .map((service) => ({
-      slug: service.id,
-      data: {
-        title: service.data.title,
-        summary: service.data.summary,
-        category: service.data.category,
-        features: service.data.features,
-        outcomes: service.data.outcomes,
-        industries: service.data.industries,
-        pricing: service.data.pricing,
-        image: service.data.image,
-        pubDate: service.data.pubDate,
-        updatedDate: service.data.updatedDate,
-      },
-      render: () => render(service),
-    }));
+  const { sanityFetch, queries, transforms } = await getSanityModules();
+  const services = await sanityFetch<any[]>(queries.allServicesQuery);
+  const result = services.filter(Boolean).map(transforms.transformService).filter((s: any) => s?.slug);
+  return limit ? result.slice(0, limit) : result;
 }
 
 /**
  * Get a single service by slug
  */
 export async function getServiceBySlug(slug: string): Promise<Service | null> {
-  if (USE_SANITY) {
-    const { sanityFetch, queries, transforms } = await getSanityModules();
-    const service = await sanityFetch<any>(queries.serviceBySlugQuery, {
-      slug,
-    });
-    return service ? transforms.transformService(service) : null;
-  }
-
-  const entry = await getEntry("services", slug);
-  if (!entry) return null;
-  return {
-    slug: entry.id,
-    data: {
-      title: entry.data.title,
-      summary: entry.data.summary,
-      category: entry.data.category,
-      features: entry.data.features,
-      outcomes: entry.data.outcomes,
-      industries: entry.data.industries,
-      pricing: entry.data.pricing,
-      image: entry.data.image,
-      pubDate: entry.data.pubDate,
-      updatedDate: entry.data.updatedDate,
-    },
-    render: () => render(entry),
-  };
+  const { sanityFetch, queries, transforms } = await getSanityModules();
+  const service = await sanityFetch<any>(queries.serviceBySlugQuery, { slug });
+  return service ? transforms.transformService(service) : null;
 }
 
 // =============================================================================

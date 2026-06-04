@@ -61,9 +61,14 @@ async function getZohoToken(): Promise<string> {
   return data.access_token;
 }
 
-async function upsertContact(token: string, f: any): Promise<string> {
+async function upsertContact(
+  token: string,
+  f: any,
+  score: number,
+  readiness: ReturnType<typeof getReadiness>
+): Promise<string> {
   const dc = import.meta.env.ZOHO_DATACENTER ?? "com";
-  const parts = (f.fullName as string).trim().split(/\s+/);
+  const parts = ((f.fullName as string) || "Unknown").trim().split(/\s+/);
   const firstName = parts[0];
   const lastName  = parts.slice(1).join(" ") || "—";
 
@@ -75,25 +80,74 @@ async function upsertContact(token: string, f: any): Promise<string> {
     },
     body: JSON.stringify({
       data: [{
-        First_Name:   firstName,
-        Last_Name:    lastName,
-        Email:        f.workEmail,
-        Phone:        f.phone ?? "",
-        Title:        f.jobTitle,
-        Account_Name: f.companyName,
-        Description:  `Industry: ${f.industry} | Size: ${f.companySize}`,
-        Lead_Source:  f.hearAboutUs ?? "",
+        First_Name:              firstName,
+        Last_Name:               lastName,
+        Email:                   f.workEmail,
+        Phone:                   f.phone ?? "",
+        Title:                   f.jobTitle ?? "",
+        Account_Name:            f.companyName ?? "",
+        Description:             `Industry: ${f.industry ?? "—"} | Size: ${f.companySize ?? "—"}`,
+        Lead_Source:             f.hearAboutUs ?? "",
+        // Custom fields — all 18
+        AI_Readiness_Score:      score,
+        Readiness_Level:         readiness.level,
+        AI_Adoption_Stage:       f.aiAdoptionStage ?? "",
+        Decision_Authority:      f.decisionAuthority ?? "",
+        Annual_AI_Budget:        f.annualAIBudget ?? "",
+        Implementation_Timeline: f.implementationTimeline ?? "",
+        Primary_AI_Goal:         f.primaryAIGoal ?? "",
+        Monthly_AI_Spend:        f.monthlyAISpend ?? "",
+        Dedicated_AI_Team:       f.dedicatedAITeam ?? "",
+        Team_Change_Readiness:   f.teamChangeReadiness ?? 3,
+        Team_AI_Literacy:        f.teamAILiteracy ?? 3,
+        Leadership_Buy_In:       f.leadershipBuyIn ?? "",
+        Data_Availability:       f.dataAvailability ?? "",
+        IT_Infrastructure:       f.itInfrastructure ?? "",
+        Risk_Appetite:           f.riskAppetite ?? "",
+        Top_Challenges:          f.topChallenges ?? [],
+        Interested_In:           f.interestedIn ?? [],
+        Audit_Source:            "AI Audit Form",
       }],
       duplicate_check_fields: ["Email"],
     }),
   });
 
-  const body = await res.json();
+  const body = await res.json() as any;
   const record = body.data?.[0];
-
-  // success → new contact; DUPLICATE_DATA → existing contact — both return an id
+  // New contact created
   if (record?.details?.id) return record.details.id as string;
+  // Existing contact (duplicate email) — return its id
+  if (record?.code === "DUPLICATE_DATA") return record.details.duplicate_record.id as string;
   throw new Error(`Contact upsert failed: ${JSON.stringify(body)}`);
+}
+
+async function createDeal(
+  token: string,
+  contactId: string,
+  f: any,
+  readiness: ReturnType<typeof getReadiness>
+): Promise<void> {
+  const dc = import.meta.env.ZOHO_DATACENTER ?? "com";
+
+  const res = await fetch(`https://www.zohoapis.${dc}/bigin/v2/Pipelines`, {
+    method: "POST",
+    headers: {
+      Authorization: `Zoho-oauthtoken ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      data: [{
+        Deal_Name:    `AI Audit — ${f.companyName || f.fullName || "Lead"} — ${readiness.level} (${readiness.pct}%)`,
+        Stage:        "Qualification",
+        Contact_Name: { id: contactId },
+        Description:  `Readiness: ${readiness.pct}/100 | Budget: ${f.annualAIBudget ?? "—"} | Timeline: ${f.implementationTimeline ?? "—"}`,
+      }],
+    }),
+  });
+  const body = await res.json() as any;
+  if (body.data?.[0]?.status !== "success") {
+    throw new Error(`Deal creation failed: ${JSON.stringify(body)}`);
+  }
 }
 
 async function createNote(token: string, contactId: string, title: string, content: string): Promise<void> {
@@ -192,22 +246,24 @@ export const POST: APIRoute = async ({ request }) => {
     const body = await request.json();
     const { turnstileToken, ...form } = body;
 
-    // Validate required contact fields
-    if (!form.fullName || !form.workEmail || !form.companyName) {
+    // Validate required contact fields — skipped in dev for testing
+    if (!import.meta.env.DEV && (!form.fullName || !form.workEmail || !form.companyName)) {
       return new Response(
         JSON.stringify({ error: "Missing required fields" }),
         { status: 400, headers: { "Content-Type": "application/json" } }
       );
     }
 
-    // Turnstile verification
-    const ip = request.headers.get("CF-Connecting-IP") ?? undefined;
-    const turnstileOk = await verifyTurnstile(turnstileToken ?? "", ip);
-    if (!turnstileOk) {
-      return new Response(
-        JSON.stringify({ error: "Bot verification failed", message: "Please complete the security check and try again." }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
-      );
+    // Turnstile verification — skipped in dev, re-enable before production
+    if (!import.meta.env.DEV) {
+      const ip = request.headers.get("CF-Connecting-IP") ?? undefined;
+      const turnstileOk = await verifyTurnstile(turnstileToken ?? "", ip);
+      if (!turnstileOk) {
+        return new Response(
+          JSON.stringify({ error: "Bot verification failed", message: "Please complete the security check and try again." }),
+          { status: 400, headers: { "Content-Type": "application/json" } }
+        );
+      }
     }
 
     // Score
@@ -215,9 +271,9 @@ export const POST: APIRoute = async ({ request }) => {
     const readiness = getReadiness(raw);
 
     // Submit to Zoho Bigin
-    const zohoToken  = await getZohoToken();
-    const contactId  = await upsertContact(zohoToken, form);
-    const noteTitle  = `AI Readiness Assessment — ${readiness.level} (${readiness.pct}%)`;
+    const zohoToken   = await getZohoToken();
+    const contactId   = await upsertContact(zohoToken, form, raw, readiness);
+    const noteTitle   = `AI Readiness Assessment — ${readiness.level} (${readiness.pct}%)`;
     const noteContent = buildNoteContent(form, raw, readiness);
     await createNote(zohoToken, contactId, noteTitle, noteContent);
 
@@ -225,10 +281,10 @@ export const POST: APIRoute = async ({ request }) => {
       JSON.stringify({ success: true, score: readiness }),
       { status: 200, headers: { "Content-Type": "application/json" } }
     );
-  } catch (err) {
+  } catch (err: any) {
     console.error("Proposal submission error:", err);
     return new Response(
-      JSON.stringify({ error: "Submission failed. Please try again." }),
+      JSON.stringify({ error: "Submission failed. Please try again.", detail: err?.message ?? String(err) }),
       { status: 500, headers: { "Content-Type": "application/json" } }
     );
   }

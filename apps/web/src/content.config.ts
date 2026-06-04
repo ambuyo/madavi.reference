@@ -487,7 +487,6 @@ export const collections = {
   team,
   infopages,
   posts: postsCollection,
-  services,
   industries,
   faqs,
   capabilities,
