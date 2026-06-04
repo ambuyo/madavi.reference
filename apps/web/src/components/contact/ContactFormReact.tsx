@@ -64,7 +64,7 @@ export function ContactFormReact() {
     setSubmitStatus("idle");
 
     try {
-      const response = await fetch("/api/contact", {
+      const response = await fetch("/api/contact.json", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -93,80 +93,45 @@ export function ContactFormReact() {
     }
   };
 
+  const INPUT = "w-full px-4 py-3 border-b border-[#1EB49C] placeholder-base-400 text-base-900 border-x-0 border-t-0 focus:ring-0 focus:outline-none focus:border-[#1EB49C] transition-colors bg-transparent";
+  const LABEL = "block text-sm font-medium text-base-800 mb-2";
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 bg-base-80 p-8">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 p-8" style={{ backgroundColor: "#FAF5EF" }}>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Full Name */}
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-white mb-2">
-            Full Name *
-          </label>
-          <input
-            {...register("name")}
-            type="text"
-            id="name"
-            placeholder="Your full name"
-            className="w-full px-4 py-3 border-b border-base-800 placeholder-white text-white border-x-0 border-t-0 focus:ring-0 focus:outline-none focus:border-base-800 transition-colors bg-white/5 focus:bg-white/10"
-          />
-          {errors.name && (
-            <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>
-          )}
+          <label htmlFor="name" className={LABEL}>Full Name *</label>
+          <input {...register("name")} type="text" id="name" placeholder="Your full name" className={INPUT} />
+          {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
         </div>
 
         {/* Email */}
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-white mb-2">
-            Email Address *
-          </label>
-          <input
-            {...register("email")}
-            type="email"
-            id="email"
-            placeholder="your.email@example.com"
-            className="w-full px-4 py-3 border-b border-base-800 placeholder-white text-white border-x-0 border-t-0 focus:ring-0 focus:outline-none focus:border-base-800 transition-colors bg-white/5 focus:bg-white/10"
-          />
-          {errors.email && (
-            <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
-          )}
+          <label htmlFor="email" className={LABEL}>Email Address *</label>
+          <input {...register("email")} type="email" id="email" placeholder="your.email@example.com" className={INPUT} />
+          {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Phone */}
         <div>
-          <label htmlFor="phone" className="block text-sm font-medium text-white mb-2">
-            Phone Number
-          </label>
-          <input
-            {...register("phone")}
-            type="tel"
-            id="phone"
-            placeholder="(555) 123-4567"
-            className="w-full px-4 py-3 border-b border-base-800 placeholder-white text-white border-x-0 border-t-0 focus:ring-0 focus:outline-none focus:border-base-800 transition-colors bg-white/5 focus:bg-white/10"
-          />
+          <label htmlFor="phone" className={LABEL}>Phone Number</label>
+          <input {...register("phone")} type="tel" id="phone" placeholder="(555) 123-4567" className={INPUT} />
         </div>
 
         {/* Company */}
         <div>
-          <label htmlFor="company" className="block text-sm font-medium text-white mb-2">
-            Company Name
-          </label>
-          <input
-            {...register("company")}
-            type="text"
-            id="company"
-            placeholder="Your company name"
-            className="w-full px-4 py-3 border-b border-base-800 placeholder-white text-white border-x-0 border-t-0 focus:ring-0 focus:outline-none focus:border-base-800 transition-colors bg-white/5 focus:bg-white/10"
-          />
+          <label htmlFor="company" className={LABEL}>Company Name</label>
+          <input {...register("company")} type="text" id="company" placeholder="Your company name" className={INPUT} />
         </div>
       </div>
 
       {/* Services */}
       <div>
-        <p className="block text-sm font-medium text-white mb-1">
-          Which services are you interested in?
-        </p>
-        <p className="text-xs text-white/50 mb-3">Select up to 3</p>
+        <p className="block text-sm font-medium text-base-800 mb-1">Which services are you interested in?</p>
+        <p className="text-xs text-base-500 mb-3">Select up to 3</p>
         <Controller
           name="services"
           control={control}
@@ -180,10 +145,10 @@ export function ContactFormReact() {
                     key={s}
                     className={`flex items-center gap-3 px-4 py-3 border transition-colors cursor-pointer select-none ${
                       checked
-                        ? "border-[#1EB49C] bg-[#1EB49C]/10 text-white"
+                        ? "border-[#1EB49C] bg-[#1EB49C]/10 text-base-900"
                         : atMax && !checked
-                        ? "border-white/10 bg-white/5 text-white/30 cursor-not-allowed"
-                        : "border-white/20 bg-white/5 text-white/80 hover:border-white/40"
+                        ? "border-base-200 bg-base-100 text-base-400 cursor-not-allowed"
+                        : "border-base-300 bg-white text-base-700 hover:border-[#1EB49C]"
                     }`}
                   >
                     <input
@@ -198,7 +163,7 @@ export function ContactFormReact() {
                         field.onChange(next);
                       }}
                     />
-                    <span className={`flex-shrink-0 w-4 h-4 border rounded-sm flex items-center justify-center ${checked ? "bg-[#1EB49C] border-[#1EB49C]" : "border-white/30"}`}>
+                    <span className={`flex-shrink-0 w-4 h-4 border rounded-sm flex items-center justify-center ${checked ? "bg-[#1EB49C] border-[#1EB49C]" : "border-base-400"}`}>
                       {checked && (
                         <svg className="w-3 h-3 text-white" viewBox="0 0 12 12" fill="none">
                           <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -212,22 +177,14 @@ export function ContactFormReact() {
             </div>
           )}
         />
-        {errors.services && (
-          <p className="text-red-500 text-xs mt-1">{errors.services.message}</p>
-        )}
+        {errors.services && <p className="text-red-500 text-xs mt-1">{errors.services.message}</p>}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Budget */}
         <div>
-          <label htmlFor="budget" className="block text-sm font-medium text-white mb-2">
-            Please Choose the Budget *
-          </label>
-          <select
-            {...register("budget")}
-            id="budget"
-            className="w-full px-4 py-3 border-b border-base-800 placeholder-white text-white border-x-0 border-t-0 focus:ring-0 focus:outline-none focus:border-base-800 transition-colors bg-white/5 focus:bg-white/10"
-          >
+          <label htmlFor="budget" className={LABEL}>Please Choose the Budget *</label>
+          <select {...register("budget")} id="budget" className={INPUT}>
             <option value="">Select your budget</option>
             <option value="2k-5k">$2k to $5k</option>
             <option value="5k-20k">$5k to $20k</option>
@@ -238,37 +195,23 @@ export function ContactFormReact() {
 
         {/* Subject */}
         <div>
-          <label htmlFor="subject" className="block text-sm font-medium text-white mb-2">
-            Subject *
-          </label>
-          <input
-            {...register("subject")}
-            type="text"
-            id="subject"
-            placeholder="Brief description of your inquiry"
-            className="w-full px-4 py-3 border-b border-base-800 placeholder-white text-white border-x-0 border-t-0 focus:ring-0 focus:outline-none focus:border-base-800 transition-colors bg-white/5 focus:bg-white/10"
-          />
-          {errors.subject && (
-            <p className="text-red-500 text-xs mt-1">{errors.subject.message}</p>
-          )}
+          <label htmlFor="subject" className={LABEL}>Subject *</label>
+          <input {...register("subject")} type="text" id="subject" placeholder="Brief description of your inquiry" className={INPUT} />
+          {errors.subject && <p className="text-red-500 text-xs mt-1">{errors.subject.message}</p>}
         </div>
       </div>
 
       {/* Message */}
       <div>
-        <label htmlFor="message" className="block text-sm font-medium text-white mb-2">
-          Message *
-        </label>
+        <label htmlFor="message" className={LABEL}>Message *</label>
         <textarea
           {...register("message")}
           id="message"
           rows={6}
           placeholder="Please provide details about your inquiry..."
-          className="w-full px-4 py-3 border-b border-base-800 placeholder-white text-white border-x-0 border-t-0 focus:ring-0 focus:outline-none focus:border-base-800 transition-colors bg-white/5 focus:bg-white/10 resize-vertical"
+          className={`${INPUT} resize-vertical`}
         />
-        {errors.message && (
-          <p className="text-red-500 text-xs mt-1">{errors.message.message}</p>
-        )}
+        {errors.message && <p className="text-red-500 text-xs mt-1">{errors.message.message}</p>}
       </div>
 
       {/* Privacy Checkbox */}
@@ -277,31 +220,26 @@ export function ContactFormReact() {
           {...register("privacy")}
           type="checkbox"
           id="privacy"
-          className="mt-1 h-4 w-4 text-accent-600 focus:ring-accent-500 border-base-300 rounded"
+          className="mt-1 h-4 w-4 rounded accent-[#1EB49C] border-base-300"
         />
-        <label htmlFor="privacy" className="text-sm text-white">
+        <label htmlFor="privacy" className="text-sm text-base-700">
           I agree to the{" "}
-          <a
-            href="/legal/privacy"
-            className="text-accent-600 hover:text-accent-700 underline"
-          >
+          <a href="/legal/privacy-policy" className="text-[#1EB49C] hover:underline">
             Privacy Policy
           </a>{" "}
           and consent to being contacted regarding my inquiry.
         </label>
       </div>
-      {errors.privacy && (
-        <p className="text-red-500 text-xs">{errors.privacy.message}</p>
-      )}
+      {errors.privacy && <p className="text-red-500 text-xs">{errors.privacy.message}</p>}
 
       {/* Status Messages */}
       {submitStatus === "success" && (
-        <div className="p-4 bg-green-900/20 border border-green-700 rounded text-green-400 text-sm">
+        <div className="p-4 bg-[#1EB49C]/10 border border-[#1EB49C] rounded text-[#005B65] text-sm">
           {submitMessage}
         </div>
       )}
       {submitStatus === "error" && (
-        <div className="p-4 bg-red-900/20 border border-red-700 rounded text-red-400 text-sm">
+        <div className="p-4 bg-red-50 border border-red-300 rounded text-red-700 text-sm">
           {submitMessage}
         </div>
       )}
@@ -312,15 +250,15 @@ export function ContactFormReact() {
         siteKey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "1x00000000000000000000AA"}
         onSuccess={setTurnstileToken}
         onExpire={() => setTurnstileToken(null)}
-        options={{ theme: "dark" }}
+        options={{ theme: "light" }}
       />
 
       {/* Submit Button */}
       <button
         type="submit"
         disabled={isSubmitting || !turnstileToken}
-        className="w-full px-6 py-3 text-black font-semibold rounded hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
-        style={{ backgroundColor: "#fff" }}
+        className="w-full px-6 py-3 text-white font-semibold rounded hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+        style={{ backgroundColor: "#1EB49C" }}
       >
         {isSubmitting ? "Sending..." : "Send Message"}
       </button>

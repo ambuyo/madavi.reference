@@ -324,20 +324,30 @@ export default function AIAuditForm() {
     const raw = calculateScore(form);
     const r   = getReadiness(raw);
     return (
-      <div className="flex min-h-screen items-center justify-center bg-zinc-50 px-6">
+      <div className="flex min-h-screen items-center justify-center px-6" style={{ backgroundColor: "#FAF5EF" }}>
         <motion.div
           initial={{ opacity: 0, y: 32 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
           className="w-full max-w-lg text-center"
         >
           <div className="size-20 rounded-full flex items-center justify-center text-white text-3xl mx-auto mb-8" style={{ background: r.color }}>✓</div>
           <h2 className="font-display text-4xl font-bold text-zinc-900 mb-3">Your assessment is complete.</h2>
-          <p className="text-zinc-500 mb-8">Our team will review your results and reach out within 1 business day with your personalized AI readiness report.</p>
-          <div className="rounded-2xl border-2 border-zinc-100 p-8 mb-8" style={{ background: "#F9FAFB" }}>
+          <p className="text-zinc-500 mb-8">Here's a snapshot of your AI readiness score. A <strong className="text-zinc-700">full personalised report</strong> with detailed findings, recommendations, and your custom AI roadmap is on its way to your inbox — expect it within 1 business day.</p>
+
+          <div className="rounded-2xl border-2 border-zinc-100 p-8 mb-4" style={{ background: "#F9FAFB" }}>
             <p className="text-xs uppercase tracking-widest text-zinc-400 mb-2">Your AI Readiness Score</p>
             <div className="text-7xl font-black leading-none mb-3" style={{ color: r.color }}>{r.pct}<span className="text-3xl">/100</span></div>
             <p className="text-xl font-bold text-zinc-900">{r.level}</p>
             <p className="text-sm text-zinc-500 mt-1">{r.desc}</p>
           </div>
+
+          <div className="rounded-xl border border-zinc-200 px-6 py-4 mb-8 flex items-start gap-3 text-left" style={{ background: "#FFF8F0" }}>
+            <span className="text-xl mt-0.5">📬</span>
+            <p className="text-sm text-zinc-600">
+              <span className="font-semibold text-zinc-800">Your detailed report is being prepared.</span>{" "}
+              We'll send a comprehensive AI readiness analysis — including gap assessment, priority actions, and vendor recommendations — to your email address.
+            </p>
+          </div>
+
           <a href="/" className="inline-block rounded-full px-8 py-3 font-semibold text-white text-sm" style={{ background: BRAND }}>Back to Home</a>
         </motion.div>
       </div>
@@ -345,13 +355,13 @@ export default function AIAuditForm() {
   }
 
   return (
-    <div className="relative flex flex-col bg-zinc-50 min-h-[600px]">
+    <div className="relative flex flex-col min-h-[600px]" style={{ backgroundColor: "#FAF5EF" }}>
 
       {/* Banner */}
-      <div className="bg-[#005B65] px-6 py-4">
-        <p className="text-base font-medium text-white font-display">
+      <div className="px-6 py-4" style={{ backgroundColor: "#FAF5EF" }}>
+        <p className="font-medium text-black font-display" style={{ fontSize: "28px" }}>
           Get your <span className="text-[#1EB49C] font-bold">AI Readiness Score</span> + custom roadmap{" "}
-          <span className="bg-white/15 rounded px-1.5 py-0.5 text-sm font-bold tracking-wide ml-1">in 60 seconds</span>
+          <span className="rounded px-1.5 py-0.5 text-sm font-bold tracking-wide ml-1" style={{ backgroundColor: "#005B65", color: "#fff" }}>in 60 seconds</span>
         </p>
       </div>
 
@@ -371,8 +381,8 @@ export default function AIAuditForm() {
                     isActive
                       ? "text-white bg-[#005B65]"
                       : isDone
-                      ? "text-zinc-500 hover:text-zinc-800 hover:bg-zinc-50"
-                      : "text-zinc-300 hover:text-zinc-500"
+                      ? "text-[#1EB49C] hover:text-[#005B65] hover:bg-zinc-50"
+                      : "text-[#1EB49C] hover:text-[#005B65]"
                   }`}
                 >
                   <span className={`size-5 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 transition-colors ${
@@ -546,14 +556,7 @@ export default function AIAuditForm() {
               )}
 
               {/* CTA row */}
-              <div className="flex flex-col-reverse sm:flex-row sm:items-center gap-3 mt-4 pt-6 border-t border-zinc-200">
-                {step > 0 && (
-                  <button onClick={back} type="button"
-                    className="text-sm text-zinc-400 hover:text-zinc-600 transition-colors font-medium">
-                    ← Back
-                  </button>
-                )}
-
+              <div className="mt-4 pt-6 border-t border-zinc-200">
                 {step === STEP_TOTAL - 1 && (
                   <Turnstile
                     ref={turnstileRef}
@@ -563,18 +566,25 @@ export default function AIAuditForm() {
                     options={{ theme: "light" }}
                   />
                 )}
-
-                <button
-                  type="button"
-                  onClick={advance}
-                  disabled={step === STEP_TOTAL - 1 && !turnstileToken}
-                  className="w-full sm:w-auto rounded-lg px-6 py-3 text-sm font-semibold text-white transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-40 touch-manipulation"
-                  style={{ background: BRAND }}
-                >
-                  {step === STEP_TOTAL - 1
-                    ? (submitting ? "Submitting…" : "Get My AI Report →")
-                    : "Next ✓"}
-                </button>
+                <div className="flex items-center justify-between gap-3">
+                  {step > 0 ? (
+                    <button onClick={back} type="button"
+                      className="text-sm text-zinc-400 hover:text-zinc-600 transition-colors font-medium">
+                      ← Back
+                    </button>
+                  ) : <span />}
+                  <button
+                    type="button"
+                    onClick={advance}
+                    disabled={step === STEP_TOTAL - 1 && !turnstileToken}
+                    className="rounded-lg px-10 py-3 text-sm font-semibold text-white transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-40 touch-manipulation"
+                    style={{ background: BRAND }}
+                  >
+                    {step === STEP_TOTAL - 1
+                      ? (submitting ? "Submitting…" : "Get My AI Report →")
+                      : "Next ✓"}
+                  </button>
+                </div>
               </div>
 
               {submitError && <p className="text-sm text-red-500">{submitError}</p>}
