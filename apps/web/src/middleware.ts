@@ -3,6 +3,8 @@ import { defineMiddleware } from "astro:middleware";
 const PATH_REDIRECTS: Record<string, string> = {
   "/cdn-cgi/l/email-protection": "/legal/data-processing-agreement",
   "/legal/privacy": "/legal/privacy-policy",
+  // Legacy category slug renames (slug changed, not just path)
+  "/category/accelerators-marketing": "/blog/cat/accelerators",
 };
 
 export const onRequest = defineMiddleware((context, next) => {
@@ -19,7 +21,13 @@ export const onRequest = defineMiddleware((context, next) => {
     return Response.redirect(url.toString(), 301);
   }
 
-  const destination = PATH_REDIRECTS[url.pathname];
+  // /category/{slug}[/] → /blog/cat/{slug}
+  const categoryMatch = url.pathname.match(/^\/category\/([^/]+)\/?$/);
+  if (categoryMatch) {
+    return Response.redirect(new URL(`/blog/cat/${categoryMatch[1]}`, url.origin).toString(), 301);
+  }
+
+  const destination = PATH_REDIRECTS[url.pathname.replace(/\/$/, "")];
   if (destination) {
     return Response.redirect(new URL(destination, url.origin).toString(), 301);
   }
