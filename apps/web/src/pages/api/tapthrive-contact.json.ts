@@ -109,17 +109,16 @@ export const POST: APIRoute = async ({ request }) => {
       );
     }
 
-    // Turnstile verification — temporarily disabled
-    // if (!import.meta.env.DEV) {
-    //   const ip = request.headers.get("CF-Connecting-IP") ?? undefined;
-    //   const ok = await verifyTurnstile(turnstileToken ?? "", ip);
-    //   if (!ok) {
-    //     return new Response(
-    //       JSON.stringify({ error: "Bot verification failed", message: "Please complete the security check and try again." }),
-    //       { status: 400, headers: { "Content-Type": "application/json" } }
-    //     );
-    //   }
-    // }
+    if (!import.meta.env.DEV) {
+      const ip = request.headers.get("CF-Connecting-IP") ?? undefined;
+      const ok = await verifyTurnstile(turnstileToken ?? "", ip);
+      if (!ok) {
+        return new Response(
+          JSON.stringify({ error: "Bot verification failed", message: "Please complete the security check and try again." }),
+          { status: 400, headers: { "Content-Type": "application/json" } }
+        );
+      }
+    }
 
     const zohoToken = await getZohoToken();
     const accountId = await upsertAccount(zohoToken, form.business);

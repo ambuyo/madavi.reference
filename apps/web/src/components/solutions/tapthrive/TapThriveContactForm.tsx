@@ -257,19 +257,19 @@ export function TapThriveContactForm() {
         </div>
       )}
 
-      {/* Turnstile — temporarily disabled */}
-      {/* <Turnstile
+      {/* Turnstile */}
+      <Turnstile
         ref={turnstileRef}
         siteKey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "1x00000000000000000000AA"}
         onSuccess={setTurnstileToken}
         onExpire={() => setTurnstileToken(null)}
         options={{ theme: "light" }}
-      /> */}
+      />
 
       {/* Submit */}
       <button
         type="submit"
-        disabled={isSubmitting}
+        disabled={isSubmitting || !turnstileToken}
         className="w-full px-6 py-3 text-white font-semibold rounded hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
         style={{ backgroundColor: "#f68c2b" }}
       >
