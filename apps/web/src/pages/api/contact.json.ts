@@ -19,19 +19,36 @@ interface ContactSubmission {
 
 async function getZohoToken(): Promise<string> {
   const dc = import.meta.env.ZOHO_DATACENTER ?? "com";
-  const res = await fetch(`https://accounts.zoho.${dc}/oauth/v2/token`, {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams({
-      refresh_token: import.meta.env.ZOHO_REFRESH_TOKEN ?? "",
-      client_id:     import.meta.env.ZOHO_CLIENT_ID ?? "",
-      client_secret: import.meta.env.ZOHO_CLIENT_SECRET ?? "",
-      grant_type:    "refresh_token",
-    }),
-  });
-  const data = await res.json() as any;
-  if (!data.access_token) throw new Error(`Zoho token failed: ${JSON.stringify(data)}`);
-  return data.access_token;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 10_000);
+  try {
+    const res = await fetch(`https://accounts.zoho.${dc}/oauth/v2/token`, {
+      method: "POST",
+      signal: controller.signal,
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        refresh_token: import.meta.env.ZOHO_REFRESH_TOKEN ?? "",
+        client_id:     import.meta.env.ZOHO_CLIENT_ID ?? "",
+        client_secret: import.meta.env.ZOHO_CLIENT_SECRET ?? "",
+        grant_type:    "refresh_token",
+      }),
+    });
+    const data = await res.json() as any;
+    if (!data.access_token) throw new Error(`Zoho token failed: ${JSON.stringify(data)}`);
+    return data.access_token;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function timedFetch(url: string, options: RequestInit): Promise<Response> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 10_000);
+  try {
+    return await fetch(url, { ...options, signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 async function upsertBiginContact(token: string, sub: ContactSubmission): Promise<string> {
@@ -40,7 +57,7 @@ async function upsertBiginContact(token: string, sub: ContactSubmission): Promis
   const firstName = parts[0];
   const lastName  = parts.slice(1).join(" ") || "—";
 
-  const res = await fetch(`https://www.zohoapis.${dc}/bigin/v2/Contacts`, {
+  const res = await timedFetch(`https://www.zohoapis.${dc}/bigin/v2/Contacts`, {
     method: "POST",
     headers: { Authorization: `Zoho-oauthtoken ${token}`, "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -83,7 +100,7 @@ Phone:   ${sub.phone || "—"}
 Company: ${sub.company || "—"}
   `.trim();
 
-  await fetch(`https://www.zohoapis.${dc}/bigin/v2/Notes`, {
+  await timedFetch(`https://www.zohoapis.${dc}/bigin/v2/Notes`, {
     method: "POST",
     headers: { Authorization: `Zoho-oauthtoken ${token}`, "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -101,7 +118,7 @@ const client = createClient({
   projectId: process.env.SANITY_PROJECT_ID || "6u680gce",
   dataset: process.env.SANITY_DATASET || "production",
   apiVersion: "2024-01-01",
-  token: process.env.SANITY_AUTH_TOKEN,
+  token: process.env.SANITY_WRITE_TOKEN,
   useCdn: false,
 });
 

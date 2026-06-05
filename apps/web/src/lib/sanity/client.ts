@@ -5,8 +5,8 @@ export const client = createClient({
   dataset: import.meta.env.SANITY_DATASET || "production",
   apiVersion: import.meta.env.SANITY_API_VERSION || "2024-01-01",
   useCdn: import.meta.env.PROD,
-  // Token is optional - only needed for draft content
   token: import.meta.env.SANITY_READ_TOKEN,
+  timeout: 10_000,
 });
 
 // Client without CDN for real-time/preview
@@ -16,4 +16,5 @@ export const previewClient = createClient({
   apiVersion: import.meta.env.SANITY_API_VERSION || "2024-01-01",
   useCdn: false,
   token: import.meta.env.SANITY_READ_TOKEN,
+  timeout: 10_000,
 });

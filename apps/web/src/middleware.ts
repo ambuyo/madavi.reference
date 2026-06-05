@@ -1,5 +1,17 @@
 import { defineMiddleware } from "astro:middleware";
 
+const LLM_BOTS: Record<string, string> = {
+  "GPTBot":         "OpenAI",
+  "Claude-Web":     "Anthropic",
+  "PerplexityBot":  "Perplexity AI",
+  "YouBot":         "You.com",
+  "Google-Extended":"Google AI",
+  "CCBot":          "Common Crawl",
+  "Applebot-Extended": "Apple",
+  "Bytespider":     "ByteDance",
+  "FacebookBot":    "Meta",
+};
+
 const PATH_REDIRECTS: Record<string, string> = {
   "/cdn-cgi/l/email-protection": "/legal/data-processing-agreement",
   "/legal/privacy": "/legal/privacy-policy",
@@ -16,6 +28,19 @@ export const onRequest = defineMiddleware((context, next) => {
                       url.hostname === "localhost" || url.hostname.startsWith("127.");
   const hasWww = host.startsWith("www.");
   const isHttp = proto === "http";
+
+  const ua = context.request.headers.get("user-agent") ?? "";
+  const botEntry = Object.entries(LLM_BOTS).find(([bot]) => ua.includes(bot));
+  if (botEntry) {
+    const [botName, company] = botEntry;
+    console.log(JSON.stringify({
+      type: "llm_visit",
+      bot: botName,
+      company,
+      path: url.pathname,
+      ts: new Date().toISOString(),
+    }));
+  }
 
   if (isLocalhost) {
     if (url.protocol === "https:") {

@@ -20,7 +20,7 @@ const client = createClient({
   projectId: process.env.SANITY_PROJECT_ID || "6u680gce",
   dataset: process.env.SANITY_DATASET || "production",
   apiVersion: "2024-01-01",
-  token: process.env.SANITY_AUTH_TOKEN,
+  token: process.env.SANITY_WRITE_TOKEN,
   useCdn: false,
 });
 

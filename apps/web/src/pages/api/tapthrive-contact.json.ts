@@ -5,24 +5,41 @@ import { verifyTurnstile } from "@/lib/turnstile";
 
 async function getZohoToken(): Promise<string> {
   const dc = import.meta.env.ZOHO_DATACENTER ?? "com";
-  const res = await fetch(`https://accounts.zoho.${dc}/oauth/v2/token`, {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams({
-      refresh_token: import.meta.env.ZOHO_REFRESH_TOKEN,
-      client_id:     import.meta.env.ZOHO_CLIENT_ID,
-      client_secret: import.meta.env.ZOHO_CLIENT_SECRET,
-      grant_type:    "refresh_token",
-    }),
-  });
-  const data = await res.json();
-  if (!data.access_token) throw new Error(`Zoho token failed: ${JSON.stringify(data)}`);
-  return data.access_token;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 10_000);
+  try {
+    const res = await fetch(`https://accounts.zoho.${dc}/oauth/v2/token`, {
+      method: "POST",
+      signal: controller.signal,
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        refresh_token: import.meta.env.ZOHO_REFRESH_TOKEN,
+        client_id:     import.meta.env.ZOHO_CLIENT_ID,
+        client_secret: import.meta.env.ZOHO_CLIENT_SECRET,
+        grant_type:    "refresh_token",
+      }),
+    });
+    const data = await res.json();
+    if (!data.access_token) throw new Error(`Zoho token failed: ${JSON.stringify(data)}`);
+    return data.access_token;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function timedFetch(url: string, options: RequestInit): Promise<Response> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 10_000);
+  try {
+    return await fetch(url, { ...options, signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 async function upsertAccount(token: string, businessName: string): Promise<string> {
   const dc = import.meta.env.ZOHO_DATACENTER ?? "com";
-  const res = await fetch(`https://www.zohoapis.${dc}/bigin/v2/Accounts`, {
+  const res = await timedFetch(`https://www.zohoapis.${dc}/bigin/v2/Accounts`, {
     method: "POST",
     headers: { Authorization: `Zoho-oauthtoken ${token}`, "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -41,7 +58,7 @@ async function upsertContact(token: string, f: any, accountId: string): Promise<
   const dc       = import.meta.env.ZOHO_DATACENTER ?? "com";
   const fullName = ((f.name as string) || "Unknown").trim();
 
-  const res = await fetch(`https://www.zohoapis.${dc}/bigin/v2/Contacts`, {
+  const res = await timedFetch(`https://www.zohoapis.${dc}/bigin/v2/Contacts`, {
     method: "POST",
     headers: { Authorization: `Zoho-oauthtoken ${token}`, "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -66,7 +83,7 @@ async function upsertContact(token: string, f: any, accountId: string): Promise<
 
 async function createNote(token: string, contactId: string, f: any): Promise<void> {
   const dc = import.meta.env.ZOHO_DATACENTER ?? "com";
-  await fetch(`https://www.zohoapis.${dc}/bigin/v2/Notes`, {
+  await timedFetch(`https://www.zohoapis.${dc}/bigin/v2/Notes`, {
     method: "POST",
     headers: { Authorization: `Zoho-oauthtoken ${token}`, "Content-Type": "application/json" },
     body: JSON.stringify({

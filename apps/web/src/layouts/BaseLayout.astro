@@ -12,7 +12,6 @@ import StructuredData from "@/components/StructuredData.astro";
 
 // Analytics Components
 import GoogleAnalytics from "@/components/fundations/scripts/GoogleAnalytics.astro";
-import LLMAnalytics from "@/components/fundations/scripts/LLMAnalytics.astro";
 import Hotjar from "@/components/fundations/scripts/Hotjar.astro";
 
 // Layout Components
@@ -125,7 +124,6 @@ const seoPublishedTime = publishDate || (seo?.publishedTime ? new Date(seo.publi
 
     <!-- Analytics -->
     <GoogleAnalytics />
-    <LLMAnalytics />
     <Hotjar />
   </head>
 

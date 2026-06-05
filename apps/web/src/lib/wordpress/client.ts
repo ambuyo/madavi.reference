@@ -2,29 +2,20 @@
 export const wpBaseUrl = "https://cms.madavi.co";
 export const wpApiUrl = `${wpBaseUrl}/wp-json/wp/v2`;
 
-// Helper to create Basic Auth header
-function createAuthHeader(): string {
-  // Support both Astro/Vite context (import.meta.env) and Node.js context (process.env)
-  const env = typeof import.meta !== 'undefined' && import.meta.env ? import.meta.env : process.env;
-  const username = env.WP_USERNAME;
-  const appPassword = env.WP_APP_PASSWORD;
-
-  // Create basic auth string
-  const authString = `${username}:${appPassword}`;
-  const encoded = Buffer.from(authString).toString("base64");
-
-  return `Basic ${encoded}`;
-}
 
 export async function wpFetch<T>(
   endpoint: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
+  timeoutMs = 10_000
 ): Promise<T> {
   const url = `${wpApiUrl}${endpoint}`;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
     const response = await fetch(url, {
       ...options,
+      signal: controller.signal,
       headers: {
         "Content-Type": "application/json",
         ...options.headers,
@@ -37,7 +28,10 @@ export async function wpFetch<T>(
 
     return response.json();
   } catch (error) {
-    console.error(`Error fetching from WordPress API at ${url}:`, error);
+    const isTimeout = error instanceof Error && error.name === "AbortError";
+    console.error(`${isTimeout ? "Timeout" : "Error"} fetching from WordPress API at ${url}:`, error);
     throw error;
+  } finally {
+    clearTimeout(timer);
   }
 }
