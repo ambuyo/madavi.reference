@@ -42,12 +42,7 @@ export const onRequest = defineMiddleware((context, next) => {
     }));
   }
 
-  if (isLocalhost) {
-    if (url.protocol === "https:") {
-      url.protocol = "http:";
-      return Response.redirect(url.toString(), 302);
-    }
-  } else if (hasWww || isHttp) {
+  if (!import.meta.env.DEV && !isLocalhost && (hasWww || isHttp)) {
     url.protocol = "https:";
     url.host = hasWww ? host.slice(4) : host;
     return Response.redirect(url.toString(), 301);

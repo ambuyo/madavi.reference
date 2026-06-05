@@ -1,10 +1,8 @@
 export async function verifyTurnstile(token: string, ip?: string): Promise<boolean> {
+  if (import.meta.env.DEV) return true;
+
   const secret = import.meta.env.TURNSTILE_SECRET_KEY;
-  if (!secret) {
-    // Allow in dev when key is not configured
-    if (import.meta.env.DEV) return true;
-    return false;
-  }
+  if (!secret) return false;
 
   const body = new FormData();
   body.append("secret", secret);

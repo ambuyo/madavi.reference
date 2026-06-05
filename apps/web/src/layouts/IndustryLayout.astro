@@ -9,6 +9,7 @@ import StructuredData from "@/components/StructuredData.astro";
 
 // Analytics Components
 import GoogleAnalytics from "@/components/fundations/scripts/GoogleAnalytics.astro";
+import Hotjar from "@/components/fundations/scripts/Hotjar.astro";
 
 // Layout Components
 import IndustryNav from "@/components/industries/IndustryNav.astro";
@@ -112,6 +113,7 @@ const seoPublishedTime = publishDate || (seo?.publishedTime ? new Date(seo.publi
 
     <!-- Analytics -->
     <GoogleAnalytics />
+    <Hotjar />
   </head>
 
   <body class="flex flex-col bg-white min-h-svh pt-16">
