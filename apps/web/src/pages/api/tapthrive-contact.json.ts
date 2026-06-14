@@ -122,7 +122,7 @@ export const POST: APIRoute = async ({ request }) => {
     if (!form.name || !form.whatsapp || !form.business || !form.privacy) {
       return new Response(
         JSON.stringify({ error: "Missing required fields", message: "Please fill in all required fields." }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        { status: 400, headers: { "Content-Type": "application/json", "Cache-Control": "no-cache, no-store" } }
       );
     }
 
@@ -132,7 +132,7 @@ export const POST: APIRoute = async ({ request }) => {
       if (!ok) {
         return new Response(
           JSON.stringify({ error: "Bot verification failed", message: "Please complete the security check and try again." }),
-          { status: 400, headers: { "Content-Type": "application/json" } }
+          { status: 400, headers: { "Content-Type": "application/json", "Cache-Control": "no-cache, no-store" } }
         );
       }
     }
@@ -144,13 +144,13 @@ export const POST: APIRoute = async ({ request }) => {
 
     return new Response(
       JSON.stringify({ success: true, message: "Demo request sent! We'll be in touch within one business day." }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+      { status: 200, headers: { "Content-Type": "application/json", "Cache-Control": "no-cache, no-store" } }
     );
   } catch (err: any) {
     console.error("TapThrive submission error:", err);
     return new Response(
       JSON.stringify({ error: "Submission failed. Please try again.", detail: err?.message ?? String(err) }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
+      { status: 500, headers: { "Content-Type": "application/json", "Cache-Control": "no-cache, no-store" } }
     );
   }
 };

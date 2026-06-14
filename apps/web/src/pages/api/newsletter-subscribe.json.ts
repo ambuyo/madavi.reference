@@ -82,7 +82,7 @@ export const POST: APIRoute = async ({ request }) => {
     if (!firstName || !lastName || !email || !privacy) {
       return new Response(
         JSON.stringify({ error: "Missing required fields", message: "Please fill in all required fields." }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        { status: 400, headers: { "Content-Type": "application/json", "Cache-Control": "no-cache, no-store" } }
       );
     }
 
@@ -90,7 +90,7 @@ export const POST: APIRoute = async ({ request }) => {
     if (!emailRegex.test(email)) {
       return new Response(
         JSON.stringify({ error: "Invalid email address", message: "Please provide a valid email address." }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        { status: 400, headers: { "Content-Type": "application/json", "Cache-Control": "no-cache, no-store" } }
       );
     }
 
@@ -99,7 +99,7 @@ export const POST: APIRoute = async ({ request }) => {
     if (!turnstileOk) {
       return new Response(
         JSON.stringify({ error: "Bot verification failed", message: "Please complete the security check and try again." }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        { status: 400, headers: { "Content-Type": "application/json", "Cache-Control": "no-cache, no-store" } }
       );
     }
 
@@ -109,13 +109,13 @@ export const POST: APIRoute = async ({ request }) => {
 
     return new Response(
       JSON.stringify({ success: true, message: "Successfully subscribed to newsletter." }),
-      { status: 201, headers: { "Content-Type": "application/json" } }
+      { status: 201, headers: { "Content-Type": "application/json", "Cache-Control": "no-cache, no-store" } }
     );
   } catch (err) {
     console.error("Newsletter subscription error:", err);
     return new Response(
       JSON.stringify({ error: "Internal server error", message: "Failed to process subscription. Please try again later." }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
+      { status: 500, headers: { "Content-Type": "application/json", "Cache-Control": "no-cache, no-store" } }
     );
   }
 };

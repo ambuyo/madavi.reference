@@ -7,7 +7,7 @@ import type { TurnstileInstance } from "@marsidev/react-turnstile";
 
 interface FormState {
   fullName: string; workEmail: string; companyName: string; jobTitle: string;
-  industry: string; companySize: string; phone: string;
+  industry: string; companySize: string; phoneCountryCode: string; phone: string;
   aiAdoptionStage: string; aiToolsInUse: string[]; monthlyAISpend: string; dedicatedAITeam: string;
   primaryAIGoal: string; implementationTimeline: string; decisionAuthority: string; annualAIBudget: string;
   teamChangeReadiness: number; teamAILiteracy: number; leadershipBuyIn: string; ethicalConcerns: string[];
@@ -20,7 +20,7 @@ interface FormState {
 }
 
 const INITIAL: FormState = {
-  fullName: "", workEmail: "", companyName: "", jobTitle: "", industry: "", companySize: "", phone: "",
+  fullName: "", workEmail: "", companyName: "", jobTitle: "", industry: "", companySize: "", phoneCountryCode: "+1", phone: "",
   aiAdoptionStage: "", aiToolsInUse: [], monthlyAISpend: "", dedicatedAITeam: "",
   primaryAIGoal: "", implementationTimeline: "", decisionAuthority: "", annualAIBudget: "",
   teamChangeReadiness: 3, teamAILiteracy: 3, leadershipBuyIn: "", ethicalConcerns: [],
@@ -75,6 +75,61 @@ function getReadinessByPct(pct: number) {
   if (pct >= 40) return { pct, level: "Early Explorer",    desc: "Early-stage exploration — foundation work comes first.", color: "#F97316" };
   return              { pct, level: "Getting Started",    desc: "Education and planning are the right next steps.", color: "#EF4444" };
 }
+
+// ─── Country codes ──────────────────────────────────────────────────────────────
+
+const COUNTRY_CODES = [
+  { code: "+1",    country: "US / Canada",       flag: "🇺🇸" },
+  { code: "+44",   country: "United Kingdom",     flag: "🇬🇧" },
+  { code: "+254",  country: "Kenya",              flag: "🇰🇪" },
+  { code: "+256",  country: "Uganda",             flag: "🇺🇬" },
+  { code: "+255",  country: "Tanzania",           flag: "🇹🇿" },
+  { code: "+250",  country: "Rwanda",             flag: "🇷🇼" },
+  { code: "+257",  country: "Burundi",            flag: "🇧🇮" },
+  { code: "+251",  country: "Ethiopia",           flag: "🇪🇹" },
+  { code: "+27",   country: "South Africa",       flag: "🇿🇦" },
+  { code: "+234",  country: "Nigeria",            flag: "🇳🇬" },
+  { code: "+233",  country: "Ghana",              flag: "🇬🇭" },
+  { code: "+49",   country: "Germany",            flag: "🇩🇪" },
+  { code: "+33",   country: "France",             flag: "🇫🇷" },
+  { code: "+39",   country: "Italy",              flag: "🇮🇹" },
+  { code: "+34",   country: "Spain",              flag: "🇪🇸" },
+  { code: "+31",   country: "Netherlands",        flag: "🇳🇱" },
+  { code: "+46",   country: "Sweden",             flag: "🇸🇪" },
+  { code: "+47",   country: "Norway",             flag: "🇳🇴" },
+  { code: "+45",   country: "Denmark",            flag: "🇩🇰" },
+  { code: "+358",  country: "Finland",            flag: "🇫🇮" },
+  { code: "+971",  country: "United Arab Emirates", flag: "🇦🇪" },
+  { code: "+966",  country: "Saudi Arabia",       flag: "🇸🇦" },
+  { code: "+974",  country: "Qatar",              flag: "🇶🇦" },
+  { code: "+91",   country: "India",              flag: "🇮🇳" },
+  { code: "+92",   country: "Pakistan",           flag: "🇵🇰" },
+  { code: "+880",  country: "Bangladesh",         flag: "🇧🇩" },
+  { code: "+94",   country: "Sri Lanka",          flag: "🇱🇰" },
+  { code: "+86",   country: "China",              flag: "🇨🇳" },
+  { code: "+81",   country: "Japan",              flag: "🇯🇵" },
+  { code: "+82",   country: "South Korea",        flag: "🇰🇷" },
+  { code: "+65",   country: "Singapore",          flag: "🇸🇬" },
+  { code: "+60",   country: "Malaysia",           flag: "🇲🇾" },
+  { code: "+62",   country: "Indonesia",          flag: "🇮🇩" },
+  { code: "+63",   country: "Philippines",        flag: "🇵🇭" },
+  { code: "+84",   country: "Vietnam",            flag: "🇻🇳" },
+  { code: "+66",   country: "Thailand",           flag: "🇹🇭" },
+  { code: "+61",   country: "Australia",          flag: "🇦🇺" },
+  { code: "+64",   country: "New Zealand",        flag: "🇳🇿" },
+  { code: "+55",   country: "Brazil",             flag: "🇧🇷" },
+  { code: "+52",   country: "Mexico",             flag: "🇲🇽" },
+  { code: "+54",   country: "Argentina",          flag: "🇦🇷" },
+  { code: "+56",   country: "Chile",              flag: "🇨🇱" },
+  { code: "+57",   country: "Colombia",           flag: "🇨🇴" },
+  { code: "+7",    country: "Russia",             flag: "🇷🇺" },
+  { code: "+380",  country: "Ukraine",            flag: "🇺🇦" },
+  { code: "+48",   country: "Poland",             flag: "🇵🇱" },
+  { code: "+90",   country: "Turkey",             flag: "🇹🇷" },
+  { code: "+972",  country: "Israel",             flag: "🇮🇱" },
+  { code: "+20",   country: "Egypt",              flag: "🇪🇬" },
+  { code: "+212",  country: "Morocco",            flag: "🇲🇦" },
+];
 
 // ─── Question definitions ─────────────────────────────────────────────────────
 
@@ -302,10 +357,17 @@ export default function AIAuditForm() {
     setSubmitError("");
     try {
       // Submit to API — generates score + PDF + uploads to R2 + saves to CRM
+      // Combine country code and phone number for submission
+      const submissionData = {
+        ...form,
+        phone: form.phone ? `${form.phoneCountryCode}${form.phone}` : "",
+        turnstileToken,
+      };
+
       const res = await fetch("/api/proposal.json", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, turnstileToken }),
+        body: JSON.stringify(submissionData),
       });
       if (!res.ok) {
         const d = await res.json();
@@ -442,7 +504,7 @@ export default function AIAuditForm() {
                     {q.sublabel && <p className="text-xs text-zinc-400 -mt-1">{q.sublabel}</p>}
 
                     {/* ── Text / Email / Tel ── */}
-                    {(q.type === "text" || q.type === "email" || q.type === "tel") && (
+                    {(q.type === "text" || q.type === "email" || q.type === "tel") && q.id !== "phone" && (
                       <input
                         ref={idx === 0 ? (inputRef as React.RefObject<HTMLInputElement>) : null}
                         type={q.type}
@@ -451,6 +513,34 @@ export default function AIAuditForm() {
                         onChange={e => set(q.id, e.target.value as any)}
                         className="w-full border-b border-zinc-300 bg-transparent py-2 text-base font-light focus:border-[#005B65] focus:outline-none transition-colors text-zinc-800 placeholder-zinc-300"
                       />
+                    )}
+
+                    {/* ── Phone with country code dropdown ── */}
+                    {q.type === "tel" && q.id === "phone" && (
+                      <div className="flex gap-2">
+                        <div className="relative shrink-0">
+                          <select
+                            value={form.phoneCountryCode}
+                            onChange={e => set("phoneCountryCode", e.target.value)}
+                            className="appearance-none border-b border-zinc-300 bg-transparent py-2 pl-1 pr-7 text-base font-light focus:border-[#005B65] focus:outline-none transition-colors text-zinc-800 cursor-pointer"
+                          >
+                            {COUNTRY_CODES.map(cc => (
+                              <option key={cc.code} value={cc.code}>{cc.flag} {cc.code}</option>
+                            ))}
+                          </select>
+                          <svg className="absolute right-1 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-400" width="12" height="12" viewBox="0 0 20 20" fill="none">
+                            <path d="M5 8l5 5 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        </div>
+                        <input
+                          ref={idx === 0 ? (inputRef as React.RefObject<HTMLInputElement>) : null}
+                          type="tel"
+                          placeholder={q.placeholder || "7XX XXX XXX"}
+                          value={form.phone as string}
+                          onChange={e => set("phone", e.target.value as any)}
+                          className="flex-1 border-b border-zinc-300 bg-transparent py-2 text-base font-light focus:border-[#005B65] focus:outline-none transition-colors text-zinc-800 placeholder-zinc-300"
+                        />
+                      </div>
                     )}
 
                     {/* ── Textarea ── */}

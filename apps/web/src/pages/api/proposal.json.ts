@@ -275,7 +275,7 @@ export const POST: APIRoute = async ({ request }) => {
     if (!import.meta.env.DEV && (!form.fullName || !form.workEmail || !form.companyName)) {
       return new Response(
         JSON.stringify({ error: "Missing required fields" }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        { status: 400, headers: { "Content-Type": "application/json", "Cache-Control": "no-cache, no-store" } }
       );
     }
 
@@ -286,7 +286,7 @@ export const POST: APIRoute = async ({ request }) => {
       if (!turnstileOk) {
         return new Response(
           JSON.stringify({ error: "Bot verification failed", message: "Please complete the security check and try again." }),
-          { status: 400, headers: { "Content-Type": "application/json" } }
+          { status: 400, headers: { "Content-Type": "application/json", "Cache-Control": "no-cache, no-store" } }
         );
       }
     }
@@ -316,13 +316,13 @@ export const POST: APIRoute = async ({ request }) => {
 
     return new Response(
       JSON.stringify({ success: true, score: readiness, reportUrl }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+      { status: 200, headers: { "Content-Type": "application/json", "Cache-Control": "no-cache, no-store" } }
     );
   } catch (err: any) {
     console.error("Proposal submission error:", err);
     return new Response(
       JSON.stringify({ error: "Submission failed. Please try again.", detail: err?.message ?? String(err) }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
+      { status: 500, headers: { "Content-Type": "application/json", "Cache-Control": "no-cache, no-store" } }
     );
   }
 };

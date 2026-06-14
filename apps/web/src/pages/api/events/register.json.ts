@@ -28,7 +28,7 @@ export const POST: APIRoute = async ({ request }) => {
   if (request.method !== "POST") {
     return new Response(JSON.stringify({ error: "Method not allowed" }), {
       status: 405,
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "Cache-Control": "no-cache, no-store" },
     });
   }
 
@@ -54,7 +54,7 @@ export const POST: APIRoute = async ({ request }) => {
     if (!turnstileOk) {
       return new Response(
         JSON.stringify({ error: "Bot verification failed", message: "Please complete the security check and try again." }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        { status: 400, headers: { "Content-Type": "application/json", "Cache-Control": "no-cache, no-store" } }
       );
     }
 
@@ -67,7 +67,7 @@ export const POST: APIRoute = async ({ request }) => {
         }),
         {
           status: 400,
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", "Cache-Control": "no-cache, no-store" },
         }
       );
     }
@@ -82,7 +82,7 @@ export const POST: APIRoute = async ({ request }) => {
         }),
         {
           status: 400,
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", "Cache-Control": "no-cache, no-store" },
         }
       );
     }
@@ -96,7 +96,7 @@ export const POST: APIRoute = async ({ request }) => {
         }),
         {
           status: 400,
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", "Cache-Control": "no-cache, no-store" },
         }
       );
     }
@@ -139,7 +139,7 @@ export const POST: APIRoute = async ({ request }) => {
       }),
       {
         status: 201,
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "Cache-Control": "no-cache, no-store" },
       }
     );
   } catch (error) {
@@ -151,7 +151,7 @@ export const POST: APIRoute = async ({ request }) => {
       }),
       {
         status: 500,
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "Cache-Control": "no-cache, no-store" },
       }
     );
   }

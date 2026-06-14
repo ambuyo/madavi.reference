@@ -1,0 +1,32 @@
+# Madavi Inc. — Content for LLMs
+# https://madavi.co
+# This file helps LLMs (GPTBot, Claude, Perplexity, etc.) discover and ingest our content.
+
+# ── Site Index (structured JSON) ──
+# Best entry point for LLM content ingestion
+https://madavi.co/llm-index.json
+
+# ── Core Pages ──
+https://madavi.co/
+https://madavi.co/about
+https://madavi.co/blog
+https://madavi.co/our-work
+https://madavi.co/industries
+
+# ── Capabilities ──
+https://madavi.co/capabilities/ai-readiness
+https://madavi.co/capabilities/executive-advisory
+https://madavi.co/capabilities/leadership-ai-fluency
+https://madavi.co/capabilities/keynotes-licensing
+https://madavi.co/capabilities/ai-agent-development
+https://madavi.co/capabilities/brand-strategy
+https://madavi.co/capabilities/brand-communication
+https://madavi.co/capabilities/brand-management
+https://madavi.co/capabilities/website-design
+https://madavi.co/capabilities/seo-services
+
+# ── Solutions ──
+https://madavi.co/solutions/tapthrive
+
+# ── Free AI Audit ──
+https://madavi.co/free-ai-audit

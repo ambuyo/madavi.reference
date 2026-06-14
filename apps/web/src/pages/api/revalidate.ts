@@ -6,7 +6,7 @@ export const POST: APIRoute = async ({ request }) => {
   if (!secret || secret !== import.meta.env.WEBHOOK_SECRET) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
       status: 401,
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "Cache-Control": "no-cache, no-store" },
     });
   }
 
@@ -41,13 +41,13 @@ export const POST: APIRoute = async ({ request }) => {
 
     return new Response(
       JSON.stringify({ success: true, posts: posts.length, timestamp: new Date().toISOString() }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+      { status: 200, headers: { "Content-Type": "application/json", "Cache-Control": "no-cache, no-store" } }
     );
   } catch (error) {
     console.error("[revalidate] Failed to refresh cache:", error);
     return new Response(JSON.stringify({ error: "Failed to refresh cache" }), {
       status: 500,
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "Cache-Control": "no-cache, no-store" },
     });
   }
 };

@@ -95,7 +95,7 @@ export interface WordPressImage {
 }
 
 // Fetch all blog posts from WordPress
-export async function fetchWordPressPosts(limit = 400): Promise<WordPressPost[]> {
+export async function fetchWordPressPosts(limit = 2000): Promise<WordPressPost[]> {
   const PAGE_SIZE = 100;
   const allPosts: WordPressPost[] = [];
   let page = 1;
