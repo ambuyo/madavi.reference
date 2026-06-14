@@ -1,0 +1,136 @@
+---
+// LocalBusiness JSON-LD Schema for Madavi
+// Data sourced from ContactInfo.astro and Footer.astro
+---
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "@id": "https://madavi.co/#organization",
+  name: "Madavi Global Inc.",
+  alternateName: "Madavi",
+  description: "AI Advisory Consulting Firm helping organizations build AI adoption capability before deploying technology. Strategic advisory for C-suite leaders across critical industries.",
+  url: "https://madavi.co",
+  logo: "https://madavi.co/logo.png",
+  image: "https://madavi.co/og-default.jpg",
+  email: "hi@madavi.co",
+  telephone: "+254718735565",
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "1007 N Orange St., 4th Floor",
+    addressLocality: "Wilmington",
+    addressRegion: "DE",
+    postalCode: "19801",
+    addressCountry: "US",
+  },
+  geo: {
+    "@type": "GeoCoordinates",
+    latitude: 39.7483,
+    longitude: -75.5471,
+  },
+  openingHoursSpecification: [
+    {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      opens: "08:00",
+      closes: "18:00",
+    },
+    {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: "Saturday",
+      opens: "09:00",
+      closes: "14:00",
+    },
+  ],
+  areaServed: [
+    { "@type": "Country", name: "United States" },
+    { "@type": "Country", name: "Kenya" },
+    { "@type": "Country", name: "Rwanda" },
+  ],
+  sameAs: [
+    "https://www.linkedin.com/company/madavihq/",
+    "https://www.instagram.com/madavihq",
+    "https://www.facebook.com/madavihq",
+    "https://x.com/madavihq",
+    "https://www.youtube.com/channel/UCALhy1a4XYdkCkn2XtHFgLw",
+  ],
+  hasOfferCatalog: {
+    "@type": "OfferCatalog",
+    name: "Services",
+    itemListElement: [
+      {
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: "AI Readiness Assessment",
+          description: "Evaluate your organization's preparedness for AI adoption across culture, process, data, and infrastructure.",
+        },
+      },
+      {
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: "Executive Advisory Retainer",
+          description: "Ongoing strategic AI advisory for C-suite leaders navigating digital transformation.",
+        },
+      },
+      {
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: "Leadership AI Fluency Cohort",
+          description: "Cohort-based upskilling program for leadership teams to develop AI literacy and strategic confidence.",
+        },
+      },
+      {
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: "Keynotes & Licensing",
+          description: "Licensed frameworks, keynote talks, and workshops on AI, growth, and human-centric transformation.",
+        },
+      },
+      {
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: "AI Agent Development",
+          description: "Custom AI agent design and deployment for enterprise workflows and decision infrastructure.",
+        },
+      },
+      {
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: "Brand Strategy",
+          description: "Brand positioning, architecture, and strategy for organizations undergoing transformation.",
+        },
+      },
+      {
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: "Website Design & Development",
+          description: "Strategic website design and development for measurable business outcomes.",
+        },
+      },
+      {
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: "Search Engine Optimization",
+          description: "Technical and content SEO services to improve visibility and organic growth.",
+        },
+      },
+    ],
+  },
+  foundingDate: "2016",
+  founder: {
+    "@type": "Person",
+    name: "Kune Ambuyo",
+    jobTitle: "Chief Executive Officer",
+    sameAs: [
+      "https://www.linkedin.com/in/kuneambuyo/",
+      "https://x.com/k_ambuyo",
+    ],
+  },
+}, null, 2)} />

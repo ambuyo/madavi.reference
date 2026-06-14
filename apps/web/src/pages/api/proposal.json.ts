@@ -1,5 +1,9 @@
 import type { APIRoute } from "astro";
+import React from "react";
+import { renderToBuffer } from "@react-pdf/renderer";
 import { verifyTurnstile } from "@/lib/turnstile";
+import { uploadToR2 } from "@/lib/r2/upload";
+import AuditReportPDF from "@/components/proposal/AuditReportPDF";
 
 // ─── Scoring (mirrors ProposalForm.tsx) ───────────────────────────────────────
 
@@ -82,7 +86,8 @@ async function upsertContact(
   token: string,
   f: any,
   score: number,
-  readiness: ReturnType<typeof getReadiness>
+  readiness: ReturnType<typeof getReadiness>,
+  reportUrl?: string
 ): Promise<string> {
   const dc = import.meta.env.ZOHO_DATACENTER ?? "com";
   const parts = ((f.fullName as string) || "Unknown").trim().split(/\s+/);
@@ -105,8 +110,10 @@ async function upsertContact(
         Account_Name:            f.companyName ?? "",
         Description:             `Industry: ${f.industry ?? "—"} | Size: ${f.companySize ?? "—"}`,
         Lead_Source:             f.hearAboutUs ?? "",
-        // Custom fields — all 18
+        // Custom fields
         AI_Readiness_Score:      score,
+        AI_Audit_Score:          readiness.pct,
+        AI_Reports_Link:         reportUrl ?? "",
         Readiness_Level:         readiness.level,
         AI_Adoption_Stage:       f.aiAdoptionStage ?? "",
         Decision_Authority:      f.decisionAuthority ?? "",
@@ -188,11 +195,12 @@ async function createNote(token: string, contactId: string, title: string, conte
 
 // ─── Note content ─────────────────────────────────────────────────────────────
 
-function buildNoteContent(f: any, raw: number, readiness: ReturnType<typeof getReadiness>): string {
+function buildNoteContent(f: any, raw: number, readiness: ReturnType<typeof getReadiness>, reportUrl?: string): string {
   return `
 READINESS SCORE: ${readiness.pct}/100 — ${readiness.level}
 Raw Points: ${raw}/470
 ${readiness.desc}
+${reportUrl ? `\nAI REPORT: ${reportUrl}` : ""}
 
 --- CONTACT ---
 Name:     ${f.fullName}
@@ -287,15 +295,27 @@ export const POST: APIRoute = async ({ request }) => {
     const raw = calculateScore(form);
     const readiness = getReadiness(raw);
 
+    // Generate PDF report and upload to R2 for persistent storage
+    let reportUrl = "";
+    try {
+      const pdfBuffer = await renderToBuffer(
+        React.createElement(AuditReportPDF, { data: form })
+      );
+      const filename = `${(form.companyName || "report").replace(/[^a-zA-Z0-9]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "").toLowerCase()}-${new Date().toISOString().slice(0, 10)}.pdf`;
+      reportUrl = await uploadToR2(Buffer.from(pdfBuffer), filename);
+    } catch (pdfErr: any) {
+      console.warn("PDF generation/upload failed (non-blocking):", pdfErr.message);
+    }
+
     // Submit to Zoho Bigin
     const zohoToken   = await getZohoToken();
-    const contactId   = await upsertContact(zohoToken, form, raw, readiness);
+    const contactId   = await upsertContact(zohoToken, form, raw, readiness, reportUrl);
     const noteTitle   = `AI Readiness Assessment — ${readiness.level} (${readiness.pct}%)`;
-    const noteContent = buildNoteContent(form, raw, readiness);
+    const noteContent = buildNoteContent(form, raw, readiness, reportUrl);
     await createNote(zohoToken, contactId, noteTitle, noteContent);
 
     return new Response(
-      JSON.stringify({ success: true, score: readiness }),
+      JSON.stringify({ success: true, score: readiness, reportUrl }),
       { status: 200, headers: { "Content-Type": "application/json" } }
     );
   } catch (err: any) {

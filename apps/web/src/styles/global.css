@@ -4,12 +4,17 @@
 @plugin "tailwind-scrollbar-hide";
 
 /* ── Tiempos – display / headings ── */
+/* Fallback: Times New Roman. size-adjust scales the fallback to match custom font width. */
 @font-face {
   font-family: "Tiempos";
   src: url("/fonts/tiempos/TestTiemposHeadline-Light-BF66457a50df5a0.woff2") format("woff2");
   font-weight: 300;
   font-style: normal;
   font-display: swap;
+  size-adjust: 96%;
+  ascent-override: 90%;
+  descent-override: 24%;
+  line-gap-override: 0%;
 }
 @font-face {
   font-family: "Tiempos";
@@ -17,6 +22,10 @@
   font-weight: 500;
   font-style: normal;
   font-display: swap;
+  size-adjust: 96%;
+  ascent-override: 90%;
+  descent-override: 24%;
+  line-gap-override: 0%;
 }
 @font-face {
   font-family: "Tiempos";
@@ -24,6 +33,10 @@
   font-weight: 600;
   font-style: normal;
   font-display: swap;
+  size-adjust: 96%;
+  ascent-override: 90%;
+  descent-override: 24%;
+  line-gap-override: 0%;
 }
 @font-face {
   font-family: "Tiempos";
@@ -31,6 +44,10 @@
   font-weight: 700;
   font-style: normal;
   font-display: swap;
+  size-adjust: 96%;
+  ascent-override: 90%;
+  descent-override: 24%;
+  line-gap-override: 0%;
 }
 @font-face {
   font-family: "Tiempos";
@@ -38,15 +55,24 @@
   font-weight: 900;
   font-style: normal;
   font-display: swap;
+  size-adjust: 96%;
+  ascent-override: 90%;
+  descent-override: 24%;
+  line-gap-override: 0%;
 }
 
 /* ── DM Sans – body / UI ── */
+/* Fallback: Arial / Helvetica. DM Sans metrics are close to Arial, small size-adjust. */
 @font-face {
   font-family: "DM Sans";
   src: url("/fonts/DMSans/DMSans_18pt-ExtraLight.woff2") format("woff2");
   font-weight: 200;
   font-style: normal;
   font-display: swap;
+  size-adjust: 98%;
+  ascent-override: 96%;
+  descent-override: 25%;
+  line-gap-override: 0%;
 }
 @font-face {
   font-family: "DM Sans";
@@ -54,6 +80,10 @@
   font-weight: 200;
   font-style: italic;
   font-display: swap;
+  size-adjust: 98%;
+  ascent-override: 96%;
+  descent-override: 25%;
+  line-gap-override: 0%;
 }
 @font-face {
   font-family: "DM Sans";
@@ -61,6 +91,10 @@
   font-weight: 300;
   font-style: normal;
   font-display: swap;
+  size-adjust: 98%;
+  ascent-override: 96%;
+  descent-override: 25%;
+  line-gap-override: 0%;
 }
 @font-face {
   font-family: "DM Sans";
@@ -68,6 +102,10 @@
   font-weight: 400;
   font-style: italic;
   font-display: swap;
+  size-adjust: 98%;
+  ascent-override: 96%;
+  descent-override: 25%;
+  line-gap-override: 0%;
 }
 @font-face {
   font-family: "DM Sans";
@@ -75,15 +113,24 @@
   font-weight: 700;
   font-style: normal;
   font-display: swap;
+  size-adjust: 98%;
+  ascent-override: 96%;
+  descent-override: 25%;
+  line-gap-override: 0%;
 }
 
 /* ── Geom – accent / quotes / testimonials ── */
+/* Fallback: Arial. Geometric sans-serif with similar proportions. */
 @font-face {
   font-family: "Geom";
   src: url("/fonts/geom/Geom-Light.woff2") format("woff2");
   font-weight: 300;
   font-style: normal;
   font-display: swap;
+  size-adjust: 97%;
+  ascent-override: 95%;
+  descent-override: 23%;
+  line-gap-override: 0%;
 }
 @font-face {
   font-family: "Geom";
@@ -91,6 +138,10 @@
   font-weight: 400;
   font-style: normal;
   font-display: swap;
+  size-adjust: 97%;
+  ascent-override: 95%;
+  descent-override: 23%;
+  line-gap-override: 0%;
 }
 @font-face {
   font-family: "Geom";
@@ -98,6 +149,10 @@
   font-weight: 400;
   font-style: italic;
   font-display: swap;
+  size-adjust: 97%;
+  ascent-override: 95%;
+  descent-override: 23%;
+  line-gap-override: 0%;
 }
 @font-face {
   font-family: "Geom";
@@ -105,6 +160,10 @@
   font-weight: 500;
   font-style: normal;
   font-display: swap;
+  size-adjust: 97%;
+  ascent-override: 95%;
+  descent-override: 23%;
+  line-gap-override: 0%;
 }
 @font-face {
   font-family: "Geom";
@@ -112,6 +171,10 @@
   font-weight: 700;
   font-style: normal;
   font-display: swap;
+  size-adjust: 97%;
+  ascent-override: 95%;
+  descent-override: 23%;
+  line-gap-override: 0%;
 }
 
 @theme {

@@ -11,13 +11,19 @@ interface Props {
 
 const { variant = "dark", class: className = "", ...rest } = Astro.props;
 const logoImage = variant === "light" ? logoLight : logoDark;
+
+// Set dimensions based on max display size (h-16 = 64px) at 1x
+// Light: 4724×2048 (~2.307:1) → 148×64 | Dark: 940×300 (~3.133:1) → 201×64
+const imgWidth = variant === "light" ? 148 : 201;
+const imgHeight = 64;
 ---
 
 <Image
   src={logoImage}
   alt="Madavi Logo"
-  width={940}
-  height={300}
+  width={imgWidth}
+  height={imgHeight}
+  densities={[1, 2]}
   class={`object-contain ${className}`}
   {...rest}
 />

@@ -1,6 +1,6 @@
 ---
-// Styles
-import "@/styles/global.css";
+// Styles — inlined to eliminate render-blocking CSS request (~450ms LCP savings)
+import globalCss from "@/styles/global.css?inline";
 
 // UI
 import WhatsAppButton from "@/components/ui/WhatsAppButton.astro";
@@ -13,6 +13,7 @@ import StructuredData from "@/components/StructuredData.astro";
 // Analytics Components
 import GoogleAnalytics from "@/components/fundations/scripts/GoogleAnalytics.astro";
 import Hotjar from "@/components/fundations/scripts/Hotjar.astro";
+import MetaPixel from "@/components/fundations/scripts/MetaPixel.astro";
 
 // Layout Components
 import MainCta from "@/components/ctas/MainCta.astro";
@@ -83,6 +84,8 @@ const seoPublishedTime = publishDate || (seo?.publishedTime ? new Date(seo.publi
 
 <html lang="en" class="scroll-smooth">
   <head>
+    <!-- Inlined Tailwind CSS — no external stylesheet blocks rendering -->
+    <style set:html={globalCss} />
     <!-- Legacy head components (kept for backward compatibility) -->
     <BaseHead seo={seo} skipSeo={!!seoTitle} />
 
@@ -125,6 +128,7 @@ const seoPublishedTime = publishDate || (seo?.publishedTime ? new Date(seo.publi
     <!-- Analytics -->
     <GoogleAnalytics />
     <Hotjar />
+    <MetaPixel />
   </head>
 
   <body class={`flex flex-col bg-white min-h-svh ${navVariant === "transparent" ? "" : "pt-24"}`}>
@@ -134,7 +138,7 @@ const seoPublishedTime = publishDate || (seo?.publishedTime ? new Date(seo.publi
     {!hideFooter && <Footer />}
     <Search />
     <WhatsAppButton
-      phoneNumber="15559698590"
+      phoneNumber="+254718735565"
       message="Hi Madavi team! I'd love to know more about your AI advisory services."
     />
   </body>

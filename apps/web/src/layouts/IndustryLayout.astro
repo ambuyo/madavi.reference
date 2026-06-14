@@ -1,6 +1,6 @@
 ---
-// Styles
-import "@/styles/global.css";
+// Styles — inlined to eliminate render-blocking CSS request
+import globalCss from "@/styles/global.css?inline";
 
 // SEO & Head Components
 import BaseHead from "@/components/fundations/head/BaseHead.astro";
@@ -10,6 +10,7 @@ import StructuredData from "@/components/StructuredData.astro";
 // Analytics Components
 import GoogleAnalytics from "@/components/fundations/scripts/GoogleAnalytics.astro";
 import Hotjar from "@/components/fundations/scripts/Hotjar.astro";
+import MetaPixel from "@/components/fundations/scripts/MetaPixel.astro";
 
 // Layout Components
 import IndustryNav from "@/components/industries/IndustryNav.astro";
@@ -72,6 +73,8 @@ const seoPublishedTime = publishDate || (seo?.publishedTime ? new Date(seo.publi
 
 <html lang="en" class="scroll-smooth">
   <head>
+    <!-- Inlined Tailwind CSS — no external stylesheet blocks rendering -->
+    <style set:html={globalCss} />
     <!-- Legacy head components (kept for backward compatibility) -->
     <BaseHead seo={seo} />
 
@@ -114,6 +117,7 @@ const seoPublishedTime = publishDate || (seo?.publishedTime ? new Date(seo.publi
     <!-- Analytics -->
     <GoogleAnalytics />
     <Hotjar />
+    <MetaPixel />
   </head>
 
   <body class="flex flex-col bg-white min-h-svh pt-16">

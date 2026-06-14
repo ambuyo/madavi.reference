@@ -6,6 +6,7 @@ export const client = createClient({
   apiVersion: import.meta.env.SANITY_API_VERSION || "2024-01-01",
   useCdn: import.meta.env.PROD,
   token: import.meta.env.SANITY_READ_TOKEN,
+  perspective: "published",
   timeout: 10_000,
 });
 
@@ -16,5 +17,6 @@ export const previewClient = createClient({
   apiVersion: import.meta.env.SANITY_API_VERSION || "2024-01-01",
   useCdn: false,
   token: import.meta.env.SANITY_READ_TOKEN,
+  perspective: "previewDrafts",
   timeout: 10_000,
 });

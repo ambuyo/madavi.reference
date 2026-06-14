@@ -107,11 +107,15 @@ const buttonClass = variant === "transparent"
 
           if (isOpen) {
             panel.classList.remove("hidden");
-            void panel.offsetWidth;
-            overlay.classList.remove("opacity-0", "pointer-events-none");
-            overlay.classList.add("opacity-100");
-            panel.classList.remove("opacity-0", "scale-95", "translate-y-2", "pointer-events-none");
-            panel.classList.add("opacity-100", "scale-100", "translate-y-0");
+            // Use double rAF to trigger CSS transition without forced reflow
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => {
+                overlay.classList.remove("opacity-0", "pointer-events-none");
+                overlay.classList.add("opacity-100");
+                panel.classList.remove("opacity-0", "scale-95", "translate-y-2", "pointer-events-none");
+                panel.classList.add("opacity-100", "scale-100", "translate-y-0");
+              });
+            });
           } else {
             overlay.classList.add("opacity-0", "pointer-events-none");
             overlay.classList.remove("opacity-100");

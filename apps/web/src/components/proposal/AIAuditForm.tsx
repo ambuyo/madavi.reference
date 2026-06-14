@@ -66,6 +66,9 @@ function calculateScore(f: FormState): number {
 
 function getReadiness(raw: number) {
   const pct = Math.round((raw / 470) * 100);
+  return getReadinessByPct(pct);
+}
+function getReadinessByPct(pct: number) {
   if (pct >= 90) return { pct, level: "AI-Ready Leader",   desc: "Scale mode — ready for enterprise-wide deployment.", color: "#005B65" };
   if (pct >= 75) return { pct, level: "Advanced Adopter",  desc: "Strong foundation — ready to expand from pilot to scale.", color: "#1EB49C" };
   if (pct >= 60) return { pct, level: "Strategic Builder", desc: "Building capabilities systematically toward your first pilot.", color: "#F59E0B" };
@@ -93,7 +96,7 @@ interface Question {
 
 const QUESTIONS: Question[] = [
   { id: "fullName",    label: "What is your full name?",              type: "text",  placeholder: "Jane Smith",            required: true },
-  { id: "workEmail",   label: "What's your work email?",              type: "email", placeholder: "jane@company.com",      required: true },
+  { id: "workEmail",   label: "What's your work email?",              type: "email", placeholder: "jane@company.com",      required: true, sublabel: "We will send your full AI Readiness Report to this email." },
   { id: "companyName", label: "What company do you work for?",        type: "text",  placeholder: "Acme Inc.",             required: true },
   { id: "jobTitle",    label: "What is your role?",                   type: "select", required: true,
     options: ["C-Suite / Executive","VP / Director","Manager / Team Lead","Individual Contributor","Consultant / Advisor","Other"] },
@@ -118,7 +121,7 @@ const QUESTIONS: Question[] = [
     options: ["Decision-maker","Key influencer","Researcher/evaluator","Other"] },
   { id: "annualAIBudget", label: "What is your annual budget for AI investment?", type: "radio", required: true,
     options: ["Not yet determined","Under $25K","$25K–$100K","$100K–$500K","$500K+"] },
-  { id: "teamChangeReadiness", label: "How open is your team to change?", sublabel: "1 = Very resistant · 5 = Highly enthusiastic",
+  { id: "teamChangeReadiness", label: "How open is your team to changing how they work?", sublabel: "1 = Very resistant · 5 = Highly enthusiastic",
     type: "slider", min: 1, max: 5, sliderLabels: ["Resistant", "Enthusiastic"] },
   { id: "teamAILiteracy", label: "How well does your team understand AI?", sublabel: "1 = No knowledge · 5 = Expert level",
     type: "slider", min: 1, max: 5, sliderLabels: ["No knowledge", "Expert"] },
@@ -179,7 +182,7 @@ const STEPS = [
   [7, 8, 9, 10],                                   // 2. AI Adoption (4q)
   [11, 12, 13, 14],                                // 3. AI Goals (4q)
   [15, 16, 17, 18],                                // 4. Team & Leadership (4q)
-  [19, 22, 21, 23, 20],                            // 5. Challenges & Engagement (5q)
+  [19, 20, 21, 22, 23],                            // 5. Challenges & Engagement (5q)
   [24, 25, 26, 27],                                // 6. Data Foundation (4q)
   [28, 29, 30, 31],                                // 7. Technical Infrastructure (4q)
   [32, 33, 34, 35],                                // 8. Success Metrics (4q)
@@ -187,13 +190,13 @@ const STEPS = [
 ];
 
 const STEP_NAMES = [
-  "Intro",
+  "About You",
   "AI Adoption",
-  "AI Goals",
-  "Team Skills",
-  "Org Challenges",
+  "AI Goals & Timeline",
+  "Team Capabilities",
+  "Your Challenges",
   "Data Foundation",
-  "Tech Infrastructure",
+  "Technical Infrastructure",
   "Success & Metrics",
   "Governance & Risk",
 ];
@@ -219,11 +222,14 @@ export default function AIAuditForm() {
   const [submitted, setSubmitted]   = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [reportUrl, setReportUrl] = useState<string | null>(null);
+  const [scoreResult, setScoreResult] = useState<{ pct: number; level: string; desc: string; color: string } | null>(null);
   const turnstileRef = useRef<TurnstileInstance>(null);
   const inputRef     = useRef<HTMLInputElement | HTMLTextAreaElement | null>(null);
 
   const currentStepQuestionIndices = STEPS[step];
   const currentStepQuestions = currentStepQuestionIndices.map(i => QUESTIONS[i]);
+  const progress = Math.round(((step + 1) / STEP_TOTAL) * 100);
   const stepName = STEP_NAMES[step];
 
   useEffect(() => {
@@ -244,12 +250,6 @@ export default function AIAuditForm() {
     if (arr.includes(opt)) { set(key, arr.filter(v => v !== opt) as any); return; }
     if (max && arr.length >= max) return;
     set(key, [...arr, opt] as any);
-  }
-
-  function jumpToStep(target: number) {
-    setError("");
-    setDir(target > step ? 1 : -1);
-    setStep(target);
   }
 
   function validateStep(questions: Question[]): string {
@@ -301,18 +301,39 @@ export default function AIAuditForm() {
     setSubmitting(true);
     setSubmitError("");
     try {
+      // Submit to API — generates score + PDF + uploads to R2 + saves to CRM
       const res = await fetch("/api/proposal.json", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...form, turnstileToken }),
       });
-      if (res.ok) {
-        sessionStorage.removeItem("auditFormData");
-        setSubmitted(true);
-      } else {
+      if (!res.ok) {
         const d = await res.json();
         setSubmitError(d.message || "Something went wrong. Please try again.");
+        return;
       }
+
+      const data = await res.json();
+
+      // Store score for display
+      if (data.score) {
+        const r = getReadinessByPct(data.score.pct);
+        setScoreResult({ pct: r.pct, level: r.level, desc: r.desc, color: r.color });
+      }
+
+      // Download PDF from R2 persistent URL
+      if (data.reportUrl) {
+        setReportUrl(data.reportUrl);
+        const a = document.createElement("a");
+        a.href = data.reportUrl;
+        a.download = `madavi-ai-readiness-${form.companyName?.replace(/\s+/g, "-").toLowerCase() || "report"}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
+
+      sessionStorage.removeItem("auditFormData");
+      setSubmitted(true);
     } catch {
       setSubmitError("Network error. Please try again.");
     } finally {
@@ -322,31 +343,47 @@ export default function AIAuditForm() {
 
   if (submitted) {
     const raw = calculateScore(form);
-    const r   = getReadiness(raw);
+    const computedScore = getReadiness(raw);
+    const r = scoreResult || computedScore;
     return (
-      <div className="flex min-h-screen items-center justify-center px-6" style={{ backgroundColor: "#FAF5EF" }}>
+      <div className="flex min-h-screen items-center justify-center bg-zinc-50 px-6">
         <motion.div
           initial={{ opacity: 0, y: 32 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
           className="w-full max-w-lg text-center"
         >
           <div className="size-20 rounded-full flex items-center justify-center text-white text-3xl mx-auto mb-8" style={{ background: r.color }}>✓</div>
           <h2 className="font-display text-4xl font-bold text-zinc-900 mb-3">Your assessment is complete.</h2>
-          <p className="text-zinc-500 mb-8">Here's a snapshot of your AI readiness score. A <strong className="text-zinc-700">full personalised report</strong> with detailed findings, recommendations, and your custom AI roadmap is on its way to your inbox — expect it within 1 business day.</p>
 
-          <div className="rounded-2xl border-2 border-zinc-100 p-8 mb-4" style={{ background: "#F9FAFB" }}>
+          {/* Score display */}
+          <div className="rounded-2xl border-2 border-zinc-100 p-8 mb-6" style={{ background: "#F9FAFB" }}>
             <p className="text-xs uppercase tracking-widest text-zinc-400 mb-2">Your AI Readiness Score</p>
             <div className="text-7xl font-black leading-none mb-3" style={{ color: r.color }}>{r.pct}<span className="text-3xl">/100</span></div>
             <p className="text-xl font-bold text-zinc-900">{r.level}</p>
             <p className="text-sm text-zinc-500 mt-1">{r.desc}</p>
           </div>
 
-          <div className="rounded-xl border border-zinc-200 px-6 py-4 mb-8 flex items-start gap-3 text-left" style={{ background: "#FFF8F0" }}>
-            <span className="text-xl mt-0.5">📬</span>
-            <p className="text-sm text-zinc-600">
-              <span className="font-semibold text-zinc-800">Your detailed report is being prepared.</span>{" "}
-              We'll send a comprehensive AI readiness analysis — including gap assessment, priority actions, and vendor recommendations — to your email address.
+          {/* Email notification */}
+          <div className="mb-6 p-5 rounded-xl bg-[#F0FDFA] border border-[#005B65]/20 text-left">
+            <p className="text-sm font-semibold text-[#005B65] mb-2">📧 Your full report is on the way</p>
+            <p className="text-sm text-zinc-600 leading-relaxed">
+              The complete AI Readiness Assessment Report has been sent to <strong>{form.workEmail}</strong>. You should receive it shortly. If you do not see it, check your spam folder or contact us at <a href="mailto:hi@madavi.co" className="text-[#005B65] underline">hi@madavi.co</a>.
             </p>
           </div>
+
+          {/* Download button */}
+          {reportUrl && (
+            <a href={reportUrl} download className="inline-block rounded-full px-8 py-3 font-semibold text-white text-sm mb-3" style={{ background: r.color }}>
+              ↓ Download PDF Report
+            </a>
+          )}
+
+          {/* Permanent link */}
+          {reportUrl && (
+            <div className="mb-6 p-4 rounded-lg bg-white border border-zinc-200 text-left">
+              <p className="text-xs text-zinc-400 mb-1">Permanent report link — save to access anytime:</p>
+              <a href={reportUrl} target="_blank" rel="noopener noreferrer" className="text-sm text-[#005B65] font-medium break-all hover:underline">{reportUrl}</a>
+            </div>
+          )}
 
           <a href="/" className="inline-block rounded-full px-8 py-3 font-semibold text-white text-sm" style={{ background: BRAND }}>Back to Home</a>
         </motion.div>
@@ -355,51 +392,27 @@ export default function AIAuditForm() {
   }
 
   return (
-    <div className="relative flex flex-col min-h-[600px]" style={{ backgroundColor: "#FAF5EF" }}>
+    <div className="relative flex min-h-screen flex-col bg-zinc-50 overflow-hidden">
 
-      {/* Banner */}
-      <div className="px-6 py-4" style={{ backgroundColor: "#FAF5EF" }}>
-        <p className="font-medium text-black font-display" style={{ fontSize: "28px" }}>
-          Get your <span className="text-[#1EB49C] font-bold">AI Readiness Score</span> + custom roadmap{" "}
-          <span className="rounded px-1.5 py-0.5 text-sm font-bold tracking-wide ml-1" style={{ backgroundColor: "#005B65", color: "#fff" }}>in 60 seconds</span>
-        </p>
+      {/* Top progress bar */}
+      <div className="fixed top-0 left-0 right-0 z-50 h-1 bg-zinc-200">
+        <motion.div
+          className="h-full"
+          style={{ background: BRAND }}
+          animate={{ width: `${progress}%` }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+        />
       </div>
 
-      {/* Tab navigation — inline, sticky within column */}
-      <div className="sticky top-24 z-30 bg-white border-b border-zinc-100 shadow-sm">
-        <div className="overflow-x-auto" style={{ scrollbarWidth: "none" }}>
-          <div className="flex min-w-max">
-            {STEP_NAMES.map((name, i) => {
-              const isActive = i === step;
-              const isDone   = i < step;
-              return (
-                <button
-                  key={i}
-                  type="button"
-                  onClick={() => jumpToStep(i)}
-                  className={`relative flex items-center gap-2 px-4 py-3 text-xs font-medium font-display whitespace-nowrap transition-all focus:outline-none ${
-                    isActive
-                      ? "text-white bg-[#005B65]"
-                      : isDone
-                      ? "text-[#1EB49C] hover:text-[#005B65] hover:bg-zinc-50"
-                      : "text-[#1EB49C] hover:text-[#005B65]"
-                  }`}
-                >
-                  <span className={`size-5 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 transition-colors ${
-                    isActive ? "bg-white text-[#005B65]" : isDone ? "bg-zinc-200 text-zinc-600" : "bg-zinc-100 text-zinc-400"
-                  }`}>
-                    {isDone ? "✓" : i + 1}
-                  </span>
-                  {name}
-                </button>
-              );
-            })}
-          </div>
-        </div>
+      {/* Step counter top-right */}
+      <div className="fixed top-4 right-6 z-50 flex items-center gap-2 text-xs text-zinc-400 font-medium">
+        <span>{step + 1}</span>
+        <span>/</span>
+        <span>{STEP_TOTAL}</span>
       </div>
 
-      {/* Main question area */}
-      <div className="flex flex-1 flex-col px-6 py-10">
+      {/* Main question area — vertically centered */}
+      <div className="flex flex-1 flex-col items-center justify-center px-6 py-20">
         <div className="w-full max-w-2xl">
           <AnimatePresence mode="wait" custom={dir}>
             <motion.div
@@ -420,7 +433,7 @@ export default function AIAuditForm() {
               </div>
 
               {/* Questions grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {currentStepQuestions.map((q, idx) => (
                   <div key={q.id} className={`flex flex-col gap-3 ${currentStepQuestions.length === 1 || (idx === currentStepQuestions.length - 1 && currentStepQuestions.length % 2 === 1) ? "sm:col-span-2" : ""}`}>
                     <label className="text-sm font-medium text-zinc-700">
@@ -436,7 +449,7 @@ export default function AIAuditForm() {
                         placeholder={q.placeholder}
                         value={form[q.id] as string}
                         onChange={e => set(q.id, e.target.value as any)}
-                        className="w-full border-b border-zinc-300 bg-transparent py-3 text-base font-light focus:border-[#005B65] focus:outline-none transition-colors text-zinc-800 placeholder-zinc-300"
+                        className="w-full border-b border-zinc-300 bg-transparent py-2 text-base font-light focus:border-[#005B65] focus:outline-none transition-colors text-zinc-800 placeholder-zinc-300"
                       />
                     )}
 
@@ -447,8 +460,8 @@ export default function AIAuditForm() {
                         placeholder={q.placeholder}
                         value={form[q.id] as string}
                         onChange={e => set(q.id, e.target.value as any)}
-                        rows={4}
-                        className="w-full border border-zinc-200 rounded-lg bg-white px-3 py-3 text-sm font-light focus:border-[#005B65] focus:outline-none transition-colors text-zinc-800 placeholder-zinc-300 resize-none"
+                        rows={3}
+                        className="w-full border-b border-zinc-300 bg-transparent py-2 text-sm font-light focus:border-[#005B65] focus:outline-none transition-colors text-zinc-800 placeholder-zinc-300 resize-none"
                       />
                     )}
 
@@ -458,13 +471,13 @@ export default function AIAuditForm() {
                         <select
                           value={form[q.id] as string}
                           onChange={e => { set(q.id, e.target.value as any); }}
-                          className="w-full border-b border-zinc-300 bg-transparent py-3 text-base font-light appearance-none focus:border-[#005B65] focus:outline-none transition-colors text-zinc-800"
+                          className="w-full border-b border-zinc-300 bg-transparent py-2 text-base font-light appearance-none focus:border-[#005B65] focus:outline-none transition-colors text-zinc-800"
                           style={{ color: form[q.id] ? "#27272a" : "#d4d4d8" }}
                         >
                           <option value="" disabled style={{ color: "#d4d4d8" }}>{q.placeholder ?? "Select…"}</option>
                           {q.options!.map(o => <option key={o} value={o}>{o}</option>)}
                         </select>
-                        <svg className="absolute right-2 bottom-3 pointer-events-none text-zinc-400" width="16" height="16" viewBox="0 0 20 20" fill="none">
+                        <svg className="absolute right-2 bottom-2 pointer-events-none text-zinc-400" width="16" height="16" viewBox="0 0 20 20" fill="none">
                           <path d="M5 8l5 5 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                         </svg>
                       </div>
@@ -472,15 +485,15 @@ export default function AIAuditForm() {
 
                     {/* ── Radio ── */}
                     {q.type === "radio" && (
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      <div style={q.cols ? { display: 'grid', gridTemplateColumns: `repeat(${q.cols}, 1fr)`, gap: '0.375rem' } : undefined} className={!q.cols ? "flex flex-col gap-1.5" : ""}>
                         {q.options!.map(o => (
                           <button key={o} type="button" onClick={() => { set(q.id, o as any); }}
-                            className={`flex items-center gap-3 rounded-lg px-3 py-3 text-sm text-left transition-all touch-manipulation ${
-                              form[q.id] === o ? "bg-[#EEF6F7] text-[#005B65] font-medium border border-[#005B65]/20" : "text-zinc-700 bg-white border border-zinc-200 active:bg-zinc-50"
+                            className={`flex items-center gap-2 rounded px-3 py-2 text-sm text-left transition-all ${
+                              form[q.id] === o ? "bg-[#EEF6F7] text-[#005B65] font-medium" : "text-zinc-700 hover:bg-zinc-50"
                             }`}
                           >
-                            <span className={`size-5 rounded-full border-2 shrink-0 flex items-center justify-center transition-colors ${form[q.id] === o ? "border-[#005B65] bg-[#005B65]" : "border-zinc-300 bg-white"}`}>
-                              {form[q.id] === o && <span className="size-2 rounded-full bg-white" />}
+                            <span className={`size-4 rounded-full border-2 shrink-0 flex items-center justify-center transition-colors ${form[q.id] === o ? "border-[#005B65] bg-[#005B65]" : "border-zinc-300 bg-white"}`}>
+                              {form[q.id] === o && <span className="size-1.5 rounded-full bg-white" />}
                             </span>
                             {o}
                           </button>
@@ -490,18 +503,18 @@ export default function AIAuditForm() {
 
                     {/* ── Checkbox ── */}
                     {q.type === "checkbox" && (
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      <div style={q.cols ? { display: 'grid', gridTemplateColumns: `repeat(${q.cols}, 1fr)`, gap: '0.375rem' } : undefined} className={!q.cols ? "flex flex-col gap-1.5" : ""}>
                         {q.options!.map(o => {
                           const arr = form[q.id] as string[];
                           const sel = arr.includes(o);
                           const dis = !!q.max && arr.length >= q.max && !sel;
                           return (
                             <button key={o} type="button" onClick={() => toggleCheckbox(q.id, o, q.max)} disabled={dis}
-                              className={`flex items-center gap-3 rounded-lg px-3 py-3 text-sm text-left transition-all touch-manipulation ${
-                                sel ? "bg-[#EEF6F7] text-[#005B65] font-medium border border-[#005B65]/20" : dis ? "bg-zinc-50 text-zinc-300 border border-zinc-100 cursor-not-allowed" : "text-zinc-700 bg-white border border-zinc-200 active:bg-zinc-50"
+                              className={`flex items-center gap-2 rounded px-3 py-2 text-sm text-left transition-all ${
+                                sel ? "bg-[#EEF6F7] text-[#005B65] font-medium" : dis ? "bg-zinc-50 text-zinc-300 cursor-not-allowed" : "text-zinc-700 hover:bg-zinc-50"
                               }`}
                             >
-                              <span className={`size-5 rounded border-2 shrink-0 flex items-center justify-center transition-colors ${sel ? "border-[#005B65] bg-[#005B65]" : "border-zinc-300 bg-white"}`}>
+                              <span className={`size-4 rounded border shrink-0 flex items-center justify-center transition-colors ${sel ? "border-[#005B65] bg-[#005B65]" : "border-zinc-300 bg-white"}`}>
                                 {sel && <svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>}
                               </span>
                               {o}
@@ -513,15 +526,14 @@ export default function AIAuditForm() {
 
                     {/* ── Slider ── */}
                     {q.type === "slider" && (
-                      <div className="flex flex-col gap-3">
+                      <div className="flex flex-col gap-2">
                         <div className="flex justify-between text-xs text-zinc-400">
                           {q.sliderLabels?.map((l, i) => <span key={i}>{l}</span>)}
                         </div>
                         <input type="range" min={q.min ?? 1} max={q.max ?? 5}
                           value={form[q.id] as number}
                           onChange={e => set(q.id, Number(e.target.value) as any)}
-                          className="w-full accent-[#005B65] h-2 touch-manipulation"
-                          style={{ height: "2rem" }}
+                          className="w-full accent-[#005B65]"
                         />
                         <div className="text-center text-2xl font-bold" style={{ color: BRAND }}>
                           {form[q.id]}<span className="text-sm text-zinc-400 font-normal"> / {q.max ?? 5}</span>
@@ -534,12 +546,12 @@ export default function AIAuditForm() {
                       <button
                         type="button"
                         onClick={() => set(q.id, !(form[q.id] as boolean) as any)}
-                        className={`flex items-center gap-3 rounded-lg border-2 px-4 py-3.5 text-left text-sm transition-all w-full touch-manipulation ${
-                          form[q.id] ? "border-[#005B65] bg-[#EEF6F7] text-[#005B65] font-medium" : "border-zinc-200 bg-white text-zinc-800"
+                        className={`flex items-center gap-3 rounded-lg border-2 px-4 py-3 text-left text-sm transition-all w-fit ${
+                          form[q.id] ? "border-[#005B65] bg-[#EEF6F7] text-[#005B65] font-medium" : "border-zinc-200 bg-white text-zinc-800 hover:border-zinc-400"
                         }`}
                       >
-                        <span className={`w-11 h-6 rounded-full shrink-0 flex items-center transition-colors ${form[q.id] ? "bg-[#005B65]" : "bg-zinc-300"}`}>
-                          <span className={`w-5 h-5 rounded-full bg-white shadow transition-transform ${form[q.id] ? "translate-x-6" : "translate-x-0.5"}`} />
+                        <span className={`w-10 h-6 rounded-full shrink-0 flex items-center transition-colors ${form[q.id] ? "bg-[#005B65]" : "bg-zinc-300"}`}>
+                          <span className={`w-5 h-5 rounded-full bg-white transition-transform ${form[q.id] ? "translate-x-5" : "translate-x-0"}`} />
                         </span>
                         {q.options?.[0] || "Enable"}
                       </button>
@@ -556,7 +568,15 @@ export default function AIAuditForm() {
               )}
 
               {/* CTA row */}
-              <div className="mt-4 pt-6 border-t border-zinc-200">
+              <div className="flex items-center gap-4 mt-4 pt-6 border-t border-zinc-200">
+                {step > 0 && (
+                  <button onClick={back} type="button"
+                    className="text-sm text-zinc-400 hover:text-zinc-600 transition-colors font-medium">
+                    ← Back
+                  </button>
+                )}
+
+                {/* Turnstile — only on last step */}
                 {step === STEP_TOTAL - 1 && (
                   <Turnstile
                     ref={turnstileRef}
@@ -566,25 +586,18 @@ export default function AIAuditForm() {
                     options={{ theme: "light" }}
                   />
                 )}
-                <div className="flex items-center justify-between gap-3">
-                  {step > 0 ? (
-                    <button onClick={back} type="button"
-                      className="text-sm text-zinc-400 hover:text-zinc-600 transition-colors font-medium">
-                      ← Back
-                    </button>
-                  ) : <span />}
-                  <button
-                    type="button"
-                    onClick={advance}
-                    disabled={step === STEP_TOTAL - 1 && !turnstileToken}
-                    className="rounded-lg px-10 py-3 text-sm font-semibold text-white transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-40 touch-manipulation"
-                    style={{ background: BRAND }}
-                  >
-                    {step === STEP_TOTAL - 1
-                      ? (submitting ? "Submitting…" : "Get My AI Report →")
-                      : "Next ✓"}
-                  </button>
-                </div>
+
+                <button
+                  type="button"
+                  onClick={advance}
+                  disabled={step === STEP_TOTAL - 1 && !turnstileToken}
+                  className="rounded px-6 py-2.5 text-sm font-semibold text-white transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-40"
+                  style={{ background: BRAND }}
+                >
+                  {step === STEP_TOTAL - 1
+                    ? (submitting ? "Submitting…" : "Get My AI Report →")
+                    : "Next ✓"}
+                </button>
               </div>
 
               {submitError && <p className="text-sm text-red-500">{submitError}</p>}
