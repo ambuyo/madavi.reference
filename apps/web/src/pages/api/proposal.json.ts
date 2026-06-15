@@ -3,6 +3,7 @@ import React from "react";
 import { renderToBuffer } from "@react-pdf/renderer";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { uploadToR2 } from "@/lib/r2/upload";
+import { sendZeptoMail, buildAuditEmailHtml } from "@/lib/zoho/zeptomail";
 import AuditReportPDF from "@/components/proposal/AuditReportPDF";
 
 // ─── Scoring (mirrors ProposalForm.tsx) ───────────────────────────────────────
@@ -297,15 +298,42 @@ export const POST: APIRoute = async ({ request }) => {
 
     // Generate PDF report and upload to R2 for persistent storage
     let reportUrl = "";
+    let pdfBase64 = "";
     try {
       const pdfBuffer = await renderToBuffer(
         React.createElement(AuditReportPDF, { data: form })
       );
       const filename = `${(form.companyName || "report").replace(/[^a-zA-Z0-9]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "").toLowerCase()}-${new Date().toISOString().slice(0, 10)}.pdf`;
       reportUrl = await uploadToR2(Buffer.from(pdfBuffer), filename);
+      pdfBase64 = Buffer.from(pdfBuffer).toString("base64");
     } catch (pdfErr: any) {
       console.warn("PDF generation/upload failed (non-blocking):", pdfErr.message);
     }
+
+    // Send email via ZeptoMail with PDF attachment
+    const firstName = ((form.fullName as string) || "there").trim().split(/\s+/)[0] || "there";
+    void sendZeptoMail({
+      toName: form.fullName || firstName,
+      toEmail: form.workEmail,
+      subject: `Your Madavi AI Readiness Report — ${readiness.level} (${readiness.pct}/100)`,
+      htmlBody: buildAuditEmailHtml({
+        firstName,
+        companyName: form.companyName || "your organisation",
+        scorePct: readiness.pct,
+        scoreLevel: readiness.level,
+        scoreDesc: readiness.desc,
+        reportUrl: reportUrl || "https://madavi.co/free-ai-audit",
+      }),
+      attachments: pdfBase64
+        ? [
+            {
+              filename: `Madavi-AI-Readiness-Report-${firstName.toLowerCase()}.pdf`,
+              content: pdfBase64,
+              mimeType: "application/pdf",
+            },
+          ]
+        : [],
+    });
 
     // Submit to Zoho Bigin
     const zohoToken   = await getZohoToken();
