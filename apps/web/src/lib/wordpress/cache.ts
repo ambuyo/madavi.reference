@@ -60,7 +60,14 @@ export async function readCachedPosts(): Promise<WordPressPost[] | null> {
   // If stale, refresh in background (stale-while-revalidate)
   // Caller gets current data immediately; next request gets fresh data
   if (isStale()) {
-    refreshFromWP();
+    // On first seed from disk (timestamp=0), await the refresh so the
+    // caller always gets fresh data — critical for static prerendering
+    // where stale data would be baked into the page permanently.
+    if (cache && cache.timestamp === 0) {
+      await refreshFromWP();
+    } else {
+      refreshFromWP();
+    }
   }
 
   return cache?.posts ?? null;

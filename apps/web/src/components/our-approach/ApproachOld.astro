@@ -4,16 +4,31 @@ import Text from "@/components/fundations/elements/Text.astro";
 
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 
-const paths = [
+const gaps = [
   {
-    title: "Path 1: Strategy Theater",
+    title: "The Strategic Distraction Gap",
     description:
-      "Beautiful slide decks. Impressive frameworks. Zero execution plan. You're left holding a $50K strategy document that your team can't implement because it assumes resources you don't have, readiness you haven't built, and cultural buy-in that doesn't exist.",
+      "Investing capital and engineering resources into speculative proofs of concept that look impressive in a sandbox environment but fail to insulate primary corporate KPIs or lower core operational expenses.",
   },
   {
-    title: "Path 2: Tool-First Chaos",
+    title: "The Technical Debt Gap",
     description:
-      "Vendors sell you their platform. Consultants deploy it. Three months later, adoption is 12%, ROI is negative, and your team resents the \"AI initiative\" they were never prepared for.",
+      "Attempting to connect advanced, agentic models to fragmented internal databases, hidden document silos, or an uncurated data layer lacking a unified, clear semantic definition.",
+  },
+  {
+    title: "The Lock-In Governance Gap",
+    description:
+      "Unknowingly leaking proprietary corporate data or client records into public training sets through consumer-grade interfaces, or signing software vendor agreements that permanently strip your business of its intellectual property.",
+  },
+  {
+    title: "The AI Anxiety Gap",
+    description:
+      "Triggering quiet internal resistance from staff who bypass or work around new automated tools because leadership introduced the tech as a replacement threat rather than an administrative shield.",
+  },
+  {
+    title: "The Cognitive Friction Gap",
+    description:
+      "Engineering automation pipelines that force employees to log into auxiliary standalone dashboards, open multiple unlinked tabs, or completely disrupt their established daily communication channels.",
   },
 ];
 ---
@@ -21,21 +36,20 @@ const paths = [
 <section>
   <Wrapper variant="standard" class="py-12">
     <div class="p-8 lg:p-12 bg-base-50">
-      <div class="w-3/4">
+      <div class="max-w-3xl">
         <Text
           tag="h2"
           variant="displayMD"
           class="text-base-900 text-balance font-display"
         >
-The Problem With Most "AI Strategy"
+          Identify Your Core Operational Bottlenecks
         </Text>
         <Text
           tag="p"
           variant="textBase"
           class="text-base-700 lg:text-pretty lg:col-span-2 mt-4"
         >
-You've sat through the vendor demos. Nodded through the conference keynotes. Downloaded the white papers promising transformation. And you're still stuck asking: "Where do we actually start?"
-
+          True efficiency leaks occur long before a single line of code is written. To uncover why your automation initiatives may be losing momentum, your executive team must cross-reference your current setup against the five definitive operational gaps stalling mid-market enterprises:
         </Text>
       </div>
 
@@ -43,37 +57,27 @@ You've sat through the vendor demos. Nodded through the conference keynotes. Dow
         class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-12"
       >
         {
-          paths.map((path) => (
-            <div class="relative group bg-white flex flex-col overflow-hidden p-8 gap-24 lg:gap-62 h-full justify-between">
+          gaps.map((gap) => (
+            <div class="relative group bg-white flex flex-col overflow-hidden p-8 gap-4 h-full justify-between">
               <div>
                 <Text
                   tag="h3"
                   variant="textXL"
                   class="mb-4 text-base-900 font-semibold"
                 >
-                  {path.title}
+                  {gap.title}
                 </Text>
                 <Text
                   tag="p"
                   variant="textBase"
                   class="text-base-600 mt-4 text-pretty"
                 >
-                  {path.description}
+                  {gap.description}
                 </Text>
               </div>
             </div>
           ))
         }
-      </div>
-
-      <div class="mt-12">
-        <Text
-          tag="h2"
-          variant="displayMD"
-          class="text-base-900 text-balance font-display"
-        >
-          We reject both paths.
-        </Text>
       </div>
     </div>
   </Wrapper>

@@ -15,22 +15,22 @@ import HcaifPillars5 from "@/components/our-approach/hcaifPillars5.astro";
 import MainCta from "@/components/ctas/MainCta.astro";
 
 const seo = {
-  title: "Our Approach",
-  description: "Learn about our approach to AI consulting and digital transformation.",
+  title: "Human-Centric AI Integration Framework",
+  description: "A framework for integrating AI with a human-centric approach — methodology, engagement phases, and success metrics.",
   type: "website" as const,
 };
- 
+
 ---
 
 <BaseLayout seo={seo}>
   <ApproachHero />
   <ApproachOld />
-  <HcaifTimeline />
   <HcaifPillars />
   <HcaifPillars2 />
   <HcaifPillars3 />
   <HcaifPillars4 />
   <HcaifPillars5 />
+    <HcaifTimeline />
   <MainCta />
 
   <ApproachPricing />

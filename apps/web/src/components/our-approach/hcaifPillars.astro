@@ -1,0 +1,72 @@
+---
+// Assets
+import { Image } from "astro:assets";
+// Fundations
+import Text from "@/components/fundations/elements/Text.astro";
+import Kicker from "@/components/fundations/elements/Kicker.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+---
+
+<section>
+  <Wrapper variant="standard" class="py-12">
+    <div
+      class="grid md:grid-cols-2 lg:grid-cols-3 overflow-hidden"
+      style="background-image: url('/Section BG.png'); background-size: cover; background-position: center;"
+    >
+      <div class="flex flex-col lg:col-span-2 p-8 lg:p-12">
+        <div>
+          <Text
+            tag="h2"
+            variant="displayMD"
+            class="text-base 950 text-balance font-medium tracking-tight font-display mt-8"
+          >
+            Pillar 1: Strategic Alignment
+          </Text>
+        </div>
+        <div class="flex flex-col gap-y-4 mt-10">
+          <div>
+            <Text tag="h3" variant="textBase" class="text-base-900 font-semibold">
+              Question to answer
+            </Text>
+            <Text tag="p" variant="textBase" class="text-base-600 mt-1 text-pretty">
+              Does AI serve your high-level corporate mission or distract from it?
+            </Text>
+          </div>
+          <div>
+            <Text tag="h3" variant="textBase" class="text-base-900 font-semibold">
+              Target
+            </Text>
+            <Text tag="p" variant="textBase" class="text-base-600 mt-1 text-pretty">
+              Executive Board, CEO, and Chief Strategy Officer.
+            </Text>
+          </div>
+          <div>
+            <Text tag="h3" variant="textBase" class="text-base-900 font-semibold">
+              Period
+            </Text>
+            <Text tag="p" variant="textBase" class="text-base-600 mt-1 text-pretty">
+              Days 1–3 of the initial Diagnostic Sprint.
+            </Text>
+          </div>
+          <div>
+            <Text tag="h3" variant="textBase" class="text-base-900 font-semibold">
+              What It Is
+            </Text>
+            <Text tag="p" variant="textBase" class="text-base-600 mt-1 text-pretty">
+              A top-down corporate driver-tree analysis that maps proposed automation paths directly against active business metrics. If a technical capability does not insulate a core financial goal, it is classified as an operational distraction.
+            </Text>
+          </div>
+          <div>
+            <Text tag="h3" variant="textBase" class="text-base-900 font-semibold">
+              Outcome
+            </Text>
+            <Text tag="p" variant="textBase" class="text-base-600 mt-1 text-pretty">
+              Complete capital protection and strategic clarity, ensuring development budgets fund exclusively high-ROI deployments that reinforce market position.
+            </Text>
+          </div>
+        </div>
+      </div>
+      <div class="self-stretch bg-[#FF5000]"></div>
+    </div>
+  </Wrapper>
+</section>

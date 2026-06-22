@@ -152,8 +152,9 @@ export async function getPosts(limit?: number) {
 
     // No cache on disk yet — fetch fresh synchronously (first boot only)
     const { fetchWordPressPosts } = await import("./wordpress/fetch");
-    const posts = await fetchWordPressPosts();
-    return (limit ? posts.slice(0, limit) : posts).map(transformWordPressPost);
+    const rawPosts = await fetchWordPressPosts(limit ?? 2000);
+    const posts = rawPosts.map(transformWordPressPost);
+    return limit ? posts.slice(0, limit) : posts;
   } catch (error) {
     console.warn("Failed to load posts from cms.madavi.co:", error);
     return [];

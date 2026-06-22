@@ -1,0 +1,72 @@
+---
+// Assets
+import { Image } from "astro:assets";
+// Fundations
+import Text from "@/components/fundations/elements/Text.astro";
+import Kicker from "@/components/fundations/elements/Kicker.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+---
+
+<section>
+  <Wrapper variant="standard" class="py-12">
+    <div
+      class="grid md:grid-cols-2 lg:grid-cols-3 overflow-hidden"
+      style="background-image: url('/Section BG.png'); background-size: cover; background-position: center;"
+    >
+      <div class="flex flex-col lg:col-span-2 p-8 lg:p-12">
+        <div>
+          <Text
+            tag="h2"
+            variant="displayMD"
+            class="text-base 950 text-balance font-medium tracking-tight font-display mt-8"
+          >
+            Pillar 5: Operational Integration
+          </Text>
+        </div>
+        <div class="flex flex-col gap-y-4 mt-10">
+          <div>
+            <Text tag="h3" variant="textBase" class="text-base-900 font-semibold">
+              Question to answer
+            </Text>
+            <Text tag="p" variant="textBase" class="text-base-600 mt-1 text-pretty">
+              Will the new automation paths fit seamlessly into how people actually work?
+            </Text>
+          </div>
+          <div>
+            <Text tag="h3" variant="textBase" class="text-base-900 font-semibold">
+              Target
+            </Text>
+            <Text tag="p" variant="textBase" class="text-base-600 mt-1 text-pretty">
+              Chief Operating Officer, Frontline Staff, and Daily Workflow Supervisors.
+            </Text>
+          </div>
+          <div>
+            <Text tag="h3" variant="textBase" class="text-base-900 font-semibold">
+              Period
+            </Text>
+            <Text tag="p" variant="textBase" class="text-base-600 mt-1 text-pretty">
+              Days 9–11 (parallel tracking during Cultural Audit).
+            </Text>
+          </div>
+          <div>
+            <Text tag="h3" variant="textBase" class="text-base-900 font-semibold">
+              What It Is
+            </Text>
+            <Text tag="p" variant="textBase" class="text-base-600 mt-1 text-pretty">
+              Hands-on observation and mapping of day-to-day operational routines. Custom AI agents and automated middleware paths are engineered to deliver insights directly into your existing channels via secure webhooks, eliminating cognitive friction.
+            </Text>
+          </div>
+          <div>
+            <Text tag="h3" variant="textBase" class="text-base-900 font-semibold">
+              Outcome
+            </Text>
+            <Text tag="p" variant="textBase" class="text-base-600 mt-1 text-pretty">
+              Frictionless workflow adoption, making technical efficiency the path of least resistance for your workforce.
+            </Text>
+          </div>
+        </div>
+      </div>
+      <div class="self-stretch bg-[#FF5000]"></div>
+    </div>
+  </Wrapper>
+</section>
