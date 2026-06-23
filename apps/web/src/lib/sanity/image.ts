@@ -1,14 +1,21 @@
 import imageUrlBuilder from "@sanity/image-url";
 import type { SanityImageSource } from "@sanity/image-url/lib/types/types";
-import { client } from "./client";
+import { getClient } from "./client";
 
-const builder = imageUrlBuilder(client);
+let _builder: ReturnType<typeof imageUrlBuilder> | null = null;
+
+function getBuilder() {
+  if (!_builder) {
+    _builder = imageUrlBuilder(getClient());
+  }
+  return _builder;
+}
 
 /**
  * Generate optimized image URLs from Sanity image assets
  */
 export function urlFor(source: SanityImageSource) {
-  return builder.image(source);
+  return getBuilder().image(source);
 }
 
 // Placeholder image for posts/team members without images
@@ -36,7 +43,7 @@ export function getImageUrl(
   const { width, height, quality = 80, format = "webp" } = options;
 
   try {
-    let imageBuilder = builder.image(source).format(format).quality(quality);
+    let imageBuilder = getBuilder().image(source).format(format).quality(quality);
 
     if (width) {
       imageBuilder = imageBuilder.width(width);

@@ -1,5 +1,5 @@
 // Client and fetching
-export { client, previewClient } from "./client";
+export { getClient } from "./client";
 export { sanityFetch } from "./fetch";
 
 // Queries

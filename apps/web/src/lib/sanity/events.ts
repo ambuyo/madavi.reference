@@ -1,4 +1,4 @@
-import { client } from "./client";
+import { getClient } from "./client";
 
 export interface SanityEvent {
   _id: string;
@@ -50,7 +50,7 @@ export async function getEvents(): Promise<SanityEvent[]> {
   `;
 
   try {
-    const events = await client.fetch(query);
+    const events = await getClient().fetch(query);
     return events;
   } catch (error) {
     console.error("Error fetching events from Sanity:", error);
@@ -84,7 +84,7 @@ export async function getEventBySlug(slug: string): Promise<SanityEvent | null> 
   `;
 
   try {
-    const event = await client.fetch(query, { slug });
+    const event = await getClient().fetch(query, { slug });
     return event || null;
   } catch (error) {
     console.error("Error fetching event from Sanity:", error);

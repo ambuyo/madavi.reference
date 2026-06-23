@@ -1,4 +1,4 @@
-import { client } from "./client";
+import { getClient } from "./client";
 
 export interface Career {
   _id: string;
@@ -37,7 +37,7 @@ export async function getCareers(): Promise<Career[]> {
   `;
 
   try {
-    const careers = await client.fetch(query);
+    const careers = await getClient().fetch(query);
     return careers;
   } catch (error) {
     console.error("Error fetching careers from Sanity:", error);
@@ -66,7 +66,7 @@ export async function getCareerById(id: string): Promise<Career | null> {
   `;
 
   try {
-    const career = await client.fetch(query, { id });
+    const career = await getClient().fetch(query, { id });
     return career || null;
   } catch (error) {
     console.error("Error fetching career from Sanity:", error);

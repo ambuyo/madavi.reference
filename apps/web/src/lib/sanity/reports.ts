@@ -1,4 +1,4 @@
-import { client } from "./client";
+import { getClient } from "./client";
 
 export interface SanityReport {
   _id: string;
@@ -81,7 +81,7 @@ export async function getReports(limit?: number): Promise<SanityReport[]> {
   `;
 
   try {
-    const reports = await client.fetch(query);
+    const reports = await getClient().fetch(query);
     return reports;
   } catch (error) {
     console.error("Error fetching reports from Sanity:", error);
@@ -121,7 +121,7 @@ export async function getReportBySlug(slug: string): Promise<SanityReport | null
   `;
 
   try {
-    const report = await client.fetch(query, { slug });
+    const report = await getClient().fetch(query, { slug });
     return report || null;
   } catch (error) {
     console.error("Error fetching report from Sanity:", error);
@@ -149,7 +149,7 @@ export async function getSolutions(): Promise<SanitySolution[]> {
   `;
 
   try {
-    const solutions = await client.fetch(query);
+    const solutions = await getClient().fetch(query);
     return solutions;
   } catch (error) {
     console.error("Error fetching solutions from Sanity:", error);
@@ -177,7 +177,7 @@ export async function getSolutionBySlug(slug: string): Promise<SanitySolution | 
   `;
 
   try {
-    const solution = await client.fetch(query, { slug });
+    const solution = await getClient().fetch(query, { slug });
     return solution || null;
   } catch (error) {
     console.error("Error fetching solution from Sanity:", error);
