@@ -431,7 +431,7 @@ export async function getTeamMemberBySlug(
     const member = await sanityFetch<any>(queries.teamMemberBySlugQuery, {
       slug,
     });
-    return member ? transforms.transformTeamMember(member) : null;
+    return (member && !Array.isArray(member)) ? transforms.transformTeamMember(member) : null;
   }
 
   const entry = await getEntry("team", slug);
@@ -473,7 +473,7 @@ export async function getServiceBySlug(slug: string): Promise<Service | null> {
   if (!modules) return null;
   const { sanityFetch, queries, transforms } = modules;
   const service = await sanityFetch<any>(queries.serviceBySlugQuery, { slug });
-  return service ? transforms.transformService(service) : null;
+  return (service && !Array.isArray(service)) ? transforms.transformService(service) : null;
 }
 
 // =============================================================================
@@ -533,7 +533,7 @@ export async function getIndustryBySlug(
     const industry = await sanityFetch<any>(queries.industryBySlugQuery, {
       slug,
     });
-    return industry ? transforms.transformIndustry(industry) : null;
+    return (industry && !Array.isArray(industry)) ? transforms.transformIndustry(industry) : null;
   }
 
   const industries = await getCollection("industries");
@@ -626,7 +626,7 @@ export async function getSingleWorkBySlug(
     const caseStudy = await sanityFetch<any>(queries.caseStudyBySlugQuery, {
       slug,
     });
-    return caseStudy ? transforms.transformSingleWork(caseStudy) : null;
+    return (caseStudy && !Array.isArray(caseStudy)) ? transforms.transformSingleWork(caseStudy) : null;
   }
 
   const entry = await getEntry("caseStudies", slug);
@@ -694,7 +694,7 @@ export async function getInfoPageBySlug(
     if (!modules) return null;
     const { sanityFetch, queries, transforms } = modules;
     const page = await sanityFetch<any>(queries.infoPageBySlugQuery, { slug });
-    return page ? transforms.transformInfoPage(page) : null;
+    return (page && !Array.isArray(page)) ? transforms.transformInfoPage(page) : null;
   }
 
   const entry = await getEntry("infopages", slug);
