@@ -55,75 +55,82 @@ export const USE_WORDPRESS = true;
 /**
  * Dynamically import Sanity modules only when needed
  * This ensures no Sanity code is bundled when USE_SANITY is false
+ * Returns null if Sanity is not configured (missing env vars)
  */
 async function getSanityModules() {
-  const [
-    { sanityFetch },
-    {
-      allPostsQuery,
-      postBySlugQuery,
-      postsByTagQuery,
-      allTagsQuery,
-      allCategoriesQuery,
-      allSubcategoriesQuery,
-      postsByCategorySlugQuery,
-      postsBySubcategorySlugQuery,
-      allTeamMembersQuery,
-      teamMemberBySlugQuery,
-      allServicesQuery,
-      serviceBySlugQuery,
-      allIndustriesQuery,
-      industryBySlugQuery,
-      allCaseStudiesQuery,
-      caseStudyBySlugQuery,
-      allInfoPagesQuery,
-      infoPageBySlugQuery,
-    },
-    {
-      transformPost,
-      transformTeamMember,
-      transformService,
-      transformIndustry,
-      transformSingleWork,
-      transformInfoPage,
-    },
-  ] = await Promise.all([
-    import("./sanity/fetch"),
-    import("./sanity/queries"),
-    import("./sanity/transforms"),
-  ]);
+  try {
+    const [
+      { sanityFetch },
+      {
+        allPostsQuery,
+        postBySlugQuery,
+        postsByTagQuery,
+        allTagsQuery,
+        allCategoriesQuery,
+        allSubcategoriesQuery,
+        postsByCategorySlugQuery,
+        postsBySubcategorySlugQuery,
+        allTeamMembersQuery,
+        teamMemberBySlugQuery,
+        allServicesQuery,
+        serviceBySlugQuery,
+        allIndustriesQuery,
+        industryBySlugQuery,
+        allCaseStudiesQuery,
+        caseStudyBySlugQuery,
+        allInfoPagesQuery,
+        infoPageBySlugQuery,
+      },
+      {
+        transformPost,
+        transformTeamMember,
+        transformService,
+        transformIndustry,
+        transformSingleWork,
+        transformInfoPage,
+      },
+    ] = await Promise.all([
+      import("./sanity/fetch"),
+      import("./sanity/queries"),
+      import("./sanity/transforms"),
+    ]);
 
-  return {
-    sanityFetch,
-    queries: {
-      allPostsQuery,
-      postBySlugQuery,
-      postsByTagQuery,
-      allTagsQuery,
-      allCategoriesQuery,
-      allSubcategoriesQuery,
-      postsByCategorySlugQuery,
-      postsBySubcategorySlugQuery,
-      allTeamMembersQuery,
-      teamMemberBySlugQuery,
-      allServicesQuery,
-      serviceBySlugQuery,
-      allIndustriesQuery,
-      industryBySlugQuery,
-      allCaseStudiesQuery,
-      caseStudyBySlugQuery,
-      allInfoPagesQuery,
-      infoPageBySlugQuery,
-    },
-    transforms: {
-      transformPost,
-      transformTeamMember,
-      transformService,
-      transformIndustry,
-      transformSingleWork,
-      transformInfoPage,
-    },
-  };
+    return {
+      sanityFetch,
+      queries: {
+        allPostsQuery,
+        postBySlugQuery,
+        postsByTagQuery,
+        allTagsQuery,
+        allCategoriesQuery,
+        allSubcategoriesQuery,
+        postsByCategorySlugQuery,
+        postsBySubcategorySlugQuery,
+        allTeamMembersQuery,
+        teamMemberBySlugQuery,
+        allServicesQuery,
+        serviceBySlugQuery,
+        allIndustriesQuery,
+        industryBySlugQuery,
+        allCaseStudiesQuery,
+        caseStudyBySlugQuery,
+        allInfoPagesQuery,
+        infoPageBySlugQuery,
+      },
+      transforms: {
+        transformPost,
+        transformTeamMember,
+        transformService,
+        transformIndustry,
+        transformSingleWork,
+        transformInfoPage,
+      },
+    };
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : String(error);
+    console.warn(`Sanity unavailable (${msg}) — using empty data for all CMS-driven pages.`);
+    return null;
+  }
 }
 
 // =============================================================================
@@ -389,7 +396,9 @@ export async function getCategoryDescription(
  */
 export async function getTeamMembers(limit?: number): Promise<TeamMember[]> {
   if (USE_SANITY) {
-    const { sanityFetch, queries, transforms } = await getSanityModules();
+    const modules = await getSanityModules();
+    if (!modules) return [];
+    const { sanityFetch, queries, transforms } = modules;
     const members = await sanityFetch<any[]>(queries.allTeamMembersQuery);
     const result = members.map(transforms.transformTeamMember);
     return limit ? result.slice(0, limit) : result;
@@ -416,7 +425,9 @@ export async function getTeamMemberBySlug(
   slug: string
 ): Promise<TeamMember | null> {
   if (USE_SANITY) {
-    const { sanityFetch, queries, transforms } = await getSanityModules();
+    const modules = await getSanityModules();
+    if (!modules) return null;
+    const { sanityFetch, queries, transforms } = modules;
     const member = await sanityFetch<any>(queries.teamMemberBySlugQuery, {
       slug,
     });
@@ -446,7 +457,9 @@ export async function getTeamMemberBySlug(
  * Get all services
  */
 export async function getServices(limit?: number): Promise<Service[]> {
-  const { sanityFetch, queries, transforms } = await getSanityModules();
+  const modules = await getSanityModules();
+  if (!modules) return [];
+  const { sanityFetch, queries, transforms } = modules;
   const services = await sanityFetch<any[]>(queries.allServicesQuery);
   const result = services.filter(Boolean).map(transforms.transformService).filter((s: any) => s?.slug);
   return limit ? result.slice(0, limit) : result;
@@ -456,7 +469,9 @@ export async function getServices(limit?: number): Promise<Service[]> {
  * Get a single service by slug
  */
 export async function getServiceBySlug(slug: string): Promise<Service | null> {
-  const { sanityFetch, queries, transforms } = await getSanityModules();
+  const modules = await getSanityModules();
+  if (!modules) return null;
+  const { sanityFetch, queries, transforms } = modules;
   const service = await sanityFetch<any>(queries.serviceBySlugQuery, { slug });
   return service ? transforms.transformService(service) : null;
 }
@@ -470,7 +485,9 @@ export async function getServiceBySlug(slug: string): Promise<Service | null> {
  */
 export async function getIndustries(limit?: number): Promise<Industry[]> {
   if (USE_SANITY) {
-    const { sanityFetch, queries, transforms } = await getSanityModules();
+    const modules = await getSanityModules();
+    if (!modules) return [];
+    const { sanityFetch, queries, transforms } = modules;
     const industries = await sanityFetch<any[]>(queries.allIndustriesQuery);
     const result = industries
       .map(transforms.transformIndustry)
@@ -510,7 +527,9 @@ export async function getIndustryBySlug(
   slug: string
 ): Promise<Industry | null> {
   if (USE_SANITY) {
-    const { sanityFetch, queries, transforms } = await getSanityModules();
+    const modules = await getSanityModules();
+    if (!modules) return null;
+    const { sanityFetch, queries, transforms } = modules;
     const industry = await sanityFetch<any>(queries.industryBySlugQuery, {
       slug,
     });
@@ -555,7 +574,9 @@ export async function getIndustryBySlug(
  */
 export async function getOurWork(limit?: number): Promise<SingleWork[]> {
   if (USE_SANITY) {
-    const { sanityFetch, queries, transforms } = await getSanityModules();
+    const modules = await getSanityModules();
+    if (!modules) return [];
+    const { sanityFetch, queries, transforms } = modules;
     const caseStudies = await sanityFetch<any[]>(queries.allCaseStudiesQuery);
     const result = caseStudies
       .filter(Boolean)
@@ -599,7 +620,9 @@ export async function getSingleWorkBySlug(
   slug: string
 ): Promise<SingleWork | null> {
   if (USE_SANITY) {
-    const { sanityFetch, queries, transforms } = await getSanityModules();
+    const modules = await getSanityModules();
+    if (!modules) return null;
+    const { sanityFetch, queries, transforms } = modules;
     const caseStudy = await sanityFetch<any>(queries.caseStudyBySlugQuery, {
       slug,
     });
@@ -642,7 +665,9 @@ export async function getSingleWorkBySlug(
  */
 export async function getInfoPages(): Promise<InfoPage[]> {
   if (USE_SANITY) {
-    const { sanityFetch, queries, transforms } = await getSanityModules();
+    const modules = await getSanityModules();
+    if (!modules) return [];
+    const { sanityFetch, queries, transforms } = modules;
     const pages = await sanityFetch<any[]>(queries.allInfoPagesQuery);
     return pages.map(transforms.transformInfoPage);
   }
@@ -665,7 +690,9 @@ export async function getInfoPageBySlug(
   slug: string
 ): Promise<InfoPage | null> {
   if (USE_SANITY) {
-    const { sanityFetch, queries, transforms } = await getSanityModules();
+    const modules = await getSanityModules();
+    if (!modules) return null;
+    const { sanityFetch, queries, transforms } = modules;
     const page = await sanityFetch<any>(queries.infoPageBySlugQuery, { slug });
     return page ? transforms.transformInfoPage(page) : null;
   }
