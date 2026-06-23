@@ -4,9 +4,9 @@ import Text from "@/components/fundations/elements/Text.astro";
 import Kicker from "@/components/fundations/elements/Kicker.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 // Sanity
-import { client } from "@/lib/sanity/client";
+import { getClient } from "@/lib/sanity/client";
 
-const logos = await client.fetch(`*[_type == "clientLogo"] | order(order asc) {
+const logos = await getClient().fetch(`*[_type == "clientLogo"] | order(order asc) {
   _id,
   company,
   logo {

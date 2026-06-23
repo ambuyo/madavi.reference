@@ -1,4 +1,4 @@
-import { client, previewClient } from "./client";
+import { getClient, previewClient } from "./client";
 
 interface FetchOptions {
   preview?: boolean;
@@ -14,7 +14,7 @@ export async function sanityFetch<T>(
   options: FetchOptions = {}
 ): Promise<T> {
   const { preview = false } = options;
-  const sanityClient = preview ? previewClient : client;
+  const sanityClient = preview ? previewClient : getClient();
 
   return sanityClient.fetch<T>(query, params);
 }

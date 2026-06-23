@@ -6,7 +6,7 @@ import Text from "@/components/fundations/elements/Text.astro";
 import Kicker from "@/components/fundations/elements/Kicker.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 // Sanity
-import { client } from "@/lib/sanity/client";
+import { getClient } from "@/lib/sanity/client";
 
 const query = `*[_type == "clientLogo"] | order(order asc) {
   _id,
@@ -21,7 +21,7 @@ const query = `*[_type == "clientLogo"] | order(order asc) {
   industry
 }`;
 
-const allLogos = await client.fetch(query);
+const allLogos = await getClient().fetch(query);
 
 // Group logos by industry
 const industryMap = {
