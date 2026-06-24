@@ -9,7 +9,7 @@ export default defineConfig({
   adapter: cloudflare(),
   redirects: {
     "/resources": { destination: "/blog", status: 301 },
-    "/work/[...slug]": { destination: "/our-work/[slug]", status: 301 },
+    "/work/[...slug]": { destination: "/our-work/[...slug]", status: 301 },
     "/capabilities/brand-communications": { destination: "/capabilities/brand-communication", status: 301 },
     "/gro/courses/artificial-intelligence-in-digital-marketing/": { destination: "/our-work/", status: 301 },
     "/turn-your-business-to-an-authentic-brand-in-kenya/": { destination: "/blog", status: 301 },
