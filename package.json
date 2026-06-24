@@ -22,6 +22,7 @@
     "gray-matter": "^4.0.3"
   },
   "devDependencies": {
-    "tsx": "^4.21.0"
+    "tsx": "^4.21.0",
+    "wrangler": "^4.103.0"
   }
 }
