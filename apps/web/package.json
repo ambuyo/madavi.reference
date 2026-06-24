@@ -10,7 +10,7 @@
     "cache:posts": "tsx scripts/cache-wordpress-posts.ts",
     "populate:info-pages": "pnpm exec tsx scripts/populate-info-pages.ts",
     "build": "export DEPLOY_TARGET=${DEPLOY_TARGET:-vps}; tsx scripts/cache-wordpress-posts.ts || true; astro build",
-    "build:cf": "export DEPLOY_TARGET=cloudflare; astro build",
+    "build:cf": "export DEPLOY_TARGET=cloudflare; tsx scripts/cache-wordpress-posts.ts || true; astro build",
     "preview": "astro preview",
     "astro": "astro"
   },

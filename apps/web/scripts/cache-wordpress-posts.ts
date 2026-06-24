@@ -7,8 +7,15 @@ import { wpFetch } from "../src/lib/wordpress/client";
 import type { WordPressPost } from "../src/lib/wordpress/fetch";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const CACHE_DIR = path.join(__dirname, "..", ".cache");
-const CACHE_FILE = path.join(CACHE_DIR, "wordpress-posts.json");
+
+// Write to public/ so the file is deployed as a static asset on Cloudflare Pages
+// Also write to .cache/ for backward compatibility with local development
+const PUBLIC_CACHE_DIR = path.join(__dirname, "..", "public", ".cache");
+const DOT_CACHE_DIR = path.join(__dirname, "..", ".cache");
+
+function ensureDir(dir: string) {
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+}
 
 const TARGET = 400;
 const PAGE_SIZE = 100;
@@ -115,13 +122,18 @@ async function cachePosts() {
       console.log(`👤 Enriched bios for ${Object.keys(bioBySlug).length} author(s)`);
     }
 
-    // Write cache file directly (build-time only — fs not available in Workers)
-    if (!fs.existsSync(CACHE_DIR)) fs.mkdirSync(CACHE_DIR, { recursive: true });
-    fs.writeFileSync(CACHE_FILE, JSON.stringify(slimmedPosts, null, 2));
+    // Write cache to public/.cache/ — deployed as static asset on Cloudflare Pages
+    // The runtime cache.ts reads this file on cold start for instant content
+    ensureDir(PUBLIC_CACHE_DIR);
+    fs.writeFileSync(path.join(PUBLIC_CACHE_DIR, "wordpress-posts.json"), JSON.stringify(slimmedPosts));
+
+    // Also write to .cache/ for backward compatibility
+    ensureDir(DOT_CACHE_DIR);
+    fs.writeFileSync(path.join(DOT_CACHE_DIR, "wordpress-posts.json"), JSON.stringify(slimmedPosts));
 
     const duration = Date.now() - startTime;
     console.log(`✅ Cached ${slimmedPosts.length} WordPress posts in ${duration}ms`);
-    console.log(`📊 Cache will be used for instant page loads until next redeploy`);
+    console.log(`📊 Cache deployed — instant page loads until next redeploy`);
   } catch (error) {
     console.error("⚠️  Failed to cache WordPress posts (build will continue):", error);
     // Don't exit 1 — build proceeds without cached posts; they'll be fetched live at runtime

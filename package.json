@@ -5,7 +5,7 @@
     "dev": "pnpm --parallel -r dev",
     "dev:web": "pnpm --filter @madavi/web dev",
     "dev:studio": "pnpm --filter @madavi/studio dev",
-    "build": "pnpm run build:vps",
+    "build": "pnpm run build:cf",
     "build:vps": "corepack enable && DEPLOY_TARGET=vps pnpm --filter @madavi/web run build",
     "build:cf": "corepack enable && DEPLOY_TARGET=cloudflare pnpm --filter @madavi/web run build",
     "build:all": "corepack enable && pnpm --parallel -r build",
