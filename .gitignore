@@ -13,6 +13,9 @@ dist/
 build/
 .astro/
 
+# Netlify (deprecated — now on Cloudflare Pages)
+.netlify/
+
 # IDE
 .vscode/
 .idea/
