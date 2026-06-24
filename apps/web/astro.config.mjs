@@ -9,7 +9,7 @@ const target = process.env.DEPLOY_TARGET || "vps";
 const isCloudflare = target === "cloudflare";
 
 export default defineConfig({
-  output: isCloudflare ? "static" : "server",
+  output: "server",
   adapter: isCloudflare ? cloudflare() : node({ mode: "standalone" }),
   redirects: {
     "/resources": { destination: "/blog", status: 301 },
@@ -92,6 +92,9 @@ export default defineConfig({
       alias: {
         "@": "/src",
       },
+    },
+    ssr: {
+      noExternal: ["react", "react-dom"],
     },
     optimizeDeps: {
       include: ["react", "react-dom", "react-dom/client"],
