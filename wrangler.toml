@@ -1,27 +1,10 @@
-# Wrangler configuration for Cloudflare Pages
+# Wrangler configuration for Cloudflare Workers
 # Monorepo — Astro app is in apps/web/
-# Docs: https://developers.cloudflare.com/pages/functions/wrangler-configuration/
+# Deploy: npx wrangler deploy --config apps/web/dist/server/wrangler.json
 name = "madavi"
 compatibility_date = "2025-01-01"
 compatibility_flags = ["nodejs_compat"]
 pages_build_output_dir = "apps/web/dist"
-
-# ─── Environment ───────────────────────────────────────────────────────────
-[env.production]
-vars = { DEPLOY_TARGET = "cloudflare" }
-
-# ─── Public environment variables (all environments) ──────────────────────
-# These are safe to include in the config — they're exposed to the browser.
-# Secret keys (API tokens, passwords) must be set via:
-#   npx wrangler pages secret put <KEY>
-# or the Cloudflare Dashboard → Workers & Pages → madavi → Settings → Environment variables.
-[vars]
-PUBLIC_SANITY_PROJECT_ID = "6u680gce"
-PUBLIC_SANITY_DATASET = "production"
-PUBLIC_TURNSTILE_SITE_KEY = "0x4AAAAAAAaCsNSU6kPatEyp"
-PUBLIC_GA4_ID = "G-MWD6444FBQ"
-META_PIXEL_ID = "288245505871398"
-PUBLIC_R2_CDN_URL = "https://images.madavi.co"
 
 [env.production.vars]
 DEPLOY_TARGET = "cloudflare"
@@ -32,23 +15,18 @@ PUBLIC_GA4_ID = "G-MWD6444FBQ"
 META_PIXEL_ID = "288245505871398"
 PUBLIC_R2_CDN_URL = "https://images.madavi.co"
 
+[vars]
+PUBLIC_SANITY_PROJECT_ID = "6u680gce"
+PUBLIC_SANITY_DATASET = "production"
+PUBLIC_TURNSTILE_SITE_KEY = "0x4AAAAAAAaCsNSU6kPatEyp"
+PUBLIC_GA4_ID = "G-MWD6444FBQ"
+META_PIXEL_ID = "288245505871398"
+PUBLIC_R2_CDN_URL = "https://images.madavi.co"
+
 # ─── Secrets (set via Cloudflare Dashboard or `wrangler secret put`) ───────
-#
 # Required for production:
-#   SANITY_PROJECT_ID           — Sanity CMS project ID
-#   SANITY_DATASET              — Sanity dataset (usually "production")
-#   SANITY_API_VERSION          — Sanity API version date (e.g. "2024-01-01")
-#   SANITY_READ_TOKEN           — Sanity read token
-#
-#   TURNSTILE_SECRET_KEY        — Cloudflare Turnstile secret key
-#
-#   ZEPTOMAIL_API_KEY           — Zoho ZeptoMail API key
-#   ZEPTOMAIL_FROM_ADDRESS      — Sender email (e.g. "agency@madavi.co")
-#   ZEPTOMAIL_FROM_NAME         — Sender name (e.g. "Madavi Inc.")
-#
-#   ZOHO_DATACENTER             — Zoho account datacenter (e.g. "com")
-#   ZOHO_REFRESH_TOKEN          — Zoho OAuth refresh token
-#   ZOHO_CLIENT_ID              — Zoho OAuth client ID
-#   ZOHO_CLIENT_SECRET          — Zoho OAuth client secret
-#
-#   WEBHOOK_SECRET              — Webhook secret for cache revalidation
+#   SANITY_PROJECT_ID, SANITY_DATASET, SANITY_API_VERSION, SANITY_READ_TOKEN
+#   TURNSTILE_SECRET_KEY
+#   ZEPTOMAIL_API_KEY, ZEPTOMAIL_FROM_ADDRESS, ZEPTOMAIL_FROM_NAME
+#   ZOHO_DATACENTER, ZOHO_REFRESH_TOKEN, ZOHO_CLIENT_ID, ZOHO_CLIENT_SECRET
+#   WEBHOOK_SECRET

@@ -80,10 +80,11 @@ export default defineConfig({
         hostname: "cdn.sanity.io",
       },
     ],
-    // Optimize image formats and caching
-    service: {
-      entrypoint: "astro/assets/services/sharp",
-    },
+    // Cloudflare Pages doesn't support sharp (native binary).
+    // Use the no-op passthrough on Cloudflare; sharp on VPS.
+    service: isCloudflare
+      ? { entrypoint: "astro/assets/services/noop" }
+      : { entrypoint: "astro/assets/services/sharp" },
   },
   vite: {
     plugins: [],
