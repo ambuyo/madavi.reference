@@ -4,22 +4,27 @@
 name = "madavi"
 compatibility_date = "2025-01-01"
 compatibility_flags = ["nodejs_compat"]
-
-# ─── Build ────────────────────────────────────────────────────────────────
-[build]
-command = "pnpm run build:cf"
-directory = "apps/web/dist"
+pages_build_output_dir = "apps/web/dist"
 
 # ─── Environment ───────────────────────────────────────────────────────────
 [env.production]
 vars = { DEPLOY_TARGET = "cloudflare" }
 
-# ─── Public environment variables ──────────────────────────────────────────
+# ─── Public environment variables (all environments) ──────────────────────
 # These are safe to include in the config — they're exposed to the browser.
 # Secret keys (API tokens, passwords) must be set via:
-#   pnpm wrangler pages secret put <KEY>
+#   npx wrangler pages secret put <KEY>
 # or the Cloudflare Dashboard → Workers & Pages → madavi → Settings → Environment variables.
 [vars]
+PUBLIC_SANITY_PROJECT_ID = "6u680gce"
+PUBLIC_SANITY_DATASET = "production"
+PUBLIC_TURNSTILE_SITE_KEY = "0x4AAAAAAAaCsNSU6kPatEyp"
+PUBLIC_GA4_ID = "G-MWD6444FBQ"
+META_PIXEL_ID = "288245505871398"
+PUBLIC_R2_CDN_URL = "https://images.madavi.co"
+
+[env.production.vars]
+DEPLOY_TARGET = "cloudflare"
 PUBLIC_SANITY_PROJECT_ID = "6u680gce"
 PUBLIC_SANITY_DATASET = "production"
 PUBLIC_TURNSTILE_SITE_KEY = "0x4AAAAAAAaCsNSU6kPatEyp"
