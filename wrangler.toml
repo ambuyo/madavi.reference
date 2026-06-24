@@ -1,0 +1,11 @@
+# Wrangler configuration for Cloudflare Pages
+# Monorepo — Astro app is in apps/web/
+name = "madavi"
+compatibility_date = "2025-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Point to the web app
+pages_build_output_dir = "apps/web/dist"
+
+[env.production]
+vars = { DEPLOY_TARGET = "cloudflare" }
