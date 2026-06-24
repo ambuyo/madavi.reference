@@ -1,17 +1,6 @@
 import type { WordPressPost } from "./fetch";
-import * as fs from "fs";
-import * as path from "path";
 
 const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
-
-// Build time: CWD = apps/web → .cache/wordpress-posts.json
-// Runtime:    CWD = repo root → apps/web/.cache/wordpress-posts.json
-const POSTS_CACHE_FILE = [
-  path.join(".cache", "wordpress-posts.json"),
-  path.join("apps", "web", ".cache", "wordpress-posts.json"),
-].find(fs.existsSync) ?? path.join(".cache", "wordpress-posts.json");
-
-const CACHE_DIR = path.dirname(POSTS_CACHE_FILE);
 
 interface CacheState {
   posts: WordPressPost[];
@@ -34,7 +23,6 @@ async function refreshFromWP(): Promise<void> {
     const { fetchWordPressPosts } = await import("./fetch");
     const posts = await fetchWordPressPosts();
     cache = { posts, timestamp: Date.now(), refreshing: false };
-    await writeCachedPosts(posts);
     console.log(`[cache] Refreshed — ${posts.length} posts from cms.madavi.co`);
   } catch (error) {
     console.error("[cache] Failed to refresh posts from cms.madavi.co:", error);
@@ -43,31 +31,12 @@ async function refreshFromWP(): Promise<void> {
 }
 
 export async function readCachedPosts(): Promise<WordPressPost[] | null> {
-  // Seed from disk on first boot (fast, no API call)
+  // First call: fetch eagerly from the WordPress API
   if (!cache) {
-    try {
-      if (fs.existsSync(POSTS_CACHE_FILE)) {
-        const data = fs.readFileSync(POSTS_CACHE_FILE, "utf-8");
-        const posts: WordPressPost[] = JSON.parse(data);
-        // timestamp=0 so first request triggers a background refresh
-        cache = { posts, timestamp: 0, refreshing: false };
-      }
-    } catch {
-      // ignore — will fall through to background refresh
-    }
-  }
-
-  // If stale, refresh in background (stale-while-revalidate)
-  // Caller gets current data immediately; next request gets fresh data
-  if (isStale()) {
-    // On first seed from disk (timestamp=0), await the refresh so the
-    // caller always gets fresh data — critical for static prerendering
-    // where stale data would be baked into the page permanently.
-    if (cache && cache.timestamp === 0) {
-      await refreshFromWP();
-    } else {
-      refreshFromWP();
-    }
+    await refreshFromWP();
+  } else if (isStale()) {
+    // Subsequent stale reads: refresh in background (stale-while-revalidate)
+    refreshFromWP();
   }
 
   return cache?.posts ?? null;
@@ -79,15 +48,4 @@ export function getMemoryPosts(): WordPressPost[] | null {
 
 export function setMemoryPosts(posts: WordPressPost[]): void {
   cache = { posts, timestamp: Date.now(), refreshing: false };
-}
-
-export async function writeCachedPosts(posts: WordPressPost[]): Promise<void> {
-  try {
-    if (!fs.existsSync(CACHE_DIR)) {
-      fs.mkdirSync(CACHE_DIR, { recursive: true });
-    }
-    fs.writeFileSync(POSTS_CACHE_FILE, JSON.stringify(posts, null, 2));
-  } catch (error) {
-    console.error("[cache] Failed to write posts to disk:", error);
-  }
 }

@@ -33,10 +33,6 @@ export const POST: APIRoute = async ({ request }) => {
     const posts = allPosts.slice(0, 200);
     setMemoryPosts(posts);
 
-    // Also write to disk so the cache survives server restarts
-    const { writeCachedPosts } = await import("@/lib/wordpress/cache");
-    await writeCachedPosts(posts);
-
     console.log(`[revalidate] Cache updated — ${posts.length} posts`);
 
     return new Response(

@@ -1,7 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import Text from "@/components/fundations/elements/Text.astro";
-import readingTime from "reading-time";
+import { calculateReadingTime } from "@/lib/reading-time";
 
 const post = Astro.props.post;
 const { url, title, description, pubDate, image, author, tags } = {
@@ -18,7 +18,7 @@ const { url, title, description, pubDate, image, author, tags } = {
   }),
 };
 
-const stats = readingTime(post.body ?? "");
+const stats = calculateReadingTime(post.body ?? "");
 
 const formattedAuthor = author
   ? author.replace(/-/g, " ").replace(/\b\w/g, (c: string) => c.toUpperCase())
@@ -62,7 +62,7 @@ const formattedAuthor = author
       <Text tag="p" variant="textXS" class="font-medium">
         <time datetime={pubDate}>{pubDate}</time>
         <span aria-hidden="true">·</span>
-        {stats.text}
+        {stats.displayText}
       </Text>
     </div>
   </div>

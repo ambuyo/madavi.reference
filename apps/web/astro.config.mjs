@@ -92,9 +92,6 @@ export default defineConfig({
         "@": "/src",
       },
     },
-    ssr: {
-      noExternal: ["react", "react-dom"],
-    },
     optimizeDeps: {
       include: ["react", "react-dom", "react-dom/client"],
     },

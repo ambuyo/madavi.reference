@@ -11,3 +11,4 @@ allowBuilds:
 onlyBuiltDependencies:
   - '@parcel/watcher'
   - sharp
+  - workerd

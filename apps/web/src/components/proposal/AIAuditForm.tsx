@@ -277,7 +277,6 @@ export default function AIAuditForm() {
   const [submitted, setSubmitted]   = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
-  const [reportUrl, setReportUrl] = useState<string | null>(null);
   const [scoreResult, setScoreResult] = useState<{ pct: number; level: string; desc: string; color: string } | null>(null);
   const turnstileRef = useRef<TurnstileInstance>(null);
   const inputRef     = useRef<HTMLInputElement | HTMLTextAreaElement | null>(null);
@@ -383,17 +382,6 @@ export default function AIAuditForm() {
         setScoreResult({ pct: r.pct, level: r.level, desc: r.desc, color: r.color });
       }
 
-      // Download PDF from R2 persistent URL
-      if (data.reportUrl) {
-        setReportUrl(data.reportUrl);
-        const a = document.createElement("a");
-        a.href = data.reportUrl;
-        a.download = `madavi-ai-readiness-${form.companyName?.replace(/\s+/g, "-").toLowerCase() || "report"}.pdf`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-      }
-
       sessionStorage.removeItem("auditFormData");
       setSubmitted(true);
     } catch {
@@ -431,21 +419,6 @@ export default function AIAuditForm() {
               The complete AI Readiness Assessment Report has been sent to <strong>{form.workEmail}</strong>. You should receive it shortly. If you do not see it, check your spam folder or contact us at <a href="mailto:hi@madavi.co" className="text-[#005B65] underline">hi@madavi.co</a>.
             </p>
           </div>
-
-          {/* Download button */}
-          {reportUrl && (
-            <a href={reportUrl} download className="inline-block rounded-full px-8 py-3 font-semibold text-white text-sm mb-3" style={{ background: r.color }}>
-              ↓ Download PDF Report
-            </a>
-          )}
-
-          {/* Permanent link */}
-          {reportUrl && (
-            <div className="mb-6 p-4 rounded-lg bg-white border border-zinc-200 text-left">
-              <p className="text-xs text-zinc-400 mb-1">Permanent report link — save to access anytime:</p>
-              <a href={reportUrl} target="_blank" rel="noopener noreferrer" className="text-sm text-[#005B65] font-medium break-all hover:underline">{reportUrl}</a>
-            </div>
-          )}
 
           <a href="/" className="inline-block rounded-full px-8 py-3 font-semibold text-white text-sm" style={{ background: BRAND }}>Back to Home</a>
         </motion.div>

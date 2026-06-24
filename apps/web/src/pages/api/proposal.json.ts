@@ -1,12 +1,8 @@
 import type { APIRoute } from "astro";
-import React from "react";
-import { renderToBuffer } from "@react-pdf/renderer";
 import { verifyTurnstile } from "@/lib/turnstile";
-import { uploadToR2 } from "@/lib/r2/upload";
 import { sendZeptoMail, buildAuditEmailHtml } from "@/lib/zoho/zeptomail";
-import AuditReportPDF from "@/components/proposal/AuditReportPDF";
 
-// ─── Scoring (mirrors ProposalForm.tsx) ───────────────────────────────────────
+// Scoring (mirrors ProposalForm.tsx)
 
 function score(map: Record<string, number>, val: string) { return map[val] ?? 0; }
 
@@ -47,7 +43,7 @@ function getReadiness(raw: number) {
   return              { pct, level: "Getting Started",    desc: "Beginning the AI journey" };
 }
 
-// ─── Zoho helpers ─────────────────────────────────────────────────────────────
+// Zoho helpers
 
 async function getZohoToken(): Promise<string> {
   const dc = import.meta.env.ZOHO_DATACENTER ?? "com";
@@ -87,8 +83,7 @@ async function upsertContact(
   token: string,
   f: any,
   score: number,
-  readiness: ReturnType<typeof getReadiness>,
-  reportUrl?: string
+  readiness: ReturnType<typeof getReadiness>
 ): Promise<string> {
   const dc = import.meta.env.ZOHO_DATACENTER ?? "com";
   const parts = ((f.fullName as string) || "Unknown").trim().split(/\s+/);
@@ -114,7 +109,7 @@ async function upsertContact(
         // Custom fields
         AI_Readiness_Score:      score,
         AI_Audit_Score:          readiness.pct,
-        AI_Reports_Link:         reportUrl ?? "",
+        AI_Reports_Link:         "",
         Readiness_Level:         readiness.level,
         AI_Adoption_Stage:       f.aiAdoptionStage ?? "",
         Decision_Authority:      f.decisionAuthority ?? "",
@@ -194,14 +189,13 @@ async function createNote(token: string, contactId: string, title: string, conte
   });
 }
 
-// ─── Note content ─────────────────────────────────────────────────────────────
+// Note content
 
-function buildNoteContent(f: any, raw: number, readiness: ReturnType<typeof getReadiness>, reportUrl?: string): string {
+function buildNoteContent(f: any, raw: number, readiness: ReturnType<typeof getReadiness>): string {
   return `
 READINESS SCORE: ${readiness.pct}/100 — ${readiness.level}
 Raw Points: ${raw}/470
 ${readiness.desc}
-${reportUrl ? `\nAI REPORT: ${reportUrl}` : ""}
 
 --- CONTACT ---
 Name:     ${f.fullName}
@@ -265,7 +259,7 @@ Risk Appetite:       ${f.riskAppetite}
   `.trim();
 }
 
-// ─── Route ────────────────────────────────────────────────────────────────────
+// Route
 
 export const POST: APIRoute = async ({ request }) => {
   try {
@@ -296,21 +290,7 @@ export const POST: APIRoute = async ({ request }) => {
     const raw = calculateScore(form);
     const readiness = getReadiness(raw);
 
-    // Generate PDF report and upload to R2 for persistent storage
-    let reportUrl = "";
-    let pdfBase64 = "";
-    try {
-      const pdfBuffer = await renderToBuffer(
-        React.createElement(AuditReportPDF, { data: form })
-      );
-      const filename = `${(form.companyName || "report").replace(/[^a-zA-Z0-9]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "").toLowerCase()}-${new Date().toISOString().slice(0, 10)}.pdf`;
-      reportUrl = await uploadToR2(Buffer.from(pdfBuffer), filename);
-      pdfBase64 = Buffer.from(pdfBuffer).toString("base64");
-    } catch (pdfErr: any) {
-      console.warn("PDF generation/upload failed (non-blocking):", pdfErr.message);
-    }
-
-    // Send email via ZeptoMail with PDF attachment
+    // Send email via ZeptoMail
     const firstName = ((form.fullName as string) || "there").trim().split(/\s+/)[0] || "there";
     void sendZeptoMail({
       toName: form.fullName || firstName,
@@ -322,28 +302,19 @@ export const POST: APIRoute = async ({ request }) => {
         scorePct: readiness.pct,
         scoreLevel: readiness.level,
         scoreDesc: readiness.desc,
-        reportUrl: reportUrl || "https://madavi.co/free-ai-audit",
+        reportUrl: "https://madavi.co/free-ai-audit",
       }),
-      attachments: pdfBase64
-        ? [
-            {
-              filename: `Madavi-AI-Readiness-Report-${firstName.toLowerCase()}.pdf`,
-              content: pdfBase64,
-              mimeType: "application/pdf",
-            },
-          ]
-        : [],
     });
 
     // Submit to Zoho Bigin
     const zohoToken   = await getZohoToken();
-    const contactId   = await upsertContact(zohoToken, form, raw, readiness, reportUrl);
+    const contactId   = await upsertContact(zohoToken, form, raw, readiness);
     const noteTitle   = `AI Readiness Assessment — ${readiness.level} (${readiness.pct}%)`;
-    const noteContent = buildNoteContent(form, raw, readiness, reportUrl);
+    const noteContent = buildNoteContent(form, raw, readiness);
     await createNote(zohoToken, contactId, noteTitle, noteContent);
 
     return new Response(
-      JSON.stringify({ success: true, score: readiness, reportUrl }),
+      JSON.stringify({ success: true, score: readiness }),
       { status: 200, headers: { "Content-Type": "application/json", "Cache-Control": "no-cache, no-store" } }
     );
   } catch (err: any) {

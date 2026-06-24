@@ -1,8 +1,14 @@
 // Build-time script to fetch and cache WordPress posts
 // Run this before deploying to ensure posts are up-to-date
+import * as fs from "fs";
+import * as path from "path";
+import { fileURLToPath } from "url";
 import { wpFetch } from "../src/lib/wordpress/client";
-import { writeCachedPosts } from "../src/lib/wordpress/cache";
 import type { WordPressPost } from "../src/lib/wordpress/fetch";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const CACHE_DIR = path.join(__dirname, "..", ".cache");
+const CACHE_FILE = path.join(CACHE_DIR, "wordpress-posts.json");
 
 const TARGET = 400;
 const PAGE_SIZE = 100;
@@ -109,14 +115,16 @@ async function cachePosts() {
       console.log(`👤 Enriched bios for ${Object.keys(bioBySlug).length} author(s)`);
     }
 
-    await writeCachedPosts(slimmedPosts);
+    // Write cache file directly (build-time only — fs not available in Workers)
+    if (!fs.existsSync(CACHE_DIR)) fs.mkdirSync(CACHE_DIR, { recursive: true });
+    fs.writeFileSync(CACHE_FILE, JSON.stringify(slimmedPosts, null, 2));
 
     const duration = Date.now() - startTime;
     console.log(`✅ Cached ${slimmedPosts.length} WordPress posts in ${duration}ms`);
     console.log(`📊 Cache will be used for instant page loads until next redeploy`);
   } catch (error) {
-    console.error("❌ Failed to cache WordPress posts:", error);
-    process.exit(1);
+    console.error("⚠️  Failed to cache WordPress posts (build will continue):", error);
+    // Don't exit 1 — build proceeds without cached posts; they'll be fetched live at runtime
   }
 }
 

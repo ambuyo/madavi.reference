@@ -1,6 +1,6 @@
 ---
 import Text from "@/components/fundations/elements/Text.astro";
-import readingTime from "reading-time";
+import { calculateReadingTime } from "@/lib/reading-time";
 
 const post = Astro.props.post;
 const { url, title, pubDate, tags } = {
@@ -14,7 +14,7 @@ const { url, title, pubDate, tags } = {
   }),
 };
 
-const stats = readingTime(post.body ?? "");
+const stats = calculateReadingTime(post.body ?? "");
 ---
 
 <article class="relative w-full pb-4 group overflow-hidden">
@@ -51,7 +51,7 @@ const stats = readingTime(post.body ?? "");
       <Text tag="p" variant="textXS">
         <time datetime={pubDate}>{pubDate}</time>
         <span aria-hidden="true">·</span>
-        {stats.text}
+        {stats.displayText}
       </Text>
     </div>
   </div>

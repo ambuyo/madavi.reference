@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # WordPress Posts Build & Deploy Script
-# This script prepares your site for deployment to Hostinger
+# This script prepares your site for deployment to Cloudflare Pages
 # It fetches the latest WordPress posts and builds your static site
 
 set -e  # Exit on error
@@ -38,8 +38,8 @@ echo "========================================"
 echo ""
 echo "📦 Deployment steps:"
 echo "   1. Commit changes: git add . && git commit -m 'Update: Fresh WordPress posts'"
-echo "   2. Push to Hostinger (or your CI/CD pipeline)"
-echo "   3. Monitor: Check madavi.co to verify posts are live"
+echo "   2. Push to trigger Cloudflare Pages deployment"
+echo "   3. Monitor: Check Cloudflare Pages dashboard for build status"
 echo ""
 echo "💡 Pro tip: Do this every time before publishing new posts!"
 echo ""
