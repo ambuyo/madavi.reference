@@ -2,11 +2,11 @@ import { defineConfig } from "astro/config";
 import sitemap from "@astrojs/sitemap";
 import react from "@astrojs/react";
 import tailwindcss from "@tailwindcss/vite";
-import node from "@astrojs/node";
+import cloudflare from "@astrojs/cloudflare";
 
 export default defineConfig({
-  output: "server",
-  adapter: node({ mode: "standalone" }),
+  output: "hybrid",
+  adapter: cloudflare(),
   redirects: {
     "/resources": { destination: "/blog", status: 301 },
     "/work/[...slug]": { destination: "/our-work/[slug]", status: 301 },
