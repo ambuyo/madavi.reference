@@ -16,6 +16,9 @@ build/
 # Netlify (deprecated — now on Cloudflare Pages)
 .netlify/
 
+# Cloudflare
+.wrangler/
+
 # IDE
 .vscode/
 .idea/
