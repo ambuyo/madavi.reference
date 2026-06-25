@@ -1,56 +1,70 @@
 /**
  * Markdown conversion utilities.
  *
- * Turndown is loaded via top-level await. On Cloudflare Workers, turndown's
- * internal require('@mixmark-io/domino') crashes the import, which is caught
- * and turndownService stays null. htmlToMarkdown() then returns "" safely.
- * On Node.js/VPS, turndown works normally.
+ * Turndown is loaded via top-level await on platforms where it can work.
+ *
+ * Turndown needs one of two things internally:
+ *   1. `window.DOMParser` (browser / DOM environment), or
+ *   2. `require("@mixmark-io/domino")` (Node.js fallback)
+ *
+ * Cloudflare Workers ESM has NEITHER: `window` is undefined and `require`
+ * doesn't exist.  If we import turndown there, its module-level init runs
+ * `createHTMLParser()` → `require("@mixmark-io/domino")` → crashes with
+ * "ReferenceError: require is not defined".
+ *
+ * We guard with a pre-flight check so the import is never attempted on
+ * Workers.  On VPS (Node) and in the browser, turndown loads and works
+ * normally.
  */
+
+const isNode = typeof process !== "undefined" && process.versions?.node;
+const isBrowser = typeof window !== "undefined";
+const supportsTurndown = isNode || isBrowser;
 
 let turndownService: any = null;
 
-try {
-  const TurndownService = (await import("turndown")).default;
-  turndownService = new TurndownService({
-    headingStyle: "atx",
-    codeBlockStyle: "fenced",
-    bulletListMarker: "-",
-    linkStyle: "inlined",
-  });
+if (supportsTurndown) {
+  try {
+    const TurndownService = (await import("turndown")).default;
+    turndownService = new TurndownService({
+      headingStyle: "atx",
+      codeBlockStyle: "fenced",
+      bulletListMarker: "-",
+      linkStyle: "inlined",
+    });
 
-  turndownService.addRule("strikethrough", {
-    filter: ["del", "s"],
-    replacement: (content: string) => `~~${content}~~`,
-  });
+    turndownService.addRule("strikethrough", {
+      filter: ["del", "s"],
+      replacement: (content: string) => `~~${content}~~`,
+    });
 
-  turndownService.addRule("wordpressCaption", {
-    filter: (node: any) =>
-      node.tagName === "FIGURE" && node.classList.contains("wp-caption"),
-    replacement: (content: string, node: any) => {
-      const img = node.querySelector("img");
-      const figcaption = node.querySelector("figcaption");
-      if (img && figcaption) {
-        return `![${figcaption.textContent}](${img.src})\n*${figcaption.textContent}*\n`;
-      }
-      return content;
-    },
-  });
+    turndownService.addRule("wordpressCaption", {
+      filter: (node: any) =>
+        node.tagName === "FIGURE" && node.classList.contains("wp-caption"),
+      replacement: (content: string, node: any) => {
+        const img = node.querySelector("img");
+        const figcaption = node.querySelector("figcaption");
+        if (img && figcaption) {
+          return `![${figcaption.textContent}](${img.src})\n*${figcaption.textContent}*\n`;
+        }
+        return content;
+      },
+    });
 
-  turndownService.addRule("wordpressGallery", {
-    filter: (node: any) =>
-      node.tagName === "DIV" && node.classList.contains("wp-block-gallery"),
-    replacement: (content: string, node: any) => {
-      const images = node.querySelectorAll("img");
-      const alt = images[0]?.alt || "Gallery";
-      return `\n**Gallery**\n${Array.from(images)
-        .map((img: any) => `- ![${img.alt}](${img.src})`)
-        .join("\n")}\n`;
-    },
-  });
-} catch (error) {
-  // Cloudflare Workers: turndown internally calls require('@mixmark-io/domino')
-  // which doesn't exist in Workers. Markdown conversion is disabled.
-  console.warn("[markdown] Turndown unavailable (expected on Workers), markdown disabled:", (error as Error).message);
+    turndownService.addRule("wordpressGallery", {
+      filter: (node: any) =>
+        node.tagName === "DIV" && node.classList.contains("wp-block-gallery"),
+      replacement: (content: string, node: any) => {
+        const images = node.querySelectorAll("img");
+        const alt = images[0]?.alt || "Gallery";
+        return `\n**Gallery**\n${Array.from(images)
+          .map((img: any) => `- ![${img.alt}](${img.src})`)
+          .join("\n")}\n`;
+      },
+    });
+  } catch (error) {
+    console.warn("[markdown] Turndown unavailable, markdown disabled:", (error as Error).message);
+  }
 }
 
 // Convert HTML to Markdown (sync — turndown loaded at module init via top-level await)

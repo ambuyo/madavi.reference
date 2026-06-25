@@ -91,10 +91,6 @@ export default defineConfig({
     resolve: {
       alias: {
         "@": "/src",
-        // Force turndown's browser build on Cloudflare Workers.
-        // The Node.js build calls require('@mixmark-io/domino') which
-        // doesn't exist in Workers. The browser build uses native DOMParser.
-        ...(isCloudflare ? { "turndown": "turndown/lib/turndown.browser.es.js" } : {}),
       },
       // Workers have DOMParser (Web API) but not require().
       // Force browser builds for packages that have Node/browser forks.
@@ -103,9 +99,11 @@ export default defineConfig({
         : [],
     },
     ssr: {
-      // turndown's Node.js build uses require('@mixmark-io/domino').
-      // The browser build uses native DOMParser — works in Workers.
-      noExternal: isCloudflare ? ["turndown"] : [],
+      // turndown MUST stay external on Cloudflare. It internally calls
+      // require('@mixmark-io/domino') which crashes Workers at runtime.
+      // markdown.ts loads it via try { await import("turndown") } catch {} —
+      // on Workers the import fails gracefully, htmlToMarkdown returns "".
+      external: isCloudflare ? ["turndown"] : [],
     },
     optimizeDeps: {
       include: ["react", "react-dom", "react-dom/client"],
