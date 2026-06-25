@@ -3,6 +3,10 @@ import type { WordPressPost } from "./fetch";
 const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 const FILE_CACHE_PATH = "/.cache/wordpress-posts.json";
 
+// Workers require absolute URLs for fetch(). Try the Astro site URL first,
+// then fall back to the production URL.
+const SITE_URL = (typeof import.meta !== "undefined" && (import.meta as any).env?.SITE) || "https://madavi.co";
+
 interface CacheState {
   posts: WordPressPost[];
   timestamp: number;
@@ -20,23 +24,35 @@ function isStale(): boolean {
  * Load posts from the deployed JSON cache file.
  * This file is written at build time by scripts/cache-wordpress-posts.ts
  * and deployed as a static asset — instant cold starts, no WP API call needed.
+ *
+ * Tries multiple URL formats because the fetch() runtime differs:
+ * - Node.js: relative paths work
+ * - Cloudflare Workers: absolute URLs required
+ * - Prerendering: fetch may not be available at all
  */
 async function loadFromFileCache(): Promise<boolean> {
-  try {
-    const response = await fetch(FILE_CACHE_PATH);
-    if (!response.ok) return false;
+  const urls = [
+    `${SITE_URL}${FILE_CACHE_PATH}`,  // Absolute URL (Workers runtime)
+    FILE_CACHE_PATH,                    // Relative path (Node.js runtime)
+  ];
 
-    const posts: WordPressPost[] = await response.json();
-    if (posts && posts.length > 0) {
-      cache = { posts, timestamp: Date.now(), refreshing: false };
-      console.log(`[cache] Loaded ${posts.length} posts from deployed cache`);
-      return true;
+  for (const url of urls) {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) continue;
+
+      const posts: WordPressPost[] = await response.json();
+      if (posts && posts.length > 0) {
+        cache = { posts, timestamp: Date.now(), refreshing: false };
+        console.log(`[cache] Loaded ${posts.length} posts from deployed cache`);
+        return true;
+      }
+    } catch {
+      // Try next URL format
     }
-    return false;
-  } catch (error) {
-    console.warn("[cache] Failed to load deployed cache:", error);
-    return false;
   }
+
+  return false;
 }
 
 /**

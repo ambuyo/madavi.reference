@@ -92,6 +92,16 @@ export default defineConfig({
       alias: {
         "@": "/src",
       },
+      // Workers have DOMParser (Web API) but not require().
+      // Force browser builds for packages that have Node/browser forks.
+      conditions: isCloudflare
+        ? ["browser", "worker", "development|production"]
+        : [],
+    },
+    ssr: {
+      // turndown's Node.js build uses require('@mixmark-io/domino').
+      // The browser build uses native DOMParser — works in Workers.
+      noExternal: isCloudflare ? ["turndown"] : [],
     },
     optimizeDeps: {
       include: ["react", "react-dom", "react-dom/client"],
