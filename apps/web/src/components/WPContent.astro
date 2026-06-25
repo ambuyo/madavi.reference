@@ -1,0 +1,203 @@
+---
+/**
+ * WPContent.astro — Edge-safe WordPress HTML renderer with scoped Gutenberg styles.
+ *
+ * Renders post.body (cleaned WordPress HTML from content.rendered) via set:html,
+ * with global scoped styles for common Gutenberg blocks.
+ *
+ * Usage:
+ *   <WPContent html={post.body} />
+ *
+ * Drop-in replacement for: <div set:html={post.body} />
+ */
+const { html } = Astro.props;
+---
+
+{html && <div class="wp-content" set:html={html} />}
+
+<style is:global>
+  /* ── Gutenberg Image Blocks ── */
+  .wp-content .wp-block-image {
+    margin: 2rem 0;
+  }
+  .wp-content .wp-block-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+  }
+  .wp-content .wp-block-image figcaption {
+    font-size: 0.875rem;
+    color: #6b7280;
+    text-align: center;
+    margin-top: 0.5rem;
+  }
+
+  /* ── Alignment utilities ── */
+  .wp-content .has-text-align-center { text-align: center; }
+  .wp-content .has-text-align-right  { text-align: right; }
+  .wp-content .has-text-align-left   { text-align: left; }
+  .wp-content .aligncenter { display: block; margin-left: auto; margin-right: auto; }
+  .wp-content .alignleft   { float: left; margin-right: 1.5rem; margin-bottom: 1rem; }
+  .wp-content .alignright  { float: right; margin-left: 1.5rem; margin-bottom: 1rem; }
+
+  /* ── Typography sizes ── */
+  .wp-content .has-small-font-size   { font-size: 0.875rem; }
+  .wp-content .has-medium-font-size  { font-size: 1.125rem; }
+  .wp-content .has-large-font-size   { font-size: 1.5rem; }
+  .wp-content .has-x-large-font-size { font-size: 2rem; }
+
+  /* ── Gallery ── */
+  .wp-content .wp-block-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin: 2rem 0;
+    padding: 0;
+    list-style: none;
+  }
+  .wp-content .wp-block-gallery .blocks-gallery-item {
+    margin: 0;
+  }
+  .wp-content .wp-block-gallery img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 0.375rem;
+  }
+
+  /* ── Quotes ── */
+  .wp-content .wp-block-quote {
+    border-left: 4px solid #3b82f6;
+    padding: 1rem 0 1rem 1.5rem;
+    margin: 2rem 0;
+    font-style: italic;
+    color: #374151;
+  }
+  .wp-content .wp-block-quote cite {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    font-style: normal;
+    color: #6b7280;
+  }
+  .wp-content .wp-block-pullquote {
+    font-size: 1.5rem;
+    line-height: 1.4;
+    text-align: center;
+    padding: 2rem 0;
+    margin: 2rem 0;
+    border-top: 3px solid #3b82f6;
+    border-bottom: 3px solid #3b82f6;
+  }
+
+  /* ── Code blocks ── */
+  .wp-content .wp-block-code,
+  .wp-content pre.wp-block-code {
+    background: #1e1e1e;
+    color: #d4d4d4;
+    padding: 1.25rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    font-family: "Fira Code", "Cascadia Code", "JetBrains Mono", monospace;
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  /* ── Tables ── */
+  .wp-content .wp-block-table {
+    width: 100%;
+    overflow-x: auto;
+    margin: 2rem 0;
+  }
+  .wp-content .wp-block-table table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .wp-content .wp-block-table td,
+  .wp-content .wp-block-table th {
+    border: 1px solid #d1d5db;
+    padding: 0.5rem 0.75rem;
+  }
+  .wp-content .wp-block-table th {
+    background: #f3f4f6;
+    font-weight: 600;
+  }
+  .wp-content .wp-block-table.is-style-stripes tbody tr:nth-child(odd) {
+    background: #f9fafb;
+  }
+
+  /* ── Embeds (YouTube, Vimeo, etc.) ── */
+  .wp-content .wp-block-embed {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 */
+    height: 0;
+    overflow: hidden;
+    margin: 2rem 0;
+  }
+  .wp-content .wp-block-embed iframe,
+  .wp-content .wp-block-embed object,
+  .wp-content .wp-block-embed embed {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    border-radius: 0.5rem;
+  }
+
+  /* ── Buttons ── */
+  .wp-content .wp-block-button {
+    margin: 1.5rem 0;
+  }
+  .wp-content .wp-block-button__link {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background: #3b82f6;
+    color: #fff;
+    border-radius: 0.375rem;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background 0.2s;
+  }
+  .wp-content .wp-block-button__link:hover {
+    background: #2563eb;
+  }
+
+  /* ── Separator ── */
+  .wp-content .wp-block-separator {
+    border: none;
+    border-top: 1px solid #e5e7eb;
+    margin: 2rem 0;
+  }
+
+  /* ── Captions (legacy WordPress) ── */
+  .wp-content .wp-caption {
+    margin: 2rem 0;
+    max-width: 100%;
+  }
+  .wp-content .wp-caption img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.375rem;
+  }
+  .wp-content .wp-caption-text {
+    font-size: 0.875rem;
+    color: #6b7280;
+    text-align: center;
+    margin-top: 0.5rem;
+  }
+
+  /* ── Responsive video wrappers ── */
+  .wp-content .wp-video {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* ── Clearfix for floated elements ── */
+  .wp-content::after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+</style>

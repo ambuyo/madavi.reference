@@ -1,5 +1,6 @@
 ---
 import SingleBlogLayout from "@/layouts/SingleBlogLayout.astro";
+import WPContent from "@/components/WPContent.astro";
 import { getPostBySlug } from "@/lib/data";
 
 export const prerender = false;
@@ -57,5 +58,5 @@ breadcrumb.push({ name: post.data.title, url: Astro.url.href });
   tags={tags}
   breadcrumb={breadcrumb}
 >
-  {post.body && <div set:html={post.body} />}
+  {post.body && <WPContent html={post.body} />}
 </SingleBlogLayout>

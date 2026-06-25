@@ -1,0 +1,86 @@
+---
+/**
+ * SanityBlock.astro — Edge-safe Portable Text renderer.
+ *
+ * Converts Sanity Portable Text blocks to semantic HTML server-side
+ * using @portabletext/to-html. No React runtime needed.
+ *
+ * Usage:
+ *   <SanityBlock blocks={post.body} />
+ *
+ * Drop-in replacement for both:
+ *   - portableTextToHtml(blocks) utility pattern
+ *   - Inline block loop in SingleBlogLayout (fullSummary path)
+ */
+import { portableTextToHtml } from "@/lib/sanity/portableText";
+import type { PortableTextBlock } from "@portabletext/types";
+
+const { blocks, class: className } = Astro.props;
+
+if (!blocks || !Array.isArray(blocks) || blocks.length === 0) {
+  // No content — render nothing (caller should handle empty state)
+}
+
+const html = blocks && Array.isArray(blocks) && blocks.length > 0
+  ? portableTextToHtml(blocks)
+  : "";
+---
+
+{html && (
+  <div class={`sanity-content prose prose-lg max-w-none ${className || ""}`} set:html={html} />
+)}
+
+<style is:global>
+  /* ── Sanity Portable Text block styles ── */
+  .sanity-content figure {
+    margin: 2rem 0;
+  }
+  .sanity-content figure img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+  }
+  .sanity-content figure figcaption {
+    font-size: 0.875rem;
+    color: #6b7280;
+    text-align: center;
+    margin-top: 0.5rem;
+  }
+
+  .sanity-content .code-filename {
+    background: #374151;
+    color: #d1d5db;
+    padding: 0.25rem 1rem;
+    border-radius: 0.375rem 0.375rem 0 0;
+    font-size: 0.8125rem;
+    font-family: monospace;
+    display: inline-block;
+  }
+  .sanity-content .code-filename + pre {
+    margin-top: 0;
+    border-top-left-radius: 0;
+  }
+
+  .sanity-content pre {
+    background: #1e1e1e;
+    color: #d4d4d4;
+    padding: 1.25rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+  .sanity-content pre code {
+    background: none;
+    padding: 0;
+    color: inherit;
+  }
+
+  .sanity-content blockquote {
+    border-left: 4px solid #3b82f6;
+    padding: 0.5rem 0 0.5rem 1.5rem;
+    margin: 1.5rem 0;
+    font-style: italic;
+    color: #374151;
+  }
+</style>
