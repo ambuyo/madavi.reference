@@ -1,4 +1,7 @@
 import type { WordPressPost } from "./fetch";
+import * as fs from "fs";
+import * as path from "path";
+import { fileURLToPath } from "url";
 
 const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 const FILE_CACHE_PATH = "/.cache/wordpress-posts.json";
@@ -6,6 +9,28 @@ const FILE_CACHE_PATH = "/.cache/wordpress-posts.json";
 // Workers require absolute URLs for fetch(). Try the Astro site URL first,
 // then fall back to the production URL.
 const SITE_URL = (typeof import.meta !== "undefined" && (import.meta as any).env?.SITE) || "https://madavi.co";
+
+// Filesystem path for Node.js runtime (Docker/VPS).
+// public/.cache/ is copied to dist/client/.cache/ at build time.
+// The server entry runs from dist/server/, so the client dir is ../client.
+function getFileCacheDiskPath(): string {
+  try {
+    const __dirname = path.dirname(fileURLToPath(import.meta.url));
+    // In production: dist/server/chunks/ → ../../client/.cache/wordpress-posts.json
+    // In dev: src/lib/wordpress/ → ../../../../public/.cache/wordpress-posts.json
+    const candidates = [
+      path.join(__dirname, "..", "client", ".cache", "wordpress-posts.json"),
+      path.join(__dirname, "..", "..", "client", ".cache", "wordpress-posts.json"),
+      path.join(__dirname, "..", "..", "..", "..", "public", ".cache", "wordpress-posts.json"),
+    ];
+    for (const candidate of candidates) {
+      if (fs.existsSync(candidate)) return candidate;
+    }
+  } catch {
+    // fileURLToPath may not be available (e.g. Cloudflare Workers)
+  }
+  return "";
+}
 
 // ── Index types ──────────────────────────────────────────────────────────
 
@@ -135,9 +160,36 @@ function buildIndices(posts: WordPressPost[]): {
  * and deployed as a static asset — instant cold starts, no WP API call needed.
  */
 async function loadFromFileCache(): Promise<boolean> {
+  // 1. Try filesystem first (Node.js/VPS runtime — instant, no network)
+  const diskPath = getFileCacheDiskPath();
+  if (diskPath) {
+    try {
+      const raw = fs.readFileSync(diskPath, "utf-8");
+      const posts: WordPressPost[] = JSON.parse(raw);
+      if (posts && posts.length > 0) {
+        const { indices, allCategories, allSubcategories, allTags } = buildIndices(posts);
+        cache = {
+          posts,
+          transformed: null,
+          indices,
+          allCategories,
+          allSubcategories,
+          allTags,
+          timestamp: Date.now(),
+          refreshing: false,
+        };
+        console.log(`[cache] Loaded ${posts.length} posts from disk cache`);
+        return true;
+      }
+    } catch {
+      // Disk read failed — try network fallback
+    }
+  }
+
+  // 2. Network fallback (Cloudflare Workers runtime)
   const urls = [
-    `${SITE_URL}${FILE_CACHE_PATH}`,  // Absolute URL (Workers runtime)
-    FILE_CACHE_PATH,                    // Relative path (Node.js runtime)
+    `${SITE_URL}${FILE_CACHE_PATH}`,  // Absolute URL
+    FILE_CACHE_PATH,                    // Relative path
   ];
 
   for (const url of urls) {
@@ -150,7 +202,7 @@ async function loadFromFileCache(): Promise<boolean> {
         const { indices, allCategories, allSubcategories, allTags } = buildIndices(posts);
         cache = {
           posts,
-          transformed: null,  // lazy — transformed on first read
+          transformed: null,
           indices,
           allCategories,
           allSubcategories,
