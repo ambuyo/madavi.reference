@@ -20,6 +20,8 @@ interface Props {
   authorSlug?: string;
   categorySlug?: string;
   downloadUrl?: string;
+  tags?: string[];
+  breadcrumb?: Array<{ name: string; url: string }>;
 }
 
 const {
@@ -39,6 +41,8 @@ const {
   authorSlug,
   categorySlug,
   downloadUrl,
+  tags = [],
+  breadcrumb,
 } = Astro.props;
 
 const formattedDate = date.toLocaleDateString("en-US", {
@@ -56,6 +60,8 @@ const imageUrl = typeof image === "string" ? image : image?.url || image?.src;
   description={seoDescription || description}
   seoType="article"
   image={seoImageUrl}
+  tags={tags}
+  breadcrumb={breadcrumb}
 >
 
   <section>

@@ -138,9 +138,9 @@ async function getSanityModules() {
 // =============================================================================
 
 /**
- * Get all posts - uses cached posts for instant loading
- * Posts are cached at build time, ensuring fast native-like performance
- * New posts require a rebuild/redeploy to appear
+ * Get all posts — reads from pre-transformed cache for instant loading.
+ * Posts are transformed once at cache-load time, so all listing pages
+ * share the same Turndown pass.
  */
 export async function getPosts(limit?: number) {
   if (!USE_WORDPRESS) {
@@ -148,20 +148,18 @@ export async function getPosts(limit?: number) {
   }
 
   try {
-    const { readCachedPosts } = await import("./wordpress/cache");
-    const { transformWordPressPost } = await import("./wordpress/transforms");
+    const { readCachedTransformedPosts } = await import("./wordpress/cache");
 
-    const cachedPosts = await readCachedPosts();
-    if (cachedPosts && cachedPosts.length > 0) {
-      const posts = cachedPosts.map(transformWordPressPost);
-      return limit ? posts.slice(0, limit) : posts;
+    const transformed = await readCachedTransformedPosts();
+    if (transformed && transformed.length > 0) {
+      return limit ? transformed.slice(0, limit) : transformed;
     }
 
-    // No cache on disk yet — fetch fresh synchronously (first boot only)
+    // Cache miss entirely — fetch fresh and transform (first boot only)
     const { fetchWordPressPosts } = await import("./wordpress/fetch");
+    const { transformWordPressPost } = await import("./wordpress/transforms");
     const rawPosts = await fetchWordPressPosts(limit ?? 2000);
-    const posts = rawPosts.map(transformWordPressPost);
-    return limit ? posts.slice(0, limit) : posts;
+    return rawPosts.map(transformWordPressPost);
   } catch (error) {
     console.warn("Failed to load posts from cms.madavi.co:", error);
     return [];
@@ -169,8 +167,9 @@ export async function getPosts(limit?: number) {
 }
 
 /**
- * Get a single post by slug from cached posts
- * Uses pre-cached posts for instant access, requires rebuild to show new posts
+ * Get a single post by slug.
+ * Looks up the slug index first (O(1)), falls back to live WP API.
+ * With full content in cache (Phase 1.4), cache hits are now the common case.
  */
 export async function getPostBySlug(slug: string) {
   if (!USE_WORDPRESS) {
@@ -178,10 +177,18 @@ export async function getPostBySlug(slug: string) {
   }
 
   try {
+    // 1. Try cache index first (O(1) lookup)
+    const { getCachedPostBySlug } = await import("./wordpress/cache");
+    const cached = await getCachedPostBySlug(slug);
+
+    if (cached) {
+      const { transformWordPressPost } = await import("./wordpress/transforms");
+      return transformWordPressPost(cached);
+    }
+
+    // 2. Not in cache — fetch live (new post, not yet cached)
     const { fetchWordPressPostBySlug } = await import("./wordpress/fetch");
     const { transformWordPressPost } = await import("./wordpress/transforms");
-
-    // Always fetch full content live — cache only stores truncated content
     const post = await fetchWordPressPostBySlug(slug);
     if (post) {
       return transformWordPressPost(post);
@@ -196,40 +203,28 @@ export async function getPostBySlug(slug: string) {
 }
 
 /**
- * Get posts by tag — WordPress only
+ * Get posts by tag — reads from cache index, transforms only matching posts.
  */
 export async function getPostsByTag(tag: string): Promise<Post[]> {
   try {
-    const { readCachedPosts } = await import("./wordpress/cache");
+    const { getCachedPostsByTag } = await import("./wordpress/cache");
     const { transformWordPressPost } = await import("./wordpress/transforms");
-    const cachedPosts = await readCachedPosts();
-    if (!cachedPosts) return [];
-    return cachedPosts
-      .filter((p) => p._embedded?.["wp:term"]?.flat()?.some((t: any) => t.taxonomy === "post_tag" && t.slug === tag))
-      .map(transformWordPressPost);
+    const matched = await getCachedPostsByTag(tag);
+    return matched.map(transformWordPressPost);
   } catch {
     return [];
   }
 }
 
 /**
- * Get posts by category slug — WordPress only
+ * Get posts by category slug — reads from cache index, transforms only matching posts.
  */
 export async function getPostsByCategory(categorySlug: string, limit?: number): Promise<Post[]> {
   try {
-    const { readCachedPosts } = await import("./wordpress/cache");
+    const { getCachedPostsByCategory } = await import("./wordpress/cache");
     const { transformWordPressPost } = await import("./wordpress/transforms");
-
-    const cachedPosts = await readCachedPosts();
-    if (!cachedPosts || cachedPosts.length === 0) return [];
-
-    const filtered = cachedPosts
-      .filter((post) =>
-        post._embedded?.["wp:term"]?.some((termArray: any[]) =>
-          termArray.some((term: any) => term.taxonomy === "category" && term.slug === categorySlug)
-        )
-      );
-    const sliced = limit ? filtered.slice(0, limit) : filtered;
+    const matched = await getCachedPostsByCategory(categorySlug);
+    const sliced = limit ? matched.slice(0, limit) : matched;
     return sliced.map(transformWordPressPost);
   } catch (error) {
     console.warn(`Failed to fetch posts from category "${categorySlug}":`, error);
@@ -238,23 +233,14 @@ export async function getPostsByCategory(categorySlug: string, limit?: number): 
 }
 
 /**
- * Get posts by subcategory slug — WordPress only
+ * Get posts by subcategory slug — reads from cache index.
  */
 export async function getPostsBySubcategory(subcategorySlug: string): Promise<Post[]> {
   try {
-    const { readCachedPosts } = await import("./wordpress/cache");
+    const { getCachedPostsByCategory } = await import("./wordpress/cache");
     const { transformWordPressPost } = await import("./wordpress/transforms");
-
-    const cachedPosts = await readCachedPosts();
-    if (!cachedPosts || cachedPosts.length === 0) return [];
-
-    return cachedPosts
-      .filter((post) =>
-        post._embedded?.["wp:term"]?.some((termArray: any[]) =>
-          termArray.some((term: any) => term.taxonomy === "category" && term.slug === subcategorySlug)
-        )
-      )
-      .map(transformWordPressPost);
+    const matched = await getCachedPostsByCategory(subcategorySlug);
+    return matched.map(transformWordPressPost);
   } catch (error) {
     console.warn(`Failed to fetch posts from subcategory "${subcategorySlug}":`, error);
     return [];
@@ -262,20 +248,14 @@ export async function getPostsBySubcategory(subcategorySlug: string): Promise<Po
 }
 
 /**
- * Get posts by author slug — WordPress only
+ * Get posts by author slug — reads from cache index, transforms only matching posts.
  */
 export async function getPostsByAuthor(authorSlug: string, limit?: number): Promise<Post[]> {
   try {
-    const { readCachedPosts } = await import("./wordpress/cache");
+    const { getCachedPostsByAuthor } = await import("./wordpress/cache");
     const { transformWordPressPost } = await import("./wordpress/transforms");
-
-    const cachedPosts = await readCachedPosts();
-    if (!cachedPosts || cachedPosts.length === 0) return [];
-
-    const filtered = cachedPosts.filter(
-      (post) => post._embedded?.author?.[0]?.slug === authorSlug
-    );
-    const sliced = limit ? filtered.slice(0, limit) : filtered;
+    const matched = await getCachedPostsByAuthor(authorSlug);
+    const sliced = limit ? matched.slice(0, limit) : matched;
     return sliced.map(transformWordPressPost);
   } catch (error) {
     console.warn(`Failed to fetch posts by author "${authorSlug}":`, error);
@@ -284,40 +264,24 @@ export async function getPostsByAuthor(authorSlug: string, limit?: number): Prom
 }
 
 /**
- * Get all unique tags — WordPress only
+ * Get all unique tags — reads from pre-built index, no transforms needed.
  */
 export async function getAllTags(): Promise<string[]> {
   try {
-    const { readCachedPosts } = await import("./wordpress/cache");
-    const cachedPosts = await readCachedPosts();
-    if (!cachedPosts) return [];
-    const tags = new Set<string>();
-    cachedPosts.forEach((p) =>
-      p._embedded?.["wp:term"]?.flat()?.forEach((t: any) => {
-        if (t.taxonomy === "post_tag") tags.add(t.slug);
-      })
-    );
-    return Array.from(tags);
+    const { getCachedAllTags } = await import("./wordpress/cache");
+    return await getCachedAllTags();
   } catch {
     return [];
   }
 }
 
 /**
- * Get all categories — WordPress only
+ * Get all categories — reads from pre-built index, no transforms needed.
  */
 export async function getAllCategories(): Promise<Category[]> {
   try {
-    const posts = await getPosts();
-    const categoryMap = new Map<string, Category>();
-    posts.forEach((post) => {
-      post.data.categories?.forEach((cat) => {
-        if (!categoryMap.has(cat.slug)) {
-          categoryMap.set(cat.slug, { id: cat.id, name: cat.name, slug: cat.slug });
-        }
-      });
-    });
-    return Array.from(categoryMap.values()).sort((a, b) => a.name.localeCompare(b.name));
+    const { getCachedAllCategories } = await import("./wordpress/cache");
+    return await getCachedAllCategories();
   } catch (error) {
     console.warn("Failed to get categories:", error);
     return [];
@@ -325,25 +289,12 @@ export async function getAllCategories(): Promise<Category[]> {
 }
 
 /**
- * Get all subcategories — WordPress only
+ * Get all subcategories — reads from pre-built index, no transforms needed.
  */
 export async function getAllSubcategories(): Promise<Subcategory[]> {
   try {
-    const posts = await getPosts();
-    const subcategoryMap = new Map<string, Subcategory>();
-    posts.forEach((post) => {
-      post.data.subcategories?.forEach((sub) => {
-        if (!subcategoryMap.has(sub.slug)) {
-          subcategoryMap.set(sub.slug, {
-            id: sub.id,
-            name: sub.name,
-            slug: sub.slug,
-            parentId: sub.parentId,
-          });
-        }
-      });
-    });
-    return Array.from(subcategoryMap.values()).sort((a, b) => a.name.localeCompare(b.name));
+    const { getCachedAllSubcategories } = await import("./wordpress/cache");
+    return await getCachedAllSubcategories();
   } catch (error) {
     console.warn("Failed to get subcategories:", error);
     return [];

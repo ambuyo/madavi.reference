@@ -1,10 +1,9 @@
 import {
-  WordPressPost,
-  WordPressCategory,
   getFeaturedImage,
-  stripHtml,
 } from "./fetch";
+import type { WordPressPost, WordPressCategory } from "./fetch";
 import { htmlToMarkdown, extractPlainText } from "./markdown";
+import { decodeHtmlEntities, stripHtml } from "./html";
 import type { Post } from "../sanity/types";
 
 // Helper to extract top-level categories (parent === 0) from embedded data
@@ -67,43 +66,6 @@ function rewriteCmsDomainLinks(html: string): string {
       return clean ? `href="/blog/${clean}"` : `href="/blog"`;
     }
   );
-}
-
-// Helper to decode HTML entities in content
-function decodeHtmlEntities(text: string): string {
-  const entityMap: Record<string, string> = {
-    "&amp;": "&",
-    "&lt;": "<",
-    "&gt;": ">",
-    "&quot;": '"',
-    "&#039;": "'",
-    "&apos;": "'",
-    "&nbsp;": " ",
-    "&hellip;": "…",
-    "&#8217;": "'",
-    "&#8216;": "'",
-    "&#8220;": String.fromCharCode(8220),
-    "&#8221;": String.fromCharCode(8221),
-    "&#8212;": "—",
-    "&#8211;": "–",
-  };
-
-  let decoded = text;
-  for (const [entity, char] of Object.entries(entityMap)) {
-    decoded = decoded.replace(new RegExp(entity, "g"), char);
-  }
-
-  // Handle numeric entities &#XXXX;
-  decoded = decoded.replace(/&#(\d+);/g, (match, dec) => {
-    return String.fromCharCode(parseInt(dec, 10));
-  });
-
-  // Handle hex entities &#xXXXX;
-  decoded = decoded.replace(/&#x([0-9a-f]+);/gi, (match, hex) => {
-    return String.fromCharCode(parseInt(hex, 16));
-  });
-
-  return decoded;
 }
 
 // Transform WordPress post to our Post type

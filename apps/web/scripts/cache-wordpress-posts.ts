@@ -3,22 +3,17 @@
 import * as fs from "fs";
 import * as path from "path";
 import { fileURLToPath } from "url";
-import { wpFetch } from "../src/lib/wordpress/client";
+import { wpFetch, CACHE_LIMIT, PAGE_SIZE } from "../src/lib/wordpress/client";
 import type { WordPressPost } from "../src/lib/wordpress/fetch";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// Write to public/ so the file is deployed as a static asset on Cloudflare Pages
-// Also write to .cache/ for backward compatibility with local development
+// Write to public/.cache/ so the file is deployed as a static asset
 const PUBLIC_CACHE_DIR = path.join(__dirname, "..", "public", ".cache");
-const DOT_CACHE_DIR = path.join(__dirname, "..", ".cache");
 
 function ensureDir(dir: string) {
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 }
-
-const TARGET = 400;
-const PAGE_SIZE = 100;
 
 // Only fetch fields we actually use — strips unused WP meta, reducing cache size significantly
 const FIELDS = [
@@ -38,18 +33,16 @@ const EMBED = "wp:featuredmedia,author,wp:term";
 function slimPost(post: WordPressPost): WordPressPost {
   const { _links, ...rest } = post as any;
 
-  // Truncate content — only used for reading-time estimation, full HTML not needed
-  if (rest.content?.rendered) {
-    rest.content = { rendered: rest.content.rendered.slice(0, 3000) };
-  }
+  // Keep full content — individual post pages serve from cache
+  // No content truncation: the cache is the source of truth for all blog views
 
-  // Strip excerpt HTML down to rendered text only
+  // Strip excerpt HTML down to rendered text only (listings only need short excerpts)
   if (rest.excerpt?.rendered) {
     rest.excerpt = { rendered: rest.excerpt.rendered.slice(0, 500) };
   }
 
   if (rest._embedded) {
-    // Author: keep only name, slug, avatar_urls
+    // Author: keep only name, slug, avatar_urls, description
     if (rest._embedded.author) {
       rest._embedded.author = rest._embedded.author.map((a: any) => ({
         name: a.name,
@@ -82,23 +75,29 @@ function slimPost(post: WordPressPost): WordPressPost {
 async function cachePosts() {
   const startTime = Date.now();
   try {
-    console.log(`📝 Fetching up to ${TARGET} WordPress posts...`);
+    console.log(`📝 Fetching up to ${CACHE_LIMIT} WordPress posts...`);
+
+    // Determine how many pages we need
+    const pagesNeeded = Math.ceil(CACHE_LIMIT / PAGE_SIZE);
+
+    // Parallelize: fetch all pages concurrently
+    const pageBatches = await Promise.all(
+      Array.from({ length: pagesNeeded }, (_, i) =>
+        wpFetch<WordPressPost[]>(
+          `/posts?_embed=${EMBED}&_fields=${FIELDS}&per_page=${PAGE_SIZE}&page=${i + 1}&orderby=date&order=desc`
+        )
+      )
+    );
 
     const allPosts: WordPressPost[] = [];
-    let page = 1;
-
-    while (allPosts.length < TARGET) {
-      const batch = await wpFetch<WordPressPost[]>(
-        `/posts?_embed=${EMBED}&_fields=${FIELDS}&per_page=${PAGE_SIZE}&page=${page}&orderby=date&order=desc`
-      );
-      if (batch.length === 0) break;
+    for (let i = 0; i < pageBatches.length; i++) {
+      const batch = pageBatches[i];
       allPosts.push(...batch);
-      console.log(`  Page ${page}: ${batch.length} posts (total: ${allPosts.length})`);
+      console.log(`  Page ${i + 1}: ${batch.length} posts (total: ${allPosts.length})`);
       if (batch.length < PAGE_SIZE) break;
-      page++;
     }
 
-    const slimmedPosts = allPosts.slice(0, TARGET).map(slimPost);
+    const slimmedPosts = allPosts.slice(0, CACHE_LIMIT).map(slimPost);
 
     // Enrich author descriptions — _embed doesn't return description, fetch users directly
     const authorSlugs = [...new Set(
@@ -122,14 +121,9 @@ async function cachePosts() {
       console.log(`👤 Enriched bios for ${Object.keys(bioBySlug).length} author(s)`);
     }
 
-    // Write cache to public/.cache/ — deployed as static asset on Cloudflare Pages
-    // The runtime cache.ts reads this file on cold start for instant content
+    // Write cache to public/.cache/ — deployed as static asset
     ensureDir(PUBLIC_CACHE_DIR);
     fs.writeFileSync(path.join(PUBLIC_CACHE_DIR, "wordpress-posts.json"), JSON.stringify(slimmedPosts));
-
-    // Also write to .cache/ for backward compatibility
-    ensureDir(DOT_CACHE_DIR);
-    fs.writeFileSync(path.join(DOT_CACHE_DIR, "wordpress-posts.json"), JSON.stringify(slimmedPosts));
 
     const duration = Date.now() - startTime;
     console.log(`✅ Cached ${slimmedPosts.length} WordPress posts in ${duration}ms`);

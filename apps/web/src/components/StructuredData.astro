@@ -1,6 +1,6 @@
 ---
 export interface Props {
-  type: "Article" | "WebPage" | "Organization" | "Person" | "NewsArticle";
+  type: "Article" | "WebPage" | "Organization" | "Person" | "NewsArticle" | "BreadcrumbList";
   data: Record<string, any>;
 }
 
@@ -45,6 +45,17 @@ if (type === "Article" || type === "NewsArticle") {
       "@type": "Person",
       name: data.author,
     };
+  }
+
+  // Enhanced article metadata
+  if (data.isAccessibleForFree !== undefined) {
+    baseSchema.isAccessibleForFree = data.isAccessibleForFree;
+  }
+  if (data.wordCount) {
+    baseSchema.wordCount = data.wordCount;
+  }
+  if (data.timeRequired) {
+    baseSchema.timeRequired = data.timeRequired;
   }
 }
 

@@ -28,6 +28,16 @@ const authorSlug = post.data.author?.slug;
 const seoTitle = post.data.seo?.metaTitle || post.data.title;
 const seoDescription = post.data.seo?.metaDescription || post.data.description;
 const seoImage = post.data.seo?.ogImage?.asset?.url || imageUrl;
+
+const tags = post.data.tags || [];
+const breadcrumb = [
+  { name: "Home", url: "https://madavi.co" },
+  { name: "Blog", url: "https://madavi.co/blog" },
+];
+if (categoryName && categorySlug) {
+  breadcrumb.push({ name: categoryName, url: `https://madavi.co/blog/cat/${categorySlug}` });
+}
+breadcrumb.push({ name: post.data.title, url: Astro.url.href });
 ---
 
 <SingleBlogLayout
@@ -44,6 +54,8 @@ const seoImage = post.data.seo?.ogImage?.asset?.url || imageUrl;
   compiledBy={authorName}
   authorAvatar={authorAvatar}
   authorSlug={authorSlug}
+  tags={tags}
+  breadcrumb={breadcrumb}
 >
   {post.body && <div set:html={post.body} />}
 </SingleBlogLayout>

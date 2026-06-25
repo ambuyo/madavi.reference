@@ -1,4 +1,5 @@
 import { wpFetch } from "./client";
+import { decodeHtmlEntities, stripHtml } from "./html";
 
 // Configuration
 const R2_CDN_URL = import.meta.env.PUBLIC_R2_CDN_URL || "https://images.madavi.co";
@@ -113,32 +114,6 @@ export async function fetchWordPressPosts(limit = 2000): Promise<WordPressPost[]
   return allPosts.slice(0, limit);
 }
 
-// Map category slugs to WordPress category IDs
-const categorySlugToId: Record<string, number> = {
-  "company-updates": 240,
-  "hcaif": 1041,
-  "human-centric-ai": 1042,
-  "content-marketing": 241,
-  "growth-marketing": 238,
-  "decision-infrastructure": 1043,
-};
-
-// Fetch posts by category slug
-export async function fetchWordPressPostsByCategory(
-  categorySlug: string
-): Promise<WordPressPost[]> {
-  const categoryId = categorySlugToId[categorySlug];
-
-  if (!categoryId) {
-    console.warn(`Category slug "${categorySlug}" not found in mapping`);
-    return [];
-  }
-
-  return wpFetch<WordPressPost[]>(
-    `/posts?categories=${categoryId}&_embed&per_page=100&orderby=date&order=desc`
-  );
-}
-
 // Fetch single post by slug
 export async function fetchWordPressPostBySlug(
   slug: string
@@ -177,52 +152,6 @@ export function getFeaturedImage(post: WordPressPost) {
     url: "",
     alt: post.title.rendered,
   };
-}
-
-// Decode HTML entities properly
-function decodeHtmlEntities(text: string): string {
-  const entityMap: Record<string, string> = {
-    "&amp;": "&",
-    "&lt;": "<",
-    "&gt;": ">",
-    "&quot;": '"',
-    "&#039;": "'",
-    "&apos;": "'",
-    "&nbsp;": " ",
-    "&hellip;": "…",
-    "&#8217;": "'",
-    "&#8216;": "'",
-    "&#8220;": "“",
-    "&#8221;": "”",
-    "&#8212;": "—",
-    "&#8211;": "–",
-  };
-
-  let decoded = text;
-  for (const [entity, char] of Object.entries(entityMap)) {
-    decoded = decoded.replace(new RegExp(entity, "g"), char);
-  }
-
-  // Handle numeric entities &#XXXX;
-  decoded = decoded.replace(/&#(\d+);/g, (match, dec) => {
-    return String.fromCharCode(parseInt(dec, 10));
-  });
-
-  // Handle hex entities &#xXXXX;
-  decoded = decoded.replace(/&#x([0-9a-f]+);/gi, (match, hex) => {
-    return String.fromCharCode(parseInt(hex, 16));
-  });
-
-  return decoded;
-}
-
-// Extract plain text from HTML
-export function stripHtml(html: string): string {
-  return decodeHtmlEntities(
-    html
-      .replace(/<[^>]*>/g, "") // Remove HTML tags
-      .trim()
-  );
 }
 
 // Check if URL is already on R2 CDN
