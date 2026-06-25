@@ -91,6 +91,10 @@ export default defineConfig({
     resolve: {
       alias: {
         "@": "/src",
+        // Force turndown's browser build on Cloudflare Workers.
+        // The Node.js build calls require('@mixmark-io/domino') which
+        // doesn't exist in Workers. The browser build uses native DOMParser.
+        ...(isCloudflare ? { "turndown": "turndown/lib/turndown.browser.es.js" } : {}),
       },
       // Workers have DOMParser (Web API) but not require().
       // Force browser builds for packages that have Node/browser forks.
