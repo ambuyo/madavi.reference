@@ -1,6 +1,5 @@
 ---
 // Assets
-import Kicker from "@/components/fundations/elements/Kicker.astro";
 import { Image } from "astro:assets";
 import heroImage from "@/images/assets/heroImage.png";
 // Fundations
@@ -16,48 +15,6 @@ interface Props {
   }>;
 }
 
-const { steps } = Astro.props;
-
-const defaultSteps = [
-  {
-    phase: "Pre-Program (Week 0)",
-    title: "Cohort Formation & Baseline",
-    description: "Match leaders with compatible peers and establish starting point",
-    bullets: [
-      "Leadership AI literacy baseline assessment",
-      "Cohort matching (by industry, role, or maturity level)",
-      "Pre-program orientation session",
-      "Learning objectives and success criteria definition",
-      "Access to cohort portal and materials"
-    ]
-  },
-  {
-    phase: "Core Program (Weeks 1-8)",
-    title: "Weekly Learning Sessions",
-    description: "Structured curriculum with peer learning and practical application",
-    bullets: [
-      "90-minute weekly sessions (live virtual or in-person)",
-      "Pre-session assignments and case studies",
-      "Peer discussion and experience sharing",
-      "Practical exercises on real organizational challenges",
-      "Guest practitioners and vendor Q&As (no sales pitches)"
-    ]
-  },
-  {
-    phase: "Post-Program (Ongoing)",
-    title: "Alumni Network & Resources",
-    description: "Continued access to cohort network and updated materials",
-    bullets: [
-      "Quarterly alumni sessions (trends, new tools, challenges)",
-      "Cohort Slack/WhatsApp channel for ongoing questions",
-      "Resource library updates (frameworks, vendor comparisons)",
-      "Priority access to future cohorts and workshops",
-      "Alumni-only office hours with program facilitators"
-    ]
-  }
-];
-
-const displaySteps = steps && steps.length > 0 ? steps : defaultSteps;
 ---
 
 <section>

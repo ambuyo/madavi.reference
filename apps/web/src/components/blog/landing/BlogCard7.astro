@@ -4,7 +4,7 @@ import Text from "@/components/fundations/elements/Text.astro";
 import { calculateReadingTime } from "@/lib/reading-time";
 
 const post = Astro.props.post;
-const { url, title, description, pubDate, image, author, tags } = {
+const { url, title, pubDate, image, author, tags } = {
   url: "/blog/" + (post.slug || post.id),
   tags: post.data.tags ?? [],
   title: post.data.title,

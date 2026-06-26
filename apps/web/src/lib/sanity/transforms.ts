@@ -138,7 +138,7 @@ export function transformService(service: SanityService): Service {
         ? {
             title: service.caseStudy.title,
             description: service.caseStudy.description,
-            featured: typeof service.caseStudy.featured === "object" ? (service.caseStudy.featured as any)?._id : service.caseStudy.featured,
+            featured: typeof service.caseStudy.featured === "object" && service.caseStudy.featured !== null ? (service.caseStudy.featured as { _id?: string })._id : service.caseStudy.featured,
             inline: service.caseStudy.inline,
           }
         : undefined,

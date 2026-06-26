@@ -10,7 +10,6 @@ const slug = isCollectionItem ? post?.id : (post?.slug?.current || post?.slug);
 const title = isCollectionItem ? post?.data?.title : post?.title;
 const summary = isCollectionItem ? post?.data?.summary : post?.description;
 const category = isCollectionItem ? post?.data?.category : post?.category;
-const icon = isCollectionItem ? post?.data?.icon : post?.icon;
 const url = `/services/${slug}`;
 ---
 

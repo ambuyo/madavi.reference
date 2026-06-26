@@ -33,7 +33,7 @@ export function getImageUrl(
     height?: number;
     quality?: number;
     format?: "webp" | "jpg" | "png";
-  } = {}
+  } = {},
 ): string {
   // Return placeholder if no source provided
   if (!source) {
@@ -43,7 +43,10 @@ export function getImageUrl(
   const { width, height, quality = 80, format = "webp" } = options;
 
   try {
-    let imageBuilder = getBuilder().image(source).format(format).quality(quality);
+    let imageBuilder = getBuilder()
+      .image(source)
+      .format(format)
+      .quality(quality);
 
     if (width) {
       imageBuilder = imageBuilder.width(width);
@@ -54,7 +57,7 @@ export function getImageUrl(
     }
 
     return imageBuilder.url();
-  } catch (error) {
+  } catch {
     // If image URL generation fails, return placeholder
     return PLACEHOLDER_IMAGE;
   }

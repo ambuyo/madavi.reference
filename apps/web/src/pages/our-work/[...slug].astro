@@ -25,7 +25,6 @@ const caseStudy = await getSingleWorkBySlug(slug!);
 if (!caseStudy) {
   return Astro.redirect("/404");
 }
-const { frontmatter } = Astro.props;
 ---
 
 <BaseLayout>

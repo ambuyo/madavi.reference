@@ -52,7 +52,7 @@ if (currentPage < 1 || currentPage > totalPages) {
       <div class="space-y-8 lg:space-y-24 mt-12 lg:mt-24">
         {
           solutions.length > 0 ? (
-            solutions.map((solution, index) => (
+            solutions.map((solution) => (
               <article class="relative group grid grid-cols-1 lg:grid-cols-5 gap-x-4 items-start" style="background-color: #FDF8F1;">
                 {solution.featuredImage?.asset?.url && (
                   <div class="col-span-1 lg:col-span-2 w-full h-full">

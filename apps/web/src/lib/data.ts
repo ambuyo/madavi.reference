@@ -536,7 +536,7 @@ export async function getOurWork(limit?: number): Promise<SingleWork[]> {
     return limit ? result.slice(0, limit) : result;
   }
 
-  const caseStudies = (await getCollection("caseStudies" as any)) as any[];
+  const caseStudies = (await getCollection("caseStudies" as Parameters<typeof getCollection>[0])) as unknown as Array<{ id: string; data: SingleWork["data"]; render: () => unknown }>;
   return caseStudies
     .filter((caseStudy: any) => caseStudy?.data?.image && caseStudy?.data?.industry)
     .map((caseStudy: any) => ({
@@ -560,7 +560,7 @@ export async function getOurWork(limit?: number): Promise<SingleWork[]> {
         projectImages: caseStudy.data.projectImages,
         pubDate: caseStudy.data.pubDate,
       },
-      render: () => render(caseStudy),
+      render: () => render(caseStudy as unknown as Parameters<typeof render>[0]),
     }));
 }
 
@@ -580,7 +580,7 @@ export async function getSingleWorkBySlug(
     return (caseStudy && !Array.isArray(caseStudy)) ? transforms.transformSingleWork(caseStudy) : null;
   }
 
-  const entry = (await getEntry("caseStudies" as any, slug)) as any;
+  const entry = (await getEntry("caseStudies" as Parameters<typeof getEntry>[0], slug)) as unknown as { id: string; data: SingleWork["data"]; render: () => unknown };
   if (!entry) return null;
   return {
     slug: entry.id,
@@ -603,7 +603,7 @@ export async function getSingleWorkBySlug(
       projectImages: entry.data.projectImages,
       pubDate: entry.data.pubDate,
     },
-    render: () => render(entry),
+    render: () => render(entry as unknown as Parameters<typeof render>[0]),
   };
 }
 

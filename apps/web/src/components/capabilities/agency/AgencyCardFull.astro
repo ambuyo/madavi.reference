@@ -1,10 +1,9 @@
 ---
 // Fundations
 import Text from "@/components/fundations/elements/Text.astro";
-import Button from "@/components/fundations/elements/Button.astro";
 // Icons for services
 const service = Astro.props.service;
-const { title, summary, category, pricing, url } = {
+const { title, summary, pricing, url } = {
   url: service ? "/capabilities/" + (service.slug || service.id) : "/capabilities/",
   title: service?.data?.title || "",
   summary: service?.data?.summary || "",

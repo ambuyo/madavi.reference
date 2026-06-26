@@ -9,7 +9,6 @@ import testimonial3 from "@/images/assets/testimonial3.png";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import Text from "@/components/fundations/elements/Text.astro";
 import Kicker from "@/components/fundations/elements/Kicker.astro";
-import Button from "@/components/fundations/elements/Button.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 
 // Testimonials Data
@@ -75,7 +74,7 @@ const seo = {
 
       <div class="space-y-8 lg:space-y-24 mt-12 lg:mt-24">
         {
-          testimonials.map((testimonial, index) => (
+          testimonials.map((testimonial) => (
             <article class="relative group bg-base-50 grid grid-cols-1 lg:grid-cols-3 gap-4 ">
               <Image
                 src={testimonial.image}

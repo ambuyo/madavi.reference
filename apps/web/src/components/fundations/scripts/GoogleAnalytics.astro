@@ -14,7 +14,7 @@ if (!GA4_ID) {
     <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA4_ID}`}></script>
     <script define:vars={{ GA4_ID }}>
       window.dataLayer = window.dataLayer || [];
-      function gtag() { dataLayer.push(arguments); }
+      function gtag(...args) { dataLayer.push(args); }
       gtag('js', new Date());
       gtag('config', GA4_ID, {
         'anonymize_ip': true,

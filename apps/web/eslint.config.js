@@ -26,11 +26,19 @@ export default tseslint.config(
       ...eslintPluginReactHooks.configs.recommended.rules,
       "react/react-in-jsx-scope": "off", // React 17+ doesn't need React in scope
       "react/prop-types": "off", // TS handles props validation
+      "@typescript-eslint/no-explicit-any": "off", // Allow explicit any for Sanity and API structures
+      "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }], // Treat unused vars as warnings
     },
     settings: {
       react: {
         version: "detect",
       },
+    },
+  },
+  {
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
     },
   },
   {

@@ -15,7 +15,7 @@ interface Props {
     slug: string;
   };
   categoryDescription?: string | null;
-  posts: any[];
+  posts: Record<string, unknown>[];
   pagination?: {
     currentPage: number;
     totalPages: number;

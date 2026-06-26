@@ -5,7 +5,9 @@ const FILE_CACHE_PATH = "/.cache/wordpress-posts.json";
 
 // Workers require absolute URLs for fetch(). Try the Astro site URL first,
 // then fall back to the production URL.
-const SITE_URL = (typeof import.meta !== "undefined" && (import.meta as any).env?.SITE) || "https://madavi.co";
+const SITE_URL =
+  (typeof import.meta !== "undefined" && (import.meta as any).env?.SITE) ||
+  "https://madavi.co";
 
 /**
  * Resolve the filesystem path to the deployed cache JSON file.
@@ -18,7 +20,7 @@ const SITE_URL = (typeof import.meta !== "undefined" && (import.meta as any).env
 async function getFileCacheDiskPath(): Promise<string> {
   try {
     // Dynamic import — only evaluated at runtime, never in Workers
-    const [{ existsSync, readFileSync }, { dirname, join }, { fileURLToPath }] =
+    const [{ existsSync }, { dirname, join }, { fileURLToPath }] =
       await Promise.all([
         import("node:fs"),
         import("node:path"),
@@ -31,7 +33,16 @@ async function getFileCacheDiskPath(): Promise<string> {
     const candidates = [
       join(__dirname, "..", "client", ".cache", "wordpress-posts.json"),
       join(__dirname, "..", "..", "client", ".cache", "wordpress-posts.json"),
-      join(__dirname, "..", "..", "..", "..", "public", ".cache", "wordpress-posts.json"),
+      join(
+        __dirname,
+        "..",
+        "..",
+        "..",
+        "..",
+        "public",
+        ".cache",
+        "wordpress-posts.json",
+      ),
     ];
     for (const candidate of candidates) {
       if (existsSync(candidate)) return candidate;
@@ -69,7 +80,7 @@ interface SubcategoryInfo {
 
 interface CacheState {
   posts: WordPressPost[];
-  transformed: any[] | null;          // Post[] — lazily populated
+  transformed: any[] | null; // Post[] — lazily populated
   indices: CacheIndices | null;
   allCategories: CategoryInfo[];
   allSubcategories: SubcategoryInfo[];
@@ -157,8 +168,12 @@ function buildIndices(posts: WordPressPost[]): {
 
   return {
     indices: { bySlug, byCategory, byAuthor, byTag },
-    allCategories: [...categorySet.values()].sort((a, b) => a.name.localeCompare(b.name)),
-    allSubcategories: [...subcategorySet.values()].sort((a, b) => a.name.localeCompare(b.name)),
+    allCategories: [...categorySet.values()].sort((a, b) =>
+      a.name.localeCompare(b.name),
+    ),
+    allSubcategories: [...subcategorySet.values()].sort((a, b) =>
+      a.name.localeCompare(b.name),
+    ),
     allTags: [...tagSet].sort(),
   };
 }
@@ -180,7 +195,8 @@ async function loadFromFileCache(): Promise<boolean> {
       const raw = readFileSync(diskPath, "utf-8");
       const posts: WordPressPost[] = JSON.parse(raw);
       if (posts && posts.length > 0) {
-        const { indices, allCategories, allSubcategories, allTags } = buildIndices(posts);
+        const { indices, allCategories, allSubcategories, allTags } =
+          buildIndices(posts);
         cache = {
           posts,
           transformed: null,
@@ -201,8 +217,8 @@ async function loadFromFileCache(): Promise<boolean> {
 
   // 2. Network fallback (Cloudflare Workers runtime)
   const urls = [
-    `${SITE_URL}${FILE_CACHE_PATH}`,  // Absolute URL
-    FILE_CACHE_PATH,                    // Relative path
+    `${SITE_URL}${FILE_CACHE_PATH}`, // Absolute URL
+    FILE_CACHE_PATH, // Relative path
   ];
 
   for (const url of urls) {
@@ -212,7 +228,8 @@ async function loadFromFileCache(): Promise<boolean> {
 
       const posts: WordPressPost[] = await response.json();
       if (posts && posts.length > 0) {
-        const { indices, allCategories, allSubcategories, allTags } = buildIndices(posts);
+        const { indices, allCategories, allSubcategories, allTags } =
+          buildIndices(posts);
         cache = {
           posts,
           transformed: null,
@@ -248,10 +265,11 @@ async function refreshFromWP(): Promise<void> {
   try {
     const { fetchWordPressPosts } = await import("./fetch");
     const posts = await fetchWordPressPosts();
-    const { indices, allCategories, allSubcategories, allTags } = buildIndices(posts);
+    const { indices, allCategories, allSubcategories, allTags } =
+      buildIndices(posts);
     cache = {
       posts,
-      transformed: null,  // lazy — transformed on first read
+      transformed: null, // lazy — transformed on first read
       indices,
       allCategories,
       allSubcategories,
@@ -304,7 +322,9 @@ export async function readCachedTransformedPosts(): Promise<any[] | null> {
   if (!cache.transformed) {
     const { transformWordPressPost } = await import("./transforms");
     cache.transformed = posts.map(transformWordPressPost);
-    console.log(`[cache] Transformed ${cache.transformed.length} posts (Turndown pass)`);
+    console.log(
+      `[cache] Transformed ${cache.transformed.length} posts (Turndown pass)`,
+    );
   }
 
   return cache.transformed;
@@ -313,25 +333,33 @@ export async function readCachedTransformedPosts(): Promise<any[] | null> {
 // ── Index-based accessors ────────────────────────────────────────────────
 
 /** Get a single post by slug from cache (O(1)). Returns null if not in cache. */
-export async function getCachedPostBySlug(slug: string): Promise<WordPressPost | null> {
+export async function getCachedPostBySlug(
+  slug: string,
+): Promise<WordPressPost | null> {
   await readCachedPosts(); // ensure cache is loaded
   return cache?.indices?.bySlug.get(slug) ?? null;
 }
 
 /** Get posts by category slug from cache index (O(1) lookup). */
-export async function getCachedPostsByCategory(slug: string): Promise<WordPressPost[]> {
+export async function getCachedPostsByCategory(
+  slug: string,
+): Promise<WordPressPost[]> {
   await readCachedPosts();
   return cache?.indices?.byCategory.get(slug) ?? [];
 }
 
 /** Get posts by author slug from cache index (O(1) lookup). */
-export async function getCachedPostsByAuthor(slug: string): Promise<WordPressPost[]> {
+export async function getCachedPostsByAuthor(
+  slug: string,
+): Promise<WordPressPost[]> {
   await readCachedPosts();
   return cache?.indices?.byAuthor.get(slug) ?? [];
 }
 
 /** Get posts by tag slug from cache index (O(1) lookup). */
-export async function getCachedPostsByTag(slug: string): Promise<WordPressPost[]> {
+export async function getCachedPostsByTag(
+  slug: string,
+): Promise<WordPressPost[]> {
   await readCachedPosts();
   return cache?.indices?.byTag.get(slug) ?? [];
 }
@@ -369,10 +397,11 @@ export function getMemoryPosts(): WordPressPost[] | null {
  * to update the cache after a live WP fetch.
  */
 export function setMemoryPosts(posts: WordPressPost[]): void {
-  const { indices, allCategories, allSubcategories, allTags } = buildIndices(posts);
+  const { indices, allCategories, allSubcategories, allTags } =
+    buildIndices(posts);
   cache = {
     posts,
-    transformed: null,  // reset — will re-transform on next read
+    transformed: null, // reset — will re-transform on next read
     indices,
     allCategories,
     allSubcategories,

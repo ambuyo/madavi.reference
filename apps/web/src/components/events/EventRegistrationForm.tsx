@@ -39,12 +39,17 @@ export function EventRegistrationForm({
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors },
     reset,
   } = useForm<EventRegistrationData>({
     resolver: zodResolver(eventRegistrationSchema),
     mode: "onBlur",
-    defaultValues: { phone: "", company: "", dietaryRestrictions: "", specialRequests: "" },
+    defaultValues: {
+      phone: "",
+      company: "",
+      dietaryRestrictions: "",
+      specialRequests: "",
+    },
   });
 
   const onSubmit = async (data: EventRegistrationData) => {
@@ -69,7 +74,7 @@ export function EventRegistrationForm({
       if (response.ok) {
         setSubmitStatus("success");
         setSubmitMessage(
-          "Registration successful! Check your email for confirmation details."
+          "Registration successful! Check your email for confirmation details.",
         );
         reset();
       } else {

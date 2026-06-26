@@ -56,14 +56,16 @@ if (supportsTurndown) {
         node.tagName === "DIV" && node.classList.contains("wp-block-gallery"),
       replacement: (content: string, node: any) => {
         const images = node.querySelectorAll("img");
-        const alt = images[0]?.alt || "Gallery";
         return `\n**Gallery**\n${Array.from(images)
           .map((img: any) => `- ![${img.alt}](${img.src})`)
           .join("\n")}\n`;
       },
     });
   } catch (error) {
-    console.warn("[markdown] Turndown unavailable, markdown disabled:", (error as Error).message);
+    console.warn(
+      "[markdown] Turndown unavailable, markdown disabled:",
+      (error as Error).message,
+    );
   }
 }
 
@@ -78,7 +80,10 @@ export function htmlToMarkdown(html: string): string {
       .trim();
     return markdown;
   } catch (error) {
-    console.warn("Error converting HTML to Markdown, returning plain text:", error);
+    console.warn(
+      "Error converting HTML to Markdown, returning plain text:",
+      error,
+    );
     return stripHtml(html);
   }
 }

@@ -9,7 +9,7 @@ function rgbToHex(r: number, g: number, b: number): string {
 function rgbToHsl(
   r: number,
   g: number,
-  b: number
+  b: number,
 ): { h: number; s: number; l: number } {
   r /= 255;
   g /= 255;
@@ -46,7 +46,7 @@ function rgbToHsl(
 function rgbToHsv(
   r: number,
   g: number,
-  b: number
+  b: number,
 ): { h: number; s: number; v: number } {
   r /= 255;
   g /= 255;
@@ -83,7 +83,7 @@ function rgbToHsv(
 
 function extractPalette(
   imageData: ImageData,
-  count: number = 10
+  count: number = 10,
 ): { r: number; g: number; b: number; hex: string }[] {
   const pixels: { r: number; g: number; b: number }[] = [];
   const data = imageData.data;
@@ -108,7 +108,7 @@ function extractPalette(
   let finalClusters: { r: number; g: number; b: number }[][] = [];
   for (let iter = 0; iter < 5; iter++) {
     const clusters: { r: number; g: number; b: number }[][] = centroids.map(
-      () => []
+      () => [],
     );
 
     for (const pixel of pixels) {
@@ -136,7 +136,7 @@ function extractPalette(
           acc.b += p.b;
           return acc;
         },
-        { r: 0, g: 0, b: 0 }
+        { r: 0, g: 0, b: 0 },
       );
       centroids[c] = {
         r: Math.round(avg.r / clusters[c].length),
@@ -186,9 +186,12 @@ export default function ImageColorPicker() {
   const [palette, setPalette] = useState<
     { r: number; g: number; b: number; hex: string }[]
   >([]);
-  const [mousePos, setMousePos] = useState<{ x: number; y: number } | null>(
-    null
-  );
+  const [mousePos, setMousePos] = useState<{
+    x: number;
+    y: number;
+    containerWidth: number;
+    canvasHeight: number;
+  } | null>(null);
   const [copiedFormat, setCopiedFormat] = useState<string | null>(null);
   const [activeFormat, setActiveFormat] = useState<ColorFormat>("hex");
   const [urlInput, setUrlInput] = useState("");
@@ -231,10 +234,7 @@ export default function ImageColorPicker() {
     if (!canvas || !image) return;
 
     // Constrain canvas to container width, max 800px
-    const maxWidth = Math.min(
-      containerRef.current?.clientWidth ?? 800,
-      800
-    );
+    const maxWidth = Math.min(containerRef.current?.clientWidth ?? 800, 800);
     const scale = maxWidth / image.naturalWidth;
     canvas.width = maxWidth;
     canvas.height = image.naturalHeight * scale;
@@ -287,24 +287,18 @@ export default function ImageColorPicker() {
       smallCanvas.height = Math.floor(canvas.height / scaleDown);
       const smallCtx = smallCanvas.getContext("2d");
       if (smallCtx) {
-        smallCtx.drawImage(
-          canvas,
-          0,
-          0,
-          smallCanvas.width,
-          smallCanvas.height
-        );
+        smallCtx.drawImage(canvas, 0, 0, smallCanvas.width, smallCanvas.height);
         const imageData = smallCtx.getImageData(
           0,
           0,
           smallCanvas.width,
-          smallCanvas.height
+          smallCanvas.height,
         );
         const colors = extractPalette(imageData, 10);
         setPalette(colors);
       }
     },
-    []
+    [],
   );
 
   // ── Handle mouse move for magnifier ────────────────────────────────────
@@ -318,7 +312,12 @@ export default function ImageColorPicker() {
       const x = Math.round(e.clientX - rect.left);
       const y = Math.round(e.clientY - rect.top);
 
-      setMousePos({ x, y });
+      setMousePos({
+        x,
+        y,
+        containerWidth: containerRef.current?.clientWidth ?? 400,
+        canvasHeight: canvasRef.current?.height ?? 400,
+      });
 
       // Draw magnifier
       const magCanvas = magnifierCanvasRef.current;
@@ -336,8 +335,14 @@ export default function ImageColorPicker() {
       magCtx.imageSmoothingEnabled = false;
 
       // Draw zoomed region
-      const sx = Math.max(0, Math.min(x - halfSample, canvas.width - magSize / zoom));
-      const sy = Math.max(0, Math.min(y - halfSample, canvas.height - magSize / zoom));
+      const sx = Math.max(
+        0,
+        Math.min(x - halfSample, canvas.width - magSize / zoom),
+      );
+      const sy = Math.max(
+        0,
+        Math.min(y - halfSample, canvas.height - magSize / zoom),
+      );
 
       magCtx.drawImage(
         canvas,
@@ -348,7 +353,7 @@ export default function ImageColorPicker() {
         0,
         0,
         magSize,
-        magSize
+        magSize,
       );
 
       // Draw crosshair
@@ -373,7 +378,7 @@ export default function ImageColorPicker() {
       magCtx.lineTo(magSize, cy - 0.5);
       magCtx.stroke();
     },
-    []
+    [],
   );
 
   const handleMouseLeave = useCallback(() => {
@@ -389,7 +394,7 @@ export default function ImageColorPicker() {
       const url = URL.createObjectURL(file);
       loadImage(url);
     },
-    [loadImage]
+    [loadImage],
   );
 
   const handleDrop = useCallback(
@@ -402,7 +407,7 @@ export default function ImageColorPicker() {
         loadImage(url);
       }
     },
-    [loadImage]
+    [loadImage],
   );
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
@@ -445,14 +450,14 @@ export default function ImageColorPicker() {
       if (!trimmed) return;
       if (
         !/^https?:\/\/.+\.(jpg|jpeg|png|gif|webp|svg|bmp)(\?.*)?$/i.test(
-          trimmed
+          trimmed,
         )
       ) {
         // Try loading anyway — could be a data URL or redirect
       }
       loadImage(trimmed);
     },
-    [urlInput, loadImage]
+    [urlInput, loadImage],
   );
 
   // ── Copy to clipboard ───────────────────────────────────────────────────
@@ -477,7 +482,7 @@ export default function ImageColorPicker() {
         setTimeout(() => setCopiedFormat(null), 1500);
       }
     },
-    [pickedColor]
+    [pickedColor],
   );
 
   // ── Render ──────────────────────────────────────────────────────────────
@@ -486,7 +491,6 @@ export default function ImageColorPicker() {
     <div className="w-full min-h-screen relative overflow-hidden bg-stone-50">
       {/* ── Main Content ────────────────────────────────────────────────── */}
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-10 sm:py-16">
-
         {/* ── Header ──────────────────────────────────────────────────── */}
         <div className="text-center mb-10">
           <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold tracking-wide uppercase bg-accent-500/10 text-accent-600 mb-5 border border-accent-500/20">
@@ -497,8 +501,8 @@ export default function ImageColorPicker() {
           </h1>
           <p className="mt-4 text-base sm:text-lg text-stone-500 max-w-2xl mx-auto text-balance leading-relaxed">
             Upload an image, click any pixel, and instantly get its color in
-            HEX, RGB, HSL, and HSV. Everything happens in your browser — no
-            data is ever uploaded.
+            HEX, RGB, HSL, and HSV. Everything happens in your browser — no data
+            is ever uploaded.
           </p>
         </div>
 
@@ -544,14 +548,11 @@ export default function ImageColorPicker() {
             </form>
           </div>
 
-          {urlError && (
-            <p className="mt-3 text-red-500 text-sm">{urlError}</p>
-          )}
+          {urlError && <p className="mt-3 text-red-500 text-sm">{urlError}</p>}
 
           <p className="mt-3 text-center text-xs text-stone-400">
             You can also{" "}
-            <strong className="text-stone-600">paste from clipboard</strong>{" "}
-            or{" "}
+            <strong className="text-stone-600">paste from clipboard</strong> or{" "}
             <strong className="text-stone-600">drag & drop an image</strong>
           </p>
         </div>
@@ -608,11 +609,11 @@ export default function ImageColorPicker() {
                   style={{
                     left: Math.min(
                       mousePos.x + 24,
-                      (containerRef.current?.clientWidth ?? 400) - 148
+                      mousePos.containerWidth - 148,
                     ),
                     top: Math.min(
                       mousePos.y - 148,
-                      (canvasRef.current?.height ?? 400) - 148
+                      mousePos.canvasHeight - 148,
                     ),
                   }}
                 >
@@ -777,7 +778,6 @@ export default function ImageColorPicker() {
             body="No. Your image stays on your device. Everything is processed client-side using your browser's canvas API. No data is ever sent anywhere."
           />
         </div>
-
       </div>
     </div>
   );
@@ -841,11 +841,7 @@ function CheckIcon({ className }: { className?: string }) {
       stroke="currentColor"
       strokeWidth={2}
     >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M5 13l4 4L19 7"
-      />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
     </svg>
   );
 }

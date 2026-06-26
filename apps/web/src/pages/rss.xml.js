@@ -1,10 +1,12 @@
-import rss from '@astrojs/rss';
+/* global console */
+import rss from "@astrojs/rss";
 
 export async function GET(context) {
   let items = [];
 
   try {
-    const { readCachedTransformedPosts } = await import("../lib/wordpress/cache");
+    const { readCachedTransformedPosts } =
+      await import("../lib/wordpress/cache");
 
     const posts = await readCachedTransformedPosts();
     if (posts && posts.length > 0) {
@@ -33,7 +35,8 @@ export async function GET(context) {
       });
     }
   } catch (error) {
-    console.error("[rss] Failed to load posts from cache:", error);
+    if (typeof console !== "undefined" && typeof console.error !== "undefined")
+      console.error("[rss] Failed to load posts from cache:", error);
     // Return empty feed rather than failing
   }
 

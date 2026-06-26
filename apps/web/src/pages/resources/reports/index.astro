@@ -50,7 +50,7 @@ if (currentPage < 1 || currentPage > totalPages) {
       <div class="space-y-8 lg:space-y-24 mt-12 lg:mt-24">
         {
           reports.length > 0 ? (
-            reports.map((report, index) => {
+            reports.map((report) => {
               const pubDate = new Date(report.publicationDate).toLocaleDateString(
                 "en-US",
                 {

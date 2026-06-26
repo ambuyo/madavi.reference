@@ -29,7 +29,8 @@ const SITE = "https://madavi.co";
  */
 function scoreResult(result: SearchResult, query: string): number {
   const terms = query.toLowerCase().split(/\s+/);
-  const haystack = `${result.title} ${result.description} ${result.category || ""}`.toLowerCase();
+  const haystack =
+    `${result.title} ${result.description} ${result.category || ""}`.toLowerCase();
   let score = 0;
   for (const term of terms) {
     if (result.title.toLowerCase().includes(term)) score += 10;
@@ -40,7 +41,7 @@ function scoreResult(result: SearchResult, query: string): number {
   return score;
 }
 
-export const GET: APIRoute = async ({ request, url: requestUrl }) => {
+export const GET: APIRoute = async ({ url: requestUrl }) => {
   const q = requestUrl.searchParams.get("q")?.trim();
   if (!q || q.length < 2) {
     return new Response(JSON.stringify({ results: [], query: q || "" }), {
@@ -64,10 +65,11 @@ export const GET: APIRoute = async ({ request, url: requestUrl }) => {
         for (const post of cachedPosts) {
           const title = post.title?.rendered || "";
           const excerpt = post.excerpt?.rendered?.replace(/<[^>]*>/g, "") || "";
-          const categories = post._embedded?.["wp:term"]
-            ?.flat()
-            ?.filter((t: any) => t.taxonomy === "category")
-            ?.map((t: any) => t.name) || [];
+          const categories =
+            post._embedded?.["wp:term"]
+              ?.flat()
+              ?.filter((t: any) => t.taxonomy === "category")
+              ?.map((t: any) => t.name) || [];
 
           results.push({
             title,
@@ -92,7 +94,7 @@ export const GET: APIRoute = async ({ request, url: requestUrl }) => {
       const services = await sanityFetch<any[]>(
         `*[_type == "service" && defined(slug.current)] {
           title, "slug": slug.current, summary, "category": "Service"
-        }`
+        }`,
       );
       if (Array.isArray(services)) {
         for (const s of services) {
@@ -111,7 +113,7 @@ export const GET: APIRoute = async ({ request, url: requestUrl }) => {
       const industries = await sanityFetch<any[]>(
         `*[_type == "industry" && defined(slug.current)] {
           title, "slug": slug.current, summary, "category": "Industry"
-        }`
+        }`,
       );
       if (Array.isArray(industries)) {
         for (const ind of industries) {
@@ -130,7 +132,7 @@ export const GET: APIRoute = async ({ request, url: requestUrl }) => {
       const caseStudies = await sanityFetch<any[]>(
         `*[_type == "singleWork" && defined(slug.current)] {
           title, "slug": slug.current, summary, "category": coalesce(industry, "Case Study")
-        }`
+        }`,
       );
       if (Array.isArray(caseStudies)) {
         for (const cs of caseStudies) {
@@ -164,7 +166,7 @@ export const GET: APIRoute = async ({ request, url: requestUrl }) => {
           "Content-Type": "application/json",
           "Cache-Control": "public, max-age=60, stale-while-revalidate=300",
         },
-      }
+      },
     );
   } catch (error) {
     console.error("[search] Error:", error);
@@ -176,7 +178,7 @@ export const GET: APIRoute = async ({ request, url: requestUrl }) => {
           "Content-Type": "application/json",
           "Cache-Control": "public, max-age=10",
         },
-      }
+      },
     );
   }
 };
