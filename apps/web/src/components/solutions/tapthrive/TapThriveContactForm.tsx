@@ -9,11 +9,11 @@ const tapThriveSchema = z.object({
   name: z.string().min(1, "Full name is required"),
   whatsapp: z.string().min(1, "WhatsApp number is required"),
   business: z.string().min(1, "Business name is required"),
-  businessType: z.string().optional().default(""),
-  plan: z.string().optional().default(""),
-  locations: z.string().optional().default(""),
-  hasGMB: z.string().optional().default(""),
-  question: z.string().optional().default(""),
+  businessType: z.string(),
+  plan: z.string(),
+  locations: z.string(),
+  hasGMB: z.string(),
+  question: z.string(),
   privacy: z.boolean().refine((val) => val === true, {
     message: "You must agree to the privacy policy",
   }),
@@ -59,6 +59,7 @@ export function TapThriveContactForm() {
     reset,
   } = useForm<TapThriveFormData>({
     resolver: zodResolver(tapThriveSchema),
+    defaultValues: { businessType: "", plan: "", locations: "", hasGMB: "", question: "" },
     mode: "onBlur",
   });
 

@@ -22,10 +22,10 @@ const SERVICES = [
 const contactSchema = z.object({
   name: z.string().min(1, "Full name is required"),
   email: z.string().email("Invalid email address"),
-  phone: z.string().optional().default(""),
-  company: z.string().optional().default(""),
-  services: z.array(z.string()).max(3, "Select up to 3 services").optional().default([]),
-  budget: z.string().optional().default("2k-5k"),
+  phone: z.string(),
+  company: z.string(),
+  services: z.array(z.string()).max(3, "Select up to 3 services"),
+  budget: z.string(),
   subject: z.string().min(1, "Subject is required"),
   message: z.string().min(10, "Message must be at least 10 characters"),
   privacy: z.boolean().refine((val) => val === true, {
@@ -54,7 +54,7 @@ export function ContactFormReact() {
   } = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
     mode: "onBlur",
-    defaultValues: { services: [], budget: "2k-5k" },
+    defaultValues: { phone: "", company: "", services: [], budget: "2k-5k" },
   });
 
   const selectedServices = watch("services") ?? [];

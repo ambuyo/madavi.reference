@@ -36,7 +36,7 @@ export async function sendZeptoMail(params: SendParams): Promise<boolean> {
       htmlbody: params.htmlBody,
     };
 
-    const resp = await client.sendMail(body);
+    const resp: any = await client.sendMail(body as any);
 
     if (resp?.data) {
       console.log(`[ZeptoMail] Sent "${params.subject}" → ${params.toEmail}`);

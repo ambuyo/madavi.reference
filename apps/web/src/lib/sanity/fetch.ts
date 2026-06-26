@@ -18,6 +18,9 @@ export async function sanityFetch<T>(
 
   try {
     const sanityClient = preview ? previewClient : getClient();
+    if (!sanityClient) {
+      throw new Error("Sanity client is not initialized");
+    }
     return sanityClient.fetch<T>(query, params);
   } catch (error) {
     const msg = error instanceof Error ? error.message : String(error);

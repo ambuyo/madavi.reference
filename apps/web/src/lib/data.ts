@@ -536,7 +536,7 @@ export async function getOurWork(limit?: number): Promise<SingleWork[]> {
     return limit ? result.slice(0, limit) : result;
   }
 
-  const caseStudies = await getCollection("caseStudies");
+  const caseStudies = (await getCollection("caseStudies" as any)) as any[];
   return caseStudies
     .filter((caseStudy: any) => caseStudy?.data?.image && caseStudy?.data?.industry)
     .map((caseStudy: any) => ({
@@ -580,7 +580,7 @@ export async function getSingleWorkBySlug(
     return (caseStudy && !Array.isArray(caseStudy)) ? transforms.transformSingleWork(caseStudy) : null;
   }
 
-  const entry = await getEntry("caseStudies", slug);
+  const entry = (await getEntry("caseStudies" as any, slug)) as any;
   if (!entry) return null;
   return {
     slug: entry.id,

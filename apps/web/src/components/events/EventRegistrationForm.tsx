@@ -6,14 +6,14 @@ import { useState } from "react";
 const eventRegistrationSchema = z.object({
   name: z.string().min(1, "Full name is required"),
   email: z.string().email("Invalid email address"),
-  phone: z.string().optional().default(""),
-  company: z.string().optional().default(""),
+  phone: z.string(),
+  company: z.string(),
   attendeeCount: z
     .number()
     .min(1, "At least 1 attendee required")
     .max(10, "Maximum 10 attendees"),
-  dietaryRestrictions: z.string().optional().default(""),
-  specialRequests: z.string().optional().default(""),
+  dietaryRestrictions: z.string(),
+  specialRequests: z.string(),
   terms: z.boolean().refine((val) => val === true, {
     message: "You must agree to the terms",
   }),
@@ -44,6 +44,7 @@ export function EventRegistrationForm({
   } = useForm<EventRegistrationData>({
     resolver: zodResolver(eventRegistrationSchema),
     mode: "onBlur",
+    defaultValues: { phone: "", company: "", dietaryRestrictions: "", specialRequests: "" },
   });
 
   const onSubmit = async (data: EventRegistrationData) => {

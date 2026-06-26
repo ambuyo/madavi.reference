@@ -1,5 +1,5 @@
 import { createClient } from '@sanity/client';
-import { loadSnapshot, getAllSnapshots, ServiceSnapshot } from './snapshot';
+import { loadSnapshot, getAllSnapshots, type ServiceSnapshot } from './snapshot';
 
 let sanityClient: ReturnType<typeof createClient> | null = null;
 
@@ -104,7 +104,7 @@ export async function fetchAllServices(
 
     return services as ServiceSnapshot[];
   } catch (error) {
-    console.warn('Failed to fetch services from Sanity:', error.message);
+    console.warn('Failed to fetch services from Sanity:', error instanceof Error ? error.message : String(error));
 
     if (useFallback) {
       const snapshots = loadAllSnapshots();

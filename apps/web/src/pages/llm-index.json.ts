@@ -31,19 +31,19 @@ export const GET: APIRoute = async () => {
 
     // Services / Capabilities
     const servicesData = services.map((s) => ({
-      title: s.data.name ?? s.data.title,
+      title: (s.data as any).name ?? s.data.title,
       url: `${siteUrl}/capabilities/${s.slug}`,
       slug: s.slug,
-      description: s.data.summary ?? s.data.description ?? "",
+      description: s.data.summary ?? (s.data as any).description ?? "",
       category: s.data.category ?? "service",
     }));
 
     // Industries
     const industriesData = industries.map((i) => ({
-      title: i.data.name ?? i.data.title,
+      title: (i.data as any).name ?? i.data.title,
       url: `${siteUrl}/industries/${i.slug}`,
       slug: i.slug,
-      description: i.data.summary ?? i.data.description ?? "",
+      description: i.data.summary ?? (i.data as any).description ?? "",
       category: "industry",
     }));
 
@@ -71,7 +71,7 @@ export const GET: APIRoute = async () => {
 
     // Info / Legal pages
     const infoData = infoPages.map((p) => ({
-      title: p.data.title ?? p.slug,
+      title: (p.data as any).title ?? p.data.page ?? p.slug,
       url: `${siteUrl}/legal/${p.slug}`,
       slug: p.slug,
     }));
