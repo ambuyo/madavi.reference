@@ -10,7 +10,8 @@ const isCloudflare = target === "cloudflare";
 
 export default defineConfig({
   output: "server",
-  adapter: isCloudflare ? cloudflare() : node({ mode: "standalone" }),
+  // adapter: isCloudflare ? cloudflare() : node({ mode: "standalone" }),
+  adapter: node({ mode: "standalone" }),
   redirects: {
     "/resources": { destination: "/blog", status: 301 },
     "/work/[...slug]": { destination: "/our-work/[...slug]", status: 301 },
