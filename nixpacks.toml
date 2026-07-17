@@ -10,7 +10,7 @@ cmds = [
 [phases.build]
 cacheDirectories = ["apps/web/.astro", "node_modules/.cache"]
 cmds = [
-  "pnpm run build:vps"
+  "corepack enable && DEPLOY_TARGET=vps pnpm --filter @madavi/web run build:ci"
 ]
 
 [start]

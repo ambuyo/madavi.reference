@@ -52,7 +52,14 @@ export const onRequest = defineMiddleware(async (context, next) => {
   }
 });
 
-async function handleRequest(context: any, next: any, startTime: number, url: URL, pathname: string, host: string) {
+async function handleRequest(
+  context: any,
+  next: any,
+  startTime: number,
+  url: URL,
+  pathname: string,
+  host: string,
+) {
   // Log every SSR request for debugging
   if (!pathname.startsWith("/_astro") && !pathname.startsWith("/assets")) {
     console.log(`[request] ${context.request.method} ${pathname} — start`);

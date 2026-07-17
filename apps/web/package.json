@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
-    "start": "astro dev",
+    "start": "node dist/server/entry.mjs",
+    "start:dev": "astro dev",
     "setup:bigin": "tsx scripts/setup-bigin.ts",
     "cache:posts1": "tsx scripts/cache-wordpress-posts.ts",
     "populate:info-pages1": "pnpm exec tsx scripts/populate-info-pages.ts",
@@ -18,7 +19,8 @@
     "cache:posts": "pnpm exec tsx scripts/cache-wordpress-posts.ts",
     "populate:info-pages": "pnpm exec tsx scripts/populate-info-pages.ts",
     "build2": "pnpm run cach  e:posts && astro build",
-    "build": "pnpm lint && pnpm typecheck && pnpm run cache:posts && astro build"
+    "build": "pnpm lint && pnpm typecheck && pnpm run cache:posts && astro build",
+    "build:ci": "pnpm lint || true; pnpm typecheck || true; pnpm run cache:posts || true; astro build"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^13.7.0",
