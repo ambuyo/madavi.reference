@@ -3,7 +3,7 @@ export const wpBaseUrl = "https://cms.madavi.co";
 export const wpApiUrl = `${wpBaseUrl}/wp-json/wp/v2`;
 
 /** Maximum number of posts to cache (shared by build script and revalidate endpoint) */
-export const CACHE_LIMIT = 150;
+export const CACHE_LIMIT = 10;
 /** Posts per page when fetching from WP REST API */
 export const PAGE_SIZE = 100;
 
