@@ -17,7 +17,7 @@
     "typecheck": "tsc --noEmit",
     "cache:posts": "pnpm exec tsx scripts/cache-wordpress-posts.ts",
     "populate:info-pages": "pnpm exec tsx scripts/populate-info-pages.ts",
-    "build1": "pnpm run cach  e:posts && astro build",
+    "build2": "pnpm run cach  e:posts && astro build",
     "build": "pnpm lint && pnpm typecheck && pnpm run cache:posts && astro build"
   },
   "dependencies": {
@@ -59,6 +59,7 @@
     "@tailwindcss/postcss": "^4.3.1",
     "@types/react": "^18.3.31",
     "@types/react-dom": "^18.3.7",
+    "@typescript-eslint/parser": "^8.64.0",
     "eslint": "^9.39.4",
     "eslint-plugin-astro": "^2.1.1",
     "eslint-plugin-react": "^7.37.5",
@@ -67,5 +68,11 @@
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.62.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "@types/react": "^18.3.31",
+      "@types/react-dom": "^18.3.7"
+    }
   }
 }

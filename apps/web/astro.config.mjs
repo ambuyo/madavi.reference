@@ -1,9 +1,8 @@
 /* global process */
-import { defineConfig } from "astro/config";
-import sitemap from "@astrojs/sitemap";
-import react from "@astrojs/react";
 import node from "@astrojs/node";
-import cloudflare from "@astrojs/cloudflare";
+import react from "@astrojs/react";
+import sitemap from "@astrojs/sitemap";
+import { defineConfig } from "astro/config";
 
 const target = process.env.DEPLOY_TARGET || "vps";
 const isCloudflare = target === "cloudflare";
