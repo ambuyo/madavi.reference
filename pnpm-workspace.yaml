@@ -1,14 +1,18 @@
 packages:
-  - 'apps/*'
-  - 'packages/*'
+  - "apps/*"
+  - "packages/*"
+
+overrides:
+  "@types/react": "^18.3.31"
+  "@types/react-dom": "^18.3.7"
 
 allowBuilds:
-  '@parcel/watcher': true
+  "@parcel/watcher": true
   esbuild: false
   sharp: true
   workerd: true
 
 onlyBuiltDependencies:
-  - '@parcel/watcher'
+  - "@parcel/watcher"
   - sharp
   - workerd
