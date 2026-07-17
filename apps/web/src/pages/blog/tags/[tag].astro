@@ -1,4 +1,5 @@
 ---
+const _pageStart = Date.now();
 // Fundations
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import Text from "@/components/fundations/elements/Text.astro";
@@ -15,7 +16,11 @@ const POSTS_PER_PAGE = 20;
 
 // Parse tag and optional page number from URL
 const { tag: tagParam } = Astro.params;
-if (!tagParam) return Astro.redirect("/blog");
+if (!tagParam) {
+  console.log(`[page:blog:tag] GET /blog/tags — no tag param, redirecting`);
+  return Astro.redirect("/blog");
+}
+console.log(`[page:blog:tag] GET /blog/tags/${tagParam}`);
 
 const parts = tagParam.split("/");
 const tag = parts[0];
@@ -51,6 +56,8 @@ const pagination = {
       ? `/blog/tags/${tag}${currentPage - 1 > 1 ? `/${currentPage - 1}` : ""}`
       : null,
 };
+
+console.log(`[page:blog:tag] /blog/tags/${tag} — ${paginatedPosts.length} posts, page ${currentPage}/${totalPages} (${Date.now() - _pageStart}ms)`);
 
 const seo = {
   title: `Articles tagged "${tag.replace(/-/g, " ")}"${currentPage > 1 ? ` — Page ${currentPage}` : ""}`,

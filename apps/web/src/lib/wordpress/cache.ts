@@ -28,6 +28,7 @@ async function getFileCacheDiskPath(): Promise<string> {
       ]);
 
     const __dirname = dirname(fileURLToPath(import.meta.url));
+    console.log(`[cache] Resolving cache from __dirname=${__dirname}`);
     // In production: dist/server/chunks/ → ../../client/.cache/wordpress-posts.json
     // In dev:        src/lib/wordpress/   → ../../../../public/.cache/wordpress-posts.json
     const candidates = [
@@ -45,9 +46,14 @@ async function getFileCacheDiskPath(): Promise<string> {
       ),
     ];
     for (const candidate of candidates) {
-      if (existsSync(candidate)) return candidate;
+      const found = existsSync(candidate);
+      console.log(
+        `[cache] Checking ${candidate} ... ${found ? "FOUND" : "not found"}`,
+      );
+      if (found) return candidate;
     }
-  } catch {
+  } catch (err) {
+    console.warn(`[cache] getFileCacheDiskPath error:`, err);
     // Dynamic import fails on Cloudflare Workers (no "node:" modules)
     // → return "" → fall through to network fetch path
   }
@@ -207,24 +213,41 @@ async function loadFromFileCache(): Promise<boolean> {
           timestamp: Date.now(),
           refreshing: false,
         };
-        console.log(`[cache] Loaded ${posts.length} posts from disk cache`);
+        console.log(
+          `[cache] Loaded ${posts.length} posts from disk cache: ${diskPath}`,
+        );
         return true;
       }
-    } catch {
-      // Disk read failed — try network fallback
+      console.warn(`[cache] Disk cache file was empty or invalid: ${diskPath}`);
+    } catch (err) {
+      console.warn(`[cache] Disk read failed for ${diskPath}:`, err);
     }
   }
 
   // 2. Network fallback (Cloudflare Workers runtime)
-  const urls = [
-    `${SITE_URL}${FILE_CACHE_PATH}`, // Absolute URL
-    FILE_CACHE_PATH, // Relative path
-  ];
+  // IMPORTANT: skip the absolute-URL fallback on VPS to avoid self-fetch loops
+  // (the server calling itself through Cloudflare → back to the origin)
+  const isVpsRuntime = typeof process !== "undefined" && process.versions?.node;
+  const urls = isVpsRuntime
+    ? [] // VPS should have the disk cache; if not, fall through to live WP API
+    : [
+        `${SITE_URL}${FILE_CACHE_PATH}`, // Absolute URL (Workers)
+        FILE_CACHE_PATH, // Relative path
+      ];
 
   for (const url of urls) {
     try {
-      const response = await fetch(url);
-      if (!response.ok) continue;
+      console.log(`[cache] Trying network fallback: ${url}`);
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 5000);
+      const response = await fetch(url, { signal: controller.signal });
+      clearTimeout(timeout);
+      if (!response.ok) {
+        console.warn(
+          `[cache] Network fallback returned ${response.status}: ${url}`,
+        );
+        continue;
+      }
 
       const posts: WordPressPost[] = await response.json();
       if (posts && posts.length > 0) {
@@ -240,14 +263,17 @@ async function loadFromFileCache(): Promise<boolean> {
           timestamp: Date.now(),
           refreshing: false,
         };
-        console.log(`[cache] Loaded ${posts.length} posts from deployed cache`);
+        console.log(
+          `[cache] Loaded ${posts.length} posts from deployed cache: ${url}`,
+        );
         return true;
       }
-    } catch {
-      // Try next URL format
+    } catch (err) {
+      console.warn(`[cache] Network fallback failed for ${url}:`, err);
     }
   }
 
+  console.warn(`[cache] All cache loading paths failed!`);
   return false;
 }
 
@@ -259,12 +285,17 @@ async function loadFromFileCache(): Promise<boolean> {
  * background stale-while-revalidate refreshes between deploys.
  */
 async function refreshFromWP(): Promise<void> {
-  if (cache?.refreshing) return;
+  if (cache?.refreshing) {
+    console.log(`[cache] Already refreshing, skipping duplicate`);
+    return;
+  }
   if (cache) cache.refreshing = true;
+  const startTime = Date.now();
 
   try {
     const { fetchWordPressPosts } = await import("./fetch");
     const posts = await fetchWordPressPosts();
+    const elapsed = Date.now() - startTime;
     const { indices, allCategories, allSubcategories, allTags } =
       buildIndices(posts);
     cache = {
@@ -277,9 +308,12 @@ async function refreshFromWP(): Promise<void> {
       timestamp: Date.now(),
       refreshing: false,
     };
-    console.log(`[cache] Refreshed — ${posts.length} posts from cms.madavi.co`);
+    console.log(
+      `[cache] Refreshed ${posts.length} posts from cms.madavi.co (${elapsed}ms)`,
+    );
   } catch (error) {
-    console.error("[cache] Failed to refresh posts from cms.madavi.co:", error);
+    const elapsed = Date.now() - startTime;
+    console.error(`[cache] Failed to refresh posts (${elapsed}ms):`, error);
     if (cache) cache.refreshing = false;
   }
 }
@@ -295,17 +329,30 @@ async function refreshFromWP(): Promise<void> {
  * Stale caches trigger a background refresh from WP without blocking.
  */
 export async function readCachedPosts(): Promise<WordPressPost[] | null> {
+  const startTime = Date.now();
+  console.log(
+    `[cache] readCachedPosts called — cache=${cache ? "exists" : "null"}`,
+  );
+
   if (!cache) {
+    console.log(`[cache] Cache miss — attempting to load from file/network`);
     const loaded = await loadFromFileCache();
     if (!loaded) {
+      console.log(`[cache] File cache failed — falling back to live WP API`);
       await refreshFromWP();
     }
   } else if (isStale()) {
+    console.log(`[cache] Cache stale — background refresh triggered`);
     // Stale: refresh in background (stale-while-revalidate)
     refreshFromWP().catch(() => {});
   }
 
-  return cache?.posts ?? null;
+  const result = cache?.posts ?? null;
+  const elapsed = Date.now() - startTime;
+  console.log(
+    `[cache] readCachedPosts returning ${result?.length ?? 0} posts (${elapsed}ms)`,
+  );
+  return result;
 }
 
 /**

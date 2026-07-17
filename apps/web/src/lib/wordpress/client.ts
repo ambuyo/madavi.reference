@@ -21,6 +21,8 @@ export async function wpFetch<T>(
 ): Promise<T> {
   const url = `${wpApiUrl}${endpoint}`;
   const { retries = 3, retryDelayMs = 1000, ...fetchOpts } = options;
+  const startTime = Date.now();
+  console.log(`[wpFetch] Starting request to ${url}`);
 
   let lastError: Error | null = null;
 
@@ -53,10 +55,19 @@ export async function wpFetch<T>(
         );
       }
 
+      const elapsed = Date.now() - startTime;
+      console.log(`[wpFetch] Success (${elapsed}ms): ${url}`);
       return response.json();
     } catch (error) {
       lastError = error instanceof Error ? error : new Error(String(error));
       const isTimeout = error instanceof Error && error.name === "AbortError";
+
+      if (attempt >= retries) {
+        console.error(
+          `[wpFetch] FAILED after ${retries} retries (${Date.now() - startTime}ms): ${url}`,
+          lastError.message,
+        );
+      }
 
       // Retry on timeout or network errors, not on parse errors
       if (

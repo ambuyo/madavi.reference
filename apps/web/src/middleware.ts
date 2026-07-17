@@ -27,8 +27,16 @@ const PATH_REDIRECTS: Record<string, string> = {
 };
 
 export const onRequest = defineMiddleware((context, next) => {
+  const startTime = Date.now();
   const url = new URL(context.request.url);
+  const pathname = url.pathname;
   const host = context.request.headers.get("host") ?? "";
+
+  // Log every SSR request for debugging
+  if (!pathname.startsWith("/_astro") && !pathname.startsWith("/assets")) {
+    console.log(`[request] ${context.request.method} ${pathname} — start`);
+  }
+
   const proto =
     context.request.headers.get("x-forwarded-proto") ??
     (() => {
@@ -109,11 +117,27 @@ export const onRequest = defineMiddleware((context, next) => {
   // Static path redirects
   const destination = PATH_REDIRECTS[url.pathname.replace(/\/$/, "")];
   if (destination) {
+    console.log(`[request] ${pathname} → redirect to ${destination}`);
     return Response.redirect(new URL(destination, url.origin).toString(), 301);
   }
 
-  // Apply security headers to all responses
-  return applySecurityHeaders(next());
+  // Apply security headers to all responses; log completion
+  const responsePromise = applySecurityHeaders(next());
+
+  // Log on completion (don't await — headers are applied by the async function)
+  if (!pathname.startsWith("/_astro") && !pathname.startsWith("/assets")) {
+    responsePromise
+      .then((res) => {
+        const elapsed = Date.now() - startTime;
+        const level = elapsed > 5000 ? "warn" : "log";
+        console[level](`[request] ${pathname} → ${res.status} (${elapsed}ms)`);
+      })
+      .catch((err) => {
+        console.error(`[request] ${pathname} → ERROR:`, err);
+      });
+  }
+
+  return responsePromise;
 });
 
 async function applySecurityHeaders(
