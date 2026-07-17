@@ -17,7 +17,8 @@
     "typecheck": "tsc --noEmit",
     "cache:posts": "pnpm exec tsx scripts/cache-wordpress-posts.ts",
     "populate:info-pages": "pnpm exec tsx scripts/populate-info-pages.ts",
-    "build": "pnpm run cache:posts && astro build"
+    "build1": "pnpm run cach  e:posts && astro build",
+    "build": "pnpm lint && pnpm typecheck && pnpm run cache:posts && astro build"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^13.7.0",
