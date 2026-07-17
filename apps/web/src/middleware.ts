@@ -1,5 +1,16 @@
 import { defineMiddleware } from "astro:middleware";
 
+// ── Global crash prevention ──────────────────────────────────────────────
+// These catch errors that would otherwise crash the entire Node.js process.
+if (typeof process !== "undefined" && process.on) {
+  process.on("uncaughtException", (err) => {
+    console.error("[process] UNCAUGHT EXCEPTION:", err);
+  });
+  process.on("unhandledRejection", (reason) => {
+    console.error("[process] UNHANDLED REJECTION:", reason);
+  });
+}
+
 const LLM_BOTS: Record<string, string> = {
   GPTBot: "OpenAI",
   "Claude-Web": "Anthropic",
@@ -26,12 +37,22 @@ const PATH_REDIRECTS: Record<string, string> = {
   "/gro/profile/madavi": "/blog/cat/madavigro",
 };
 
-export const onRequest = defineMiddleware((context, next) => {
+export const onRequest = defineMiddleware(async (context, next) => {
   const startTime = Date.now();
   const url = new URL(context.request.url);
   const pathname = url.pathname;
   const host = context.request.headers.get("host") ?? "";
 
+  // Global error boundary — prevents unhandled errors from crashing the server
+  try {
+    return await handleRequest(context, next, startTime, url, pathname, host);
+  } catch (err) {
+    console.error(`[request] UNHANDLED ERROR ${pathname}:`, err);
+    return new Response("Internal Server Error", { status: 500 });
+  }
+});
+
+async function handleRequest(context: any, next: any, startTime: number, url: URL, pathname: string, host: string) {
   // Log every SSR request for debugging
   if (!pathname.startsWith("/_astro") && !pathname.startsWith("/assets")) {
     console.log(`[request] ${context.request.method} ${pathname} — start`);
@@ -138,7 +159,7 @@ export const onRequest = defineMiddleware((context, next) => {
   }
 
   return responsePromise;
-});
+}
 
 async function applySecurityHeaders(
   response: Response | Promise<Response>,
