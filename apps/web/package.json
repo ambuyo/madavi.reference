@@ -50,9 +50,14 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@tailwindcss/vite": "^4.1.18",
-    "tailwindcss": "^4.1.18",
+    "@tailwindcss/vite": "^4.3.3",
+    "tailwindcss": "^4.3.3",
     "tsx": "^4.21.0",
     "vite": "^6.4.3"
+  },
+  "pnpm": {
+    "overrides": {
+      "@tailwindcss/vite": "latest"
+    }
   }
 }
