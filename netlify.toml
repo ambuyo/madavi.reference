@@ -1,0 +1,7 @@
+[build]
+  command = "pnpm --filter=@madavi/web run build"
+  publish = "apps/web/dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+  NODE_OPTIONS = "--experimental-sqlite"
