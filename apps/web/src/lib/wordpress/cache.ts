@@ -38,7 +38,7 @@ async function refreshFromWP(): Promise<void> {
     console.log(`[cache] Refreshed — ${posts.length} posts from cms.madavi.co`);
   } catch (error) {
     console.error("[cache] Failed to refresh posts from cms.madavi.co:", error);
-    if (cache) cache.refreshing = false;
+    if (cache) cache.refreshing = false; // reset so next stale check can retry
   }
 }
 

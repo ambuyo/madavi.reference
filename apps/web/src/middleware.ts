@@ -1,5 +1,61 @@
 import { defineMiddleware } from "astro:middleware";
 
+// ── Global error boundary: prevent process crashes from unhandled errors ──
+// Without this, any unhandled rejection or exception kills the Node process,
+// causing 502 Bad Gateway errors on Railway until the process restarts.
+//
+// TRADEOFF: Node.js docs say not to resume after uncaughtException — the process
+// may be in a corrupted state. We accept this risk because the alternative
+// (crash on every exception) is guaranteed 502s during Railway's restart window.
+// The counter threshold (5+ exceptions in 60s) is the safety valve: if errors
+// pile up, we escalate to a clean Railway restart rather than limping along.
+
+let errorCount = 0;
+const ERROR_RESET_MS = 60_000; // reset counter after 1 min of quiet
+const MAX_UNHANDLED_REJECTIONS = 10; // unhandled rejections are less severe than exceptions
+const MAX_UNCAUGHT_EXCEPTIONS = 5;  // exceptions signal corrupted state — lower threshold
+let errorResetTimer: ReturnType<typeof setTimeout> | null = null;
+
+function resetErrorCount() {
+  errorCount = 0;
+  errorResetTimer = null;
+}
+
+process.on("unhandledRejection", (reason: unknown, _promise: Promise<unknown>) => {
+  errorCount++;
+  console.error("[FATAL] unhandledRejection — would have crashed the server", {
+    count: errorCount,
+    reason: reason instanceof Error ? { message: reason.message, stack: reason.stack?.split("\n").slice(0, 4).join("\n") } : String(reason),
+  });
+
+  // Reset counter after quiet period
+  if (errorResetTimer) clearTimeout(errorResetTimer);
+  errorResetTimer = setTimeout(resetErrorCount, ERROR_RESET_MS);
+
+  // Crash if too many errors pile up (likely a systemic issue, not a transient)
+  if (errorCount > MAX_UNHANDLED_REJECTIONS) {
+    console.error(`[FATAL] ${MAX_UNHANDLED_REJECTIONS}+ unhandled rejections in 60s — escalating to crash for Railway restart`);
+    process.exit(1);
+  }
+});
+
+process.on("uncaughtException", (error: Error) => {
+  errorCount++;
+  console.error("[FATAL] uncaughtException — would have crashed the server", {
+    count: errorCount,
+    message: error.message,
+    stack: error.stack?.split("\n").slice(0, 6).join("\n"),
+  });
+
+  if (errorResetTimer) clearTimeout(errorResetTimer);
+  errorResetTimer = setTimeout(resetErrorCount, ERROR_RESET_MS);
+
+  if (errorCount > MAX_UNCAUGHT_EXCEPTIONS) {
+    console.error(`[FATAL] ${MAX_UNCAUGHT_EXCEPTIONS}+ uncaught exceptions in 60s — escalating to crash for Railway restart`);
+    process.exit(1);
+  }
+});
+
 const LLM_BOTS: Record<string, string> = {
   "GPTBot":         "OpenAI",
   "Claude-Web":     "Anthropic",
@@ -95,17 +151,26 @@ export const onRequest = defineMiddleware((context, next) => {
     return Response.redirect(new URL(destination, url.origin).toString(), 301);
   }
 
-  // Apply security headers to all responses
-  return applySecurityHeaders(next());
+  // Apply security headers to all responses — with per-request error boundary
+  try {
+    return applySecurityHeaders(next());
+  } catch (error) {
+    console.error("[MIDDLEWARE] Request handler threw synchronously:", error instanceof Error ? error.message : String(error));
+    return new Response("Internal Server Error", { status: 500 });
+  }
 });
 
 async function applySecurityHeaders(response: Response | Promise<Response>): Promise<Response> {
-  const res = await response;
-
-  res.headers.set("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload");
-  res.headers.set("X-Frame-Options", "SAMEORIGIN");
-  res.headers.set("X-Content-Type-Options", "nosniff");
-  res.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
-
-  return res;
+  try {
+    const res = await response;
+    res.headers.set("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload");
+    res.headers.set("X-Frame-Options", "SAMEORIGIN");
+    res.headers.set("X-Content-Type-Options", "nosniff");
+    res.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+    return res;
+  } catch (error) {
+    console.error("[MIDDLEWARE] Request handler rejected:", error instanceof Error ? error.message : String(error));
+    return new Response("Internal Server Error", { status: 500 });
+  }
 }
+

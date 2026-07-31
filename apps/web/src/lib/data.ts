@@ -388,10 +388,15 @@ export async function getCategoryDescription(
  */
 export async function getTeamMembers(limit?: number): Promise<TeamMember[]> {
   if (USE_SANITY) {
-    const { sanityFetch, queries, transforms } = await getSanityModules();
-    const members = await sanityFetch<any[]>(queries.allTeamMembersQuery);
-    const result = members.map(transforms.transformTeamMember);
-    return limit ? result.slice(0, limit) : result;
+    try {
+      const { sanityFetch, queries, transforms } = await getSanityModules();
+      const members = await sanityFetch<any[]>(queries.allTeamMembersQuery);
+      const result = members.map(transforms.transformTeamMember);
+      return limit ? result.slice(0, limit) : result;
+    } catch (error) {
+      console.error("Failed to fetch team members from Sanity:", error instanceof Error ? error.message : String(error));
+      return [];
+    }
   }
 
   const members = await getCollection("team");
@@ -415,11 +420,16 @@ export async function getTeamMemberBySlug(
   slug: string
 ): Promise<TeamMember | null> {
   if (USE_SANITY) {
-    const { sanityFetch, queries, transforms } = await getSanityModules();
-    const member = await sanityFetch<any>(queries.teamMemberBySlugQuery, {
-      slug,
-    });
-    return member ? transforms.transformTeamMember(member) : null;
+    try {
+      const { sanityFetch, queries, transforms } = await getSanityModules();
+      const member = await sanityFetch<any>(queries.teamMemberBySlugQuery, {
+        slug,
+      });
+      return member ? transforms.transformTeamMember(member) : null;
+    } catch (error) {
+      console.error(`Failed to fetch team member "${slug}" from Sanity:`, error instanceof Error ? error.message : String(error));
+      return null;
+    }
   }
 
   const entry = await getEntry("team", slug);
@@ -445,19 +455,29 @@ export async function getTeamMemberBySlug(
  * Get all services
  */
 export async function getServices(limit?: number): Promise<Service[]> {
-  const { sanityFetch, queries, transforms } = await getSanityModules();
-  const services = await sanityFetch<any[]>(queries.allServicesQuery);
-  const result = services.filter(Boolean).map(transforms.transformService).filter((s: any) => s?.slug);
-  return limit ? result.slice(0, limit) : result;
+  try {
+    const { sanityFetch, queries, transforms } = await getSanityModules();
+    const services = await sanityFetch<any[]>(queries.allServicesQuery);
+    const result = services.filter(Boolean).map(transforms.transformService).filter((s: any) => s?.slug);
+    return limit ? result.slice(0, limit) : result;
+  } catch (error) {
+    console.error("Failed to fetch services from Sanity:", error instanceof Error ? error.message : String(error));
+    return [];
+  }
 }
 
 /**
  * Get a single service by slug
  */
 export async function getServiceBySlug(slug: string): Promise<Service | null> {
-  const { sanityFetch, queries, transforms } = await getSanityModules();
-  const service = await sanityFetch<any>(queries.serviceBySlugQuery, { slug });
-  return service ? transforms.transformService(service) : null;
+  try {
+    const { sanityFetch, queries, transforms } = await getSanityModules();
+    const service = await sanityFetch<any>(queries.serviceBySlugQuery, { slug });
+    return service ? transforms.transformService(service) : null;
+  } catch (error) {
+    console.error(`Failed to fetch service "${slug}" from Sanity:`, error instanceof Error ? error.message : String(error));
+    return null;
+  }
 }
 
 // =============================================================================
@@ -469,12 +489,17 @@ export async function getServiceBySlug(slug: string): Promise<Service | null> {
  */
 export async function getIndustries(limit?: number): Promise<Industry[]> {
   if (USE_SANITY) {
-    const { sanityFetch, queries, transforms } = await getSanityModules();
-    const industries = await sanityFetch<any[]>(queries.allIndustriesQuery);
-    const result = industries
-      .map(transforms.transformIndustry)
-      .filter(industry => industry.slug !== null && industry.slug !== undefined);
-    return limit ? result.slice(0, limit) : result;
+    try {
+      const { sanityFetch, queries, transforms } = await getSanityModules();
+      const industries = await sanityFetch<any[]>(queries.allIndustriesQuery);
+      const result = industries
+        .map(transforms.transformIndustry)
+        .filter(industry => industry.slug !== null && industry.slug !== undefined);
+      return limit ? result.slice(0, limit) : result;
+    } catch (error) {
+      console.error("Failed to fetch industries from Sanity:", error instanceof Error ? error.message : String(error));
+      return [];
+    }
   }
 
   const industries = await getCollection("industries");
@@ -509,11 +534,16 @@ export async function getIndustryBySlug(
   slug: string
 ): Promise<Industry | null> {
   if (USE_SANITY) {
-    const { sanityFetch, queries, transforms } = await getSanityModules();
-    const industry = await sanityFetch<any>(queries.industryBySlugQuery, {
-      slug,
-    });
-    return industry ? transforms.transformIndustry(industry) : null;
+    try {
+      const { sanityFetch, queries, transforms } = await getSanityModules();
+      const industry = await sanityFetch<any>(queries.industryBySlugQuery, {
+        slug,
+      });
+      return industry ? transforms.transformIndustry(industry) : null;
+    } catch (error) {
+      console.error(`Failed to fetch industry "${slug}" from Sanity:`, error instanceof Error ? error.message : String(error));
+      return null;
+    }
   }
 
   const industries = await getCollection("industries");
@@ -554,13 +584,18 @@ export async function getIndustryBySlug(
  */
 export async function getOurWork(limit?: number): Promise<SingleWork[]> {
   if (USE_SANITY) {
-    const { sanityFetch, queries, transforms } = await getSanityModules();
-    const caseStudies = await sanityFetch<any[]>(queries.allCaseStudiesQuery);
-    const result = caseStudies
-      .filter(Boolean)
-      .map(transforms.transformSingleWork)
-      .filter((cs: any) => cs?.slug && cs?.data?.client);
-    return limit ? result.slice(0, limit) : result;
+    try {
+      const { sanityFetch, queries, transforms } = await getSanityModules();
+      const caseStudies = await sanityFetch<any[]>(queries.allCaseStudiesQuery);
+      const result = caseStudies
+        .filter(Boolean)
+        .map(transforms.transformSingleWork)
+        .filter((cs: any) => cs?.slug && cs?.data?.client);
+      return limit ? result.slice(0, limit) : result;
+    } catch (error) {
+      console.error("Failed to fetch case studies from Sanity:", error instanceof Error ? error.message : String(error));
+      return [];
+    }
   }
 
   const caseStudies = await getCollection("caseStudies");
@@ -598,11 +633,16 @@ export async function getSingleWorkBySlug(
   slug: string
 ): Promise<SingleWork | null> {
   if (USE_SANITY) {
-    const { sanityFetch, queries, transforms } = await getSanityModules();
-    const caseStudy = await sanityFetch<any>(queries.caseStudyBySlugQuery, {
-      slug,
-    });
-    return caseStudy ? transforms.transformSingleWork(caseStudy) : null;
+    try {
+      const { sanityFetch, queries, transforms } = await getSanityModules();
+      const caseStudy = await sanityFetch<any>(queries.caseStudyBySlugQuery, {
+        slug,
+      });
+      return caseStudy ? transforms.transformSingleWork(caseStudy) : null;
+    } catch (error) {
+      console.error(`Failed to fetch case study "${slug}" from Sanity:`, error instanceof Error ? error.message : String(error));
+      return null;
+    }
   }
 
   const entry = await getEntry("caseStudies", slug);
@@ -641,9 +681,14 @@ export async function getSingleWorkBySlug(
  */
 export async function getInfoPages(): Promise<InfoPage[]> {
   if (USE_SANITY) {
-    const { sanityFetch, queries, transforms } = await getSanityModules();
-    const pages = await sanityFetch<any[]>(queries.allInfoPagesQuery);
-    return pages.map(transforms.transformInfoPage);
+    try {
+      const { sanityFetch, queries, transforms } = await getSanityModules();
+      const pages = await sanityFetch<any[]>(queries.allInfoPagesQuery);
+      return pages.map(transforms.transformInfoPage);
+    } catch (error) {
+      console.error("Failed to fetch info pages from Sanity:", error instanceof Error ? error.message : String(error));
+      return [];
+    }
   }
 
   const pages = await getCollection("infopages");
@@ -664,9 +709,14 @@ export async function getInfoPageBySlug(
   slug: string
 ): Promise<InfoPage | null> {
   if (USE_SANITY) {
-    const { sanityFetch, queries, transforms } = await getSanityModules();
-    const page = await sanityFetch<any>(queries.infoPageBySlugQuery, { slug });
-    return page ? transforms.transformInfoPage(page) : null;
+    try {
+      const { sanityFetch, queries, transforms } = await getSanityModules();
+      const page = await sanityFetch<any>(queries.infoPageBySlugQuery, { slug });
+      return page ? transforms.transformInfoPage(page) : null;
+    } catch (error) {
+      console.error(`Failed to fetch info page "${slug}" from Sanity:`, error instanceof Error ? error.message : String(error));
+      return null;
+    }
   }
 
   const entry = await getEntry("infopages", slug);
