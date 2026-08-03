@@ -7,11 +7,21 @@ import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 // Components
 import BlogEntry from "@/components/blog/categories/BlogCard1.astro";
 // Content
-import { getPostsByTag } from "@/lib/data";
+import { getPostsByTag, getRecentLivePosts } from "@/lib/data";
+
 export const prerender = false;
 const { tag } = Astro.params;
 if (!tag) return Astro.redirect("/blog");
-const posts = await getPostsByTag(tag);
+
+// Cached posts for this tag, plus live posts merged in
+const cachedPosts = await getPostsByTag(tag);
+const livePosts = await getRecentLivePosts(5);
+const cachedSlugs = new Set(cachedPosts.map(p => p.slug));
+const newPosts = livePosts.filter(p =>
+  !cachedSlugs.has(p.slug) &&
+  p.tags?.includes(tag)
+);
+const posts = [...newPosts, ...cachedPosts];
 
 const seo = {
   title: `Articles tagged "${tag}"`,

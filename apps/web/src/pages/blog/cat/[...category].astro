@@ -1,6 +1,6 @@
 ---
 import CategoryLayout from "@/layouts/CategoryLayout.astro";
-import { getPosts, getPostsByCategory, getCategoryDescription } from "@/lib/data";
+import { getPostsByCategory, getRecentLivePosts, getCategoryDescription } from "@/lib/data";
 
 export const prerender = false;
 
@@ -14,11 +14,19 @@ const parts = categoryParam.split('/');
 const category = parts[0];
 const pageParam = parts[1] ? parseInt(parts[1]) : 1;
 
-// Get all posts and find category info
-const allPosts = await getPosts();
-const categoryInfo = allPosts
-  .flatMap((post) => post.data.categories || [])
-  .find((cat) => cat.slug === category);
+// Cached posts for this category, plus live posts merged in
+const cachedPosts = await getPostsByCategory(category);
+const livePosts = await getRecentLivePosts(5);
+const cachedSlugs = new Set(cachedPosts.map(p => p.slug));
+const newPosts = livePosts.filter(p =>
+  !cachedSlugs.has(p.slug) &&
+  p.categories?.some(c => c.slug === category)
+);
+const categoryPosts = [...newPosts, ...cachedPosts];
+
+// Find category info from any merged source (works even for brand-new categories)
+const categoryInfo = cachedPosts[0]?.categories?.find(c => c.slug === category)
+  ?? newPosts.flatMap(p => p.categories || []).find(c => c.slug === category);
 
 if (!categoryInfo) {
   return Astro.redirect("/blog");
@@ -26,9 +34,6 @@ if (!categoryInfo) {
 
 // Fetch category description
 const categoryDescription = await getCategoryDescription(category);
-
-// Get posts for this category
-const categoryPosts = await getPostsByCategory(category);
 
 // Calculate pagination
 const totalPages = Math.ceil(categoryPosts.length / POSTS_PER_PAGE);

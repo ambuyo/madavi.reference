@@ -1,6 +1,6 @@
 ---
 import AuthorLayout from "@/layouts/AuthorLayout.astro";
-import { getPosts, getPostsByAuthor } from "@/lib/data";
+import { getPostsByAuthor, getRecentLivePosts } from "@/lib/data";
 
 export const prerender = false;
 
@@ -13,18 +13,23 @@ const parts = usernameParam.split("/");
 const authorSlug = parts[0];
 const pageParam = parts[1] ? parseInt(parts[1]) : 1;
 
-// Find author info from any post
-const allPosts = await getPosts();
-const authorPost = allPosts.find((post) => post.data.author?.slug === authorSlug);
+// Cached posts by this author, plus live posts merged in
+const cachedPosts = await getPostsByAuthor(authorSlug);
+const livePosts = await getRecentLivePosts(5);
+const cachedSlugs = new Set(cachedPosts.map(p => p.slug));
+const newPosts = livePosts.filter(p =>
+  !cachedSlugs.has(p.slug) &&
+  p.author?.slug === authorSlug
+);
+const authorPosts = [...newPosts, ...cachedPosts];
 
-if (!authorPost?.data.author) {
+// Find author info from any merged source
+const author = authorPosts.find(p => p.author)?.author
+  ?? livePosts.find(p => p.author?.slug === authorSlug)?.author;
+
+if (!author) {
   return Astro.redirect("/blog");
 }
-
-const author = authorPost.data.author;
-
-// Get all posts by this author
-const authorPosts = await getPostsByAuthor(authorSlug);
 
 // Pagination
 const totalPages = Math.ceil(authorPosts.length / POSTS_PER_PAGE);
