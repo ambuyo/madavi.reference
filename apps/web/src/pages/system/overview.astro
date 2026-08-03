@@ -4,47 +4,54 @@ export const prerender = true;
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import Text from "@/components/fundations/elements/Text.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
-const pageSections = [
+// Data
+import { getSolutions } from "@/lib/sanity/reports";
+
+interface Link {
+  text: string;
+  href: string;
+  description?: string;
+}
+
+interface Column {
+  category: string;
+  href?: string;
+  links: Link[];
+}
+
+const solutions = await getSolutions();
+const solutionLinks: Link[] = solutions.map((solution) => ({
+  text: solution.name,
+  href: `/solutions/${solution.slug.current}`,
+}));
+// TapThrive is hardcoded — not managed through Sanity
+if (!solutions.some((s) => s.slug.current === "tapthrive")) {
+  solutionLinks.push({ text: "TapThrive", href: "/solutions/tapthrive" });
+}
+
+const pageSections: { title: string; columns: Column[] }[] = [
   {
     title: "Static",
     columns: [
       {
-        category: " Pages",
-        links: [
-          { text: "Home", href: "/" },
-          { text: "FAQ", href: "/faq" },
-          { text: "404", href: "/404" },
-          { text: "About", href: "/about" },
-          { text: "Pricing", href: "/pricing" },
-          { text: "Locations", href: "/locations" },
-          { text: "Testimonials", href: "/testimonials" },
-        ],
-      },
-      {
-        category: "Forms",
-        links: [{ text: "Contact", href: "/get-a-proposal" }],
-      },
-      {
-        category: "System",
-        links: [
-          { text: "Colors", href: "/system/colors" },
-          { text: "Links", href: "/system/link" },
-          { text: "Buttons", href: "/system/buttons" },
-          { text: "Typography", href: "/system/typography" },
-        ],
-      },
-      {
         category: "Resources",
         links: [
-          { text: "Social", href: "https://x.com/lexingtonthemes" },
-          {
-            text: "License",
-            href: "https://lexingtonthemes.com/legal/license",
-          },
-          {
-            text: "Documentation",
-            href: "https://lexingtonthemes.com/documentation/",
-          },
+          { text: "HCAIF Framework", description: "5-pillar diagnostic sprint for enterprise AI adoption", href: "/resources/human-centric-ai-integration-framework" },
+          { text: "Customer Stories", description: "Behind the successful partnerships", href: "/resources/customer-stories" },
+          { text: "Our Clients", description: "Brands we have worked with", href: "/resources/our-clients" },
+          { text: "Reports", description: "Data for smarter decisions", href: "/resources/reports" },
+          { text: "Blog", description: "Long-form you can learn from", href: "/blog" },
+          { text: "FAQs", description: "Answers to common questions", href: "/resources/faqs" },
+          { text: "Newsletter", description: "AI strategy insights to your inbox", href: "/resources/newsletter" },
+        ],
+      },
+      {
+        category: "Sitemap",
+        links: [
+          { text: "Blog", href: "/blog" },
+          { text: "Industries", href: "/industries" },
+          { text: "Our Work", href: "/our-work" },
+          { text: "Who We Are", href: "/about" },
         ],
       },
     ],
@@ -53,48 +60,42 @@ const pageSections = [
     title: "Content Collections",
     columns: [
       {
-        category: "Services",
+        category: "Solutions",
+        href: "https://madavi.co/solutions",
+        links: solutionLinks,
+      },
+      {
+        category: "AI Studio",
+        href: "https://madavi.co/ai-studio",
         links: [
-          { text: "Home", href: "/services/" },
-          { text: "Details", href: "/services/audit-support-assurance" },
+          { text: "AI Readiness Assessment", href: "/capabilities/ai-readiness" },
+          { text: "Executive Advisory", href: "/capabilities/executive-advisory" },
+          { text: "Leadership AI Fluency", href: "/capabilities/leadership-cohort" },
+          { text: "Keynotes & Licensing", href: "/capabilities/keynotes-licensing" },
+          { text: "AI Agent Development", href: "/capabilities/ai-agent-development" },
         ],
       },
       {
-        category: "Case Studies",
+        category: "IMC Agency",
+        href: "https://madavi.co/the-imc-agency",
         links: [
-          { text: "Home", href: "/our-work/" },
-          { text: "Details", href: "/our-work/healthcare-turnaround" },
+          { text: "Brand Strategy", href: "/capabilities/brand-strategy" },
+          { text: "Brand Communications", href: "/capabilities/brand-communication" },
+          { text: "Brand Management", href: "/capabilities/brand-management" },
+          { text: "Website Design", href: "/capabilities/website-design" },
+          { text: "SEO", href: "/capabilities/seo-services" },
         ],
       },
       {
         category: "Industries",
+        href: "https://madavi.co/industries",
         links: [
-          { text: "Home", href: "/industries/" },
-          { text: "Details", href: "/industries/healthcare-medical" },
-        ],
-      },
-      {
-        category: "Blog Pages",
-        links: [
-          { text: "Home ", href: "/blog/" },
-          { text: "Post", href: "/sample-post" },
-          { text: "Tag Index", href: "/blog/tags" },
-          { text: "Tag Category", href: "/blog/tags/photography" },
-          { text: "RSS", href: "/rss.xml" },
-        ],
-      },
-      {
-        category: "Accountants",
-        links: [
-          { text: "Home", href: "/team/" },
-          { text: "Details", href: "/team/maria-gonzalez" },
-        ],
-      },
-      {
-        category: "Legal",
-        links: [
-          { text: "Terms Of Use", href: "/legal/terms" },
-          { text: "Privacy Policy", href: "/legal/privacy" },
+          { text: "Legal Services", href: "/industries/legal" },
+          { text: "Healthcare", href: "/industries/healthcare" },
+          { text: "Non Profits", href: "/industries/nonprofits" },
+          { text: "Ecommerce & Retail", href: "/industries/retail" },
+          { text: "Professional Services", href: "/industries/professional-services" },
+          { text: "Real Estate", href: "/industries/real-estate" },
         ],
       },
     ],
@@ -126,13 +127,24 @@ const pageSections = [
               <div class="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 xl:grid-cols-4">
                 {section.columns.map((column) => (
                   <div>
-                    <Text
-                      tag="p"
-                      variant="textBase"
-                      class="font-medium text-base-900"
-                    >
-                      {column.category}
-                    </Text>
+                    {column.href ? (
+                      <Text
+                        tag="a"
+                        variant="textBase"
+                        href={column.href}
+                        class="font-medium text-base-900 hover:text-base-700 duration-300"
+                      >
+                        {column.category}
+                      </Text>
+                    ) : (
+                      <Text
+                        tag="p"
+                        variant="textBase"
+                        class="font-medium text-base-900"
+                      >
+                        {column.category}
+                      </Text>
+                    )}
                     <ul role="list" class="mt-2 ">
                       {column.links.map((link) => (
                         <li>
@@ -144,6 +156,15 @@ const pageSections = [
                           >
                             {link.text}
                           </Text>
+                          {link.description && (
+                            <Text
+                              tag="p"
+                              variant="textXS"
+                              class="text-base-500 mt-0.5"
+                            >
+                              {link.description}
+                            </Text>
+                          )}
                         </li>
                       ))}
                     </ul>
