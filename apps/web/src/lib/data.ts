@@ -235,6 +235,55 @@ export async function getPostsByCategory(
 }
 
 /**
+ * Fetch posts by category directly from WordPress — used as fallback when
+ * the cache doesn't have enough posts for a category section.
+ */
+export async function getPostsByCategoryLive(
+  categorySlug: string,
+  limit: number = 3
+): Promise<PostIndexEntry[]> {
+  if (!USE_WORDPRESS) return [];
+  try {
+    const { wpFetch } = await import("./wordpress/client");
+    // Look up category ID from slug
+    const cats = await wpFetch<any[]>(`/categories?slug=${categorySlug}`);
+    const categoryId = cats?.[0]?.id;
+    if (!categoryId) {
+      console.warn(`Category slug "${categorySlug}" not found in WordPress`);
+      return [];
+    }
+    const wpPosts = await wpFetch<any[]>(
+      `/posts?_embed&per_page=${limit}&categories=${categoryId}&orderby=date&order=desc`
+    );
+    return wpPosts.map((wpPost: any) => {
+      const cats: { name: string; slug: string }[] = [];
+      if (wpPost._embedded?.["wp:term"]) {
+        for (const ta of wpPost._embedded["wp:term"]) {
+          for (const t of ta) {
+            if (t.taxonomy === "category") cats.push({ name: t.name, slug: t.slug });
+          }
+        }
+      }
+      const a = wpPost._embedded?.author?.[0];
+      const fm = wpPost._embedded?.["wp:featuredmedia"]?.[0];
+      const t = wpPost.title.rendered.replace(/<[^>]*>/g, "").trim();
+      return {
+        slug: wpPost.slug, title: t,
+        excerpt: wpPost.excerpt.rendered.replace(/<[^>]*>/g, "").trim().slice(0, 300),
+        date: wpPost.date, tags: [],
+        image: fm ? { url: fm.source_url, alt: t } : undefined,
+        categories: cats,
+        author: a ? { name: a.name, slug: a.slug, avatar: a.avatar_urls?.["96"] || "" } : undefined,
+        readingTime: "1 min",
+      };
+    });
+  } catch (error) {
+    console.warn(`Failed to fetch live posts for category "${categorySlug}":`, error);
+    return [];
+  }
+}
+
+/**
  * Get posts by tag slug from the index cache.
  */
 export async function getPostsByTag(tag: string): Promise<PostIndexEntry[]> {

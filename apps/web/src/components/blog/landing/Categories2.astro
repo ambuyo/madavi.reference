@@ -6,8 +6,9 @@ import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 import ArrowRight from "@/components/fundations/icons/ArrowRight.astro";
 // Components
 import BlogCard5 from "@/components/blog/landing/BlogCard5.astro";
-// Data — posts are passed in by the parent page
+// Data — posts are passed in by the parent page; live WP fallback per category
 import type { PostIndexEntry } from "@/lib/data";
+import { getPostsByCategoryLive } from "@/lib/data";
 const { posts } = Astro.props as { posts: PostIndexEntry[] };
 
 const categories = [
@@ -16,8 +17,14 @@ const categories = [
   { name: "Marketing for EdTech", slug: "edtech" },
 ];
 
-const categoryPosts = categories.map((cat) =>
-  posts.filter((p) => p.categories?.some((c) => c.slug === cat.slug))
+const categoryPosts = await Promise.all(
+  categories.map(async (cat) => {
+    const cached = posts.filter((p) => p.categories?.some((c) => c.slug === cat.slug));
+    if (cached.length >= 3) return cached;
+    const live = await getPostsByCategoryLive(cat.slug, 3);
+    const slugs = new Set(cached.map(p => p.slug));
+    return [...cached, ...live.filter(p => !slugs.has(p.slug))];
+  })
 );
 ---
 
