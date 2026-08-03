@@ -1,17 +1,14 @@
 // Build-time script to fetch and cache WordPress posts
 // Run this before deploying to ensure posts are up-to-date
-import TurndownService from "turndown";
 import * as path from "path";
 import * as fs from "fs";
 import { wpFetch } from "../src/lib/wordpress/client";
+import { configureTurndown, rewriteCmsDomainLinks } from "../src/lib/wordpress/markdown";
 import type { WordPressPost } from "../src/lib/wordpress/fetch";
 
-const turndownService = new TurndownService({
-  headingStyle: "atx",
-  codeBlockStyle: "fenced",
-  bulletListMarker: "-",
-  linkStyle: "inlined",
-});
+// Shared Turndown config (strikethrough, wp-caption, gallery rules) — must
+// match fetchAndTransformPost so cached and live posts produce the same markdown
+const turndownService = configureTurndown();
 
 // NOTE: import.meta.dirname instead of __dirname — this package is "type": "module"
 // (ESM), where __dirname is undefined. Same value: apps/web/scripts.
@@ -96,8 +93,9 @@ function decodeHtmlEntities(text: string): string {
 // Transform a slimmed WP post into the two-tier cache shapes.
 // Runs Turndown (HTML→Markdown) ONCE per post, at build time — never at runtime.
 function transformPost(wpPost: WordPressPost) {
-  // Decode HTML entities
-  const htmlContent = decodeHtmlEntities(wpPost.content.rendered);
+  // Decode HTML entities, then rewrite internal CMS links to /blog/ paths —
+  // must mirror fetchAndTransformPost so cached and live posts agree
+  const htmlContent = rewriteCmsDomainLinks(decodeHtmlEntities(wpPost.content.rendered));
 
   // Run Turndown ONCE — never at runtime
   const markdown = turndownService.turndown(htmlContent);
