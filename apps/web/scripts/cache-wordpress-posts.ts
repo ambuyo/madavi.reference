@@ -132,11 +132,11 @@ function transformPost(wpPost: WordPressPost) {
   const featuredMedia = wpPost._embedded?.["wp:featuredmedia"]?.[0];
   const image = featuredMedia ? {
     url: featuredMedia.source_url,
-    alt: wpPost.title.rendered.replace(/<\/?[^>]+(>|$)/g, ""),
+    alt: decodeHtmlEntities(wpPost.title.rendered.replace(/<\/?[^>]+(>|$)/g, "")),
   } : { url: "", alt: "" };
 
-  const title = stripHtml(wpPost.title.rendered);
-  const excerpt = stripHtml(wpPost.excerpt.rendered).slice(0, 300);
+  const title = stripHtml(decodeHtmlEntities(wpPost.title.rendered));
+  const excerpt = stripHtml(decodeHtmlEntities(wpPost.excerpt.rendered)).slice(0, 300);
 
   return {
     // Full post — written to posts/{slug}.json
