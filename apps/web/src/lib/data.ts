@@ -135,6 +135,9 @@ import * as path from "path";
 const CACHE_DIR = [
   path.join(".cache"),
   path.join("apps", "web", ".cache"),
+  // Netlify: cache is copied into dist/ during build so the function can read it
+  path.join("dist", ".cache"),
+  path.join("apps", "web", "dist", ".cache"),
 ].find(fs.existsSync) ?? path.join(".cache");
 
 const INDEX_FILE = path.join(CACHE_DIR, "index.json");

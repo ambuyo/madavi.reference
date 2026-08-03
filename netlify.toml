@@ -1,5 +1,5 @@
 [build]
-  command = "pnpm --filter=@madavi/web run build"
+  command = "pnpm --filter=@madavi/web run build && cp -r apps/web/.cache apps/web/dist/.cache"
   publish = "apps/web/dist"
 
 [build.environment]
