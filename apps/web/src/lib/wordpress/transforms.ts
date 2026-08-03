@@ -4,7 +4,7 @@ import {
   getFeaturedImage,
   stripHtml,
 } from "./fetch";
-import { htmlToMarkdown, extractPlainText } from "./markdown";
+import { htmlToMarkdown, extractPlainText, rewriteCmsDomainLinks } from "./markdown";
 import type { Post } from "../sanity/types";
 
 // Helper to extract top-level categories (parent === 0) from embedded data
@@ -41,32 +41,6 @@ function extractSubcategories(wpPost: WordPressPost): Array<{ id: number; name: 
   }
 
   return subcategories;
-}
-
-// Rewrite internal cms.madavi.co hrefs to madavi.co paths
-function rewriteCmsDomainLinks(html: string): string {
-  return html.replace(
-    /href="https?:\/\/cms\.madavi\.co(\/[^"]*)"/g,
-    (match, path) => {
-      // Leave wp-* and feed paths as-is (admin, API, media served from CMS)
-      if (/^\/(wp-content|wp-admin|wp-json|wp-login|feed)\b/.test(path)) return match;
-
-      // /category/slug → /blog/cat/slug
-      const catMatch = path.match(/^\/category\/([^/?#]+)/);
-      if (catMatch) return `href="/blog/cat/${catMatch[1].replace(/\/$/, '')}"`;
-
-      // /tag/slug → /blog/tag/slug
-      const tagMatch = path.match(/^\/tag\/([^/?#]+)/);
-      if (tagMatch) return `href="/blog/tag/${tagMatch[1].replace(/\/$/, '')}"`;
-
-      // /author/slug → /blog (no author archive pages in Astro)
-      if (/^\/author\//.test(path)) return `href="/blog"`;
-
-      // Everything else treated as a post slug: /slug/ → /blog/slug
-      const clean = path.replace(/^\//, "").replace(/\/$/, "");
-      return clean ? `href="/blog/${clean}"` : `href="/blog"`;
-    }
-  );
 }
 
 // Helper to decode HTML entities in content

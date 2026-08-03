@@ -1,4 +1,5 @@
 import { wpFetch } from "./client";
+import { htmlToMarkdown, rewriteCmsDomainLinks } from "./markdown";
 
 // Configuration
 const R2_CDN_URL = import.meta.env.PUBLIC_R2_CDN_URL || "https://images.madavi.co";
@@ -278,4 +279,88 @@ export function extractPlainText(html: string): string {
 // Verify R2 integration is working
 export function verifyR2Integration(): boolean {
   return !!R2_CDN_URL && R2_CDN_URL.includes("madavi.co");
+}
+
+// Shape of a post transformed at request time (SSR fallback for new posts).
+// Mirrors the build script's cached post shape so consumers can treat
+// live and cached posts identically.
+export interface LivePost {
+  slug: string;
+  title: string;
+  date: string;
+  image: { url: string; alt: string };
+  categories: { name: string; slug: string }[];
+  author?: { name: string; slug: string; avatar: string; bio: string };
+  body: string;
+  markdown: string;
+  plainText: string;
+  readingTime: string;
+  seo: { title: string; description: string };
+}
+
+// Fetch ONE post from WordPress and transform it at request time.
+// Uses the same markdown pipeline (configureTurndown via htmlToMarkdown)
+// and CMS link rewriting as the cached build so live-fetched posts match
+// the rest of the pipeline.
+export async function fetchAndTransformPost(slug: string): Promise<LivePost | null> {
+  const posts = await wpFetch<WordPressPost[]>(
+    `/posts?slug=${slug}&_embed&per_page=1`
+  );
+  if (posts.length === 0) return null;
+
+  const wpPost = posts[0];
+
+  // Decode entities, then rewrite internal CMS links to /blog/ paths
+  const htmlContent = rewriteCmsDomainLinks(decodeHtmlEntities(wpPost.content.rendered));
+
+  // Run Turndown for ONE post
+  const markdown = htmlToMarkdown(htmlContent);
+  const plainText = extractPlainText(htmlContent);
+  const words = plainText.trim().split(/\s+/).length;
+  const readingTime = `${Math.max(1, Math.ceil(words / 200))} min`;
+
+  // Extract categories
+  const categories: { name: string; slug: string }[] = [];
+  if (wpPost._embedded?.["wp:term"]) {
+    for (const termArray of wpPost._embedded["wp:term"]) {
+      for (const term of termArray) {
+        if (term.taxonomy === "category") {
+          categories.push({ name: term.name, slug: term.slug });
+        }
+      }
+    }
+  }
+
+  // Extract author
+  const wpAuthor = wpPost._embedded?.author?.[0];
+  const author = wpAuthor ? {
+    name: wpAuthor.name,
+    slug: wpAuthor.slug,
+    avatar: wpAuthor.avatar_urls?.["96"] || "",
+    bio: wpAuthor.description || "",
+  } : undefined;
+
+  // Featured image
+  const featuredMedia = wpPost._embedded?.["wp:featuredmedia"]?.[0];
+  const image = featuredMedia ? {
+    url: featuredMedia.source_url,
+    alt: stripHtml(wpPost.title.rendered),
+  } : { url: "", alt: "" };
+
+  const title = stripHtml(wpPost.title.rendered);
+  const excerpt = stripHtml(rewriteCmsDomainLinks(wpPost.excerpt.rendered)).slice(0, 300);
+
+  return {
+    slug: wpPost.slug,
+    title,
+    date: wpPost.date,
+    image,
+    categories,
+    author,
+    body: htmlContent,
+    markdown,
+    plainText,
+    readingTime,
+    seo: { title: `${title} | Madavi`, description: excerpt },
+  };
 }
