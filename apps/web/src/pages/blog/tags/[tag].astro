@@ -15,7 +15,7 @@ if (!tag) return Astro.redirect("/blog");
 
 // Cached posts for this tag, plus live posts merged in
 const cachedPosts = await getPostsByTag(tag);
-const livePosts = await getRecentLivePosts(5);
+const livePosts = await getRecentLivePosts(30);
 const cachedSlugs = new Set(cachedPosts.map(p => p.slug));
 const newPosts = livePosts.filter(p =>
   !cachedSlugs.has(p.slug) &&

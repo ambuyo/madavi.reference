@@ -15,7 +15,7 @@ const pageParam = parts[1] ? parseInt(parts[1]) : 1;
 
 // Cached posts by this author, plus live posts merged in
 const cachedPosts = await getPostsByAuthor(authorSlug);
-const livePosts = await getRecentLivePosts(5);
+const livePosts = await getRecentLivePosts(30);
 const cachedSlugs = new Set(cachedPosts.map(p => p.slug));
 const newPosts = livePosts.filter(p =>
   !cachedSlugs.has(p.slug) &&

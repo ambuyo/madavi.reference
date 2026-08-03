@@ -21,7 +21,7 @@ import { getPosts, getRecentLivePosts } from "@/lib/data";
 
 // Merge cached index + live recent posts
 const cachedPosts = await getPosts();
-const livePosts = await getRecentLivePosts(5);
+const livePosts = await getRecentLivePosts(30);
 
 // Deduplicate: live posts that aren't in cache get added to front
 const cachedSlugs = new Set(cachedPosts.map(p => p.slug));

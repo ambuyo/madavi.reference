@@ -132,12 +132,17 @@ import * as fs from "fs";
 import * as path from "path";
 
 // Cache paths — resolve at build time (apps/web) vs runtime (repo root)
+// Resolve cache directory — tries local dev paths then Netlify function paths.
+// On Netlify the build copies .cache/ into dist/ so it's deployed with the function.
 const CACHE_DIR = [
   path.join(".cache"),
   path.join("apps", "web", ".cache"),
-  // Netlify: cache is copied into dist/ during build so the function can read it
   path.join("dist", ".cache"),
   path.join("apps", "web", "dist", ".cache"),
+  // Netlify function CWD varies; also check relative paths from repo root
+  path.join(process.cwd(), ".cache"),
+  path.join(process.cwd(), "apps", "web", ".cache"),
+  path.join(process.cwd(), "dist", ".cache"),
 ].find(fs.existsSync) ?? path.join(".cache");
 
 const INDEX_FILE = path.join(CACHE_DIR, "index.json");
