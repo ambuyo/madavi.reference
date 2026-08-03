@@ -28,8 +28,6 @@ import type {
   Industry,
   SingleWork,
   InfoPage,
-  Category,
-  Subcategory,
 } from "./sanity/types";
 
 // =============================================================================
@@ -127,217 +125,239 @@ async function getSanityModules() {
 }
 
 // =============================================================================
+// WORDPRESS CACHE — THIN READ LAYER
+// =============================================================================
+
+import * as fs from "fs";
+import * as path from "path";
+
+// Cache paths — resolve at build time (apps/web) vs runtime (repo root)
+const CACHE_DIR = [
+  path.join(".cache"),
+  path.join("apps", "web", ".cache"),
+].find(fs.existsSync) ?? path.join(".cache");
+
+const INDEX_FILE = path.join(CACHE_DIR, "index.json");
+const POSTS_DIR = path.join(CACHE_DIR, "posts");
+
+/**
+ * Lightweight index entry written by scripts/cache-wordpress-posts.ts.
+ * Consumed by list views (blog index, category/tag/author pages).
+ */
+export interface PostIndexEntry {
+  slug: string;
+  title: string;
+  excerpt: string;
+  date: string;
+  image?: { url: string; alt: string };
+  categories: { name: string; slug: string }[];
+  tags: string[];
+  author?: { name: string; slug: string; avatar: string };
+  readingTime: string;
+}
+
+function readIndexCache(): PostIndexEntry[] {
+  if (!fs.existsSync(INDEX_FILE)) return [];
+  return JSON.parse(fs.readFileSync(INDEX_FILE, "utf-8"));
+}
+
+function readPostCache(slug: string): Post | null {
+  const file = path.join(POSTS_DIR, `${slug}.json`);
+  if (!fs.existsSync(file)) return null;
+  return JSON.parse(fs.readFileSync(file, "utf-8"));
+}
+
+// =============================================================================
 // POSTS
 // =============================================================================
 
 /**
- * Get all posts - uses cached posts for instant loading
- * Posts are cached at build time, ensuring fast native-like performance
- * New posts require a rebuild/redeploy to appear
+ * Get all posts from the build-time index cache.
+ * Instant, no network — new posts appear after a rebuild/redeploy.
  */
-export async function getPosts(limit?: number) {
-  if (!USE_WORDPRESS) {
-    return [];
-  }
-
+export async function getPosts(limit?: number): Promise<PostIndexEntry[]> {
+  if (!USE_WORDPRESS) return [];
   try {
-    const { readCachedPosts } = await import("./wordpress/cache");
-    const { transformWordPressPost } = await import("./wordpress/transforms");
-
-    const cachedPosts = await readCachedPosts();
-    if (cachedPosts && cachedPosts.length > 0) {
-      const posts = cachedPosts.map(transformWordPressPost);
-      return limit ? posts.slice(0, limit) : posts;
-    }
-
-    // No cache on disk yet — fetch fresh synchronously (first boot only)
-    const { fetchWordPressPosts } = await import("./wordpress/fetch");
-    const posts = await fetchWordPressPosts();
-    return (limit ? posts.slice(0, limit) : posts).map(transformWordPressPost);
+    const index = readIndexCache();
+    return limit ? index.slice(0, limit) : index;
   } catch (error) {
-    console.warn("Failed to load posts from cms.madavi.co:", error);
+    console.warn("Failed to read post index:", error);
     return [];
   }
 }
 
 /**
- * Get a single post by slug from cached posts
- * Uses pre-cached posts for instant access, requires rebuild to show new posts
+ * Get posts by category slug from the index cache.
  */
-export async function getPostBySlug(slug: string) {
-  if (!USE_WORDPRESS) {
+export async function getPostsByCategory(
+  categorySlug: string,
+  limit?: number
+): Promise<PostIndexEntry[]> {
+  if (!USE_WORDPRESS) return [];
+  try {
+    const index = readIndexCache();
+    const filtered = index.filter((p) =>
+      p.categories?.some((c) => c.slug === categorySlug)
+    );
+    return limit ? filtered.slice(0, limit) : filtered;
+  } catch (error) {
+    console.warn(`Failed to filter posts by category "${categorySlug}":`, error);
+    return [];
+  }
+}
+
+/**
+ * Get posts by tag slug from the index cache.
+ */
+export async function getPostsByTag(tag: string): Promise<PostIndexEntry[]> {
+  if (!USE_WORDPRESS) return [];
+  try {
+    const index = readIndexCache();
+    return index.filter((p) => p.tags?.includes(tag));
+  } catch (error) {
+    console.warn(`Failed to filter posts by tag "${tag}":`, error);
+    return [];
+  }
+}
+
+/**
+ * Get posts by author slug from the index cache.
+ */
+export async function getPostsByAuthor(
+  authorSlug: string,
+  limit?: number
+): Promise<PostIndexEntry[]> {
+  if (!USE_WORDPRESS) return [];
+  try {
+    const index = readIndexCache();
+    const filtered = index.filter((p) => p.author?.slug === authorSlug);
+    return limit ? filtered.slice(0, limit) : filtered;
+  } catch (error) {
+    console.warn(`Failed to filter posts by author "${authorSlug}":`, error);
+    return [];
+  }
+}
+
+/**
+ * Get a single post by slug from the per-post cache files.
+ * Full body/markdown is pre-computed at build time — no Turndown at runtime.
+ */
+export async function getPostBySlug(slug: string): Promise<Post | null> {
+  if (!USE_WORDPRESS) return null;
+  try {
+    return readPostCache(slug);
+  } catch (error) {
+    console.warn(`Failed to read post cache for "${slug}":`, error);
     return null;
   }
+}
 
+/**
+ * SSR fallback: fetch ONE post live from WordPress and transform it at
+ * request time. Used for posts published after the last cache build.
+ * Returns the Post shape with the same fields consumers expect from
+ * cached posts (markdown via the same pipeline as the build script).
+ */
+export async function getPostBySlugLive(slug: string): Promise<Post | null> {
+  if (!USE_WORDPRESS) return null;
   try {
-    const { fetchWordPressPostBySlug } = await import("./wordpress/fetch");
-    const { transformWordPressPost } = await import("./wordpress/transforms");
+    const { fetchAndTransformPost } = await import("./wordpress/fetch");
+    const livePost = await fetchAndTransformPost(slug);
+    if (!livePost) return null;
 
-    // Always fetch full content live — cache only stores truncated content
-    const post = await fetchWordPressPostBySlug(slug);
-    if (post) {
-      return transformWordPressPost(post);
-    }
-
-    console.warn(`Post "${slug}" not found`);
+    // Convert LivePost to Post shape
+    return {
+      slug: livePost.slug,
+      data: {
+        title: livePost.title,
+        description: livePost.seo.description,
+        pubDate: new Date(livePost.date),
+        tags: [],
+        // Post.data.categories requires an `id` — index/live posts don't carry one
+        categories: livePost.categories.map((c) => ({ ...c, id: 0 })),
+        author: livePost.author,
+        image: livePost.image,
+      },
+      body: livePost.body,
+      markdown: livePost.markdown,
+      plainText: livePost.plainText,
+    };
   } catch (error) {
-    console.warn(`Failed to get post "${slug}":`, error);
-  }
-
-  return null;
-}
-
-/**
- * Get posts by tag — WordPress only
- */
-export async function getPostsByTag(tag: string): Promise<Post[]> {
-  try {
-    const { readCachedPosts } = await import("./wordpress/cache");
-    const { transformWordPressPost } = await import("./wordpress/transforms");
-    const cachedPosts = await readCachedPosts();
-    if (!cachedPosts) return [];
-    return cachedPosts
-      .filter((p) => p._embedded?.["wp:term"]?.flat()?.some((t: any) => t.taxonomy === "post_tag" && t.slug === tag))
-      .map(transformWordPressPost);
-  } catch {
-    return [];
+    console.warn(`Failed to fetch live post "${slug}" from WordPress:`, error);
+    return null;
   }
 }
 
 /**
- * Get posts by category slug — WordPress only
+ * Fetch the N most recent posts live from WordPress, shaped like index
+ * entries. Used to merge brand-new posts (absent from the cache) into
+ * list pages without a rebuild.
  */
-export async function getPostsByCategory(categorySlug: string, limit?: number): Promise<Post[]> {
+export async function getRecentLivePosts(
+  count: number = 5
+): Promise<PostIndexEntry[]> {
+  if (!USE_WORDPRESS) return [];
   try {
-    const { readCachedPosts } = await import("./wordpress/cache");
-    const { transformWordPressPost } = await import("./wordpress/transforms");
-
-    const cachedPosts = await readCachedPosts();
-    if (!cachedPosts || cachedPosts.length === 0) return [];
-
-    const filtered = cachedPosts
-      .filter((post) =>
-        post._embedded?.["wp:term"]?.some((termArray: any[]) =>
-          termArray.some((term: any) => term.taxonomy === "category" && term.slug === categorySlug)
-        )
-      );
-    const sliced = limit ? filtered.slice(0, limit) : filtered;
-    return sliced.map(transformWordPressPost);
-  } catch (error) {
-    console.warn(`Failed to fetch posts from category "${categorySlug}":`, error);
-    return [];
-  }
-}
-
-/**
- * Get posts by subcategory slug — WordPress only
- */
-export async function getPostsBySubcategory(subcategorySlug: string): Promise<Post[]> {
-  try {
-    const { readCachedPosts } = await import("./wordpress/cache");
-    const { transformWordPressPost } = await import("./wordpress/transforms");
-
-    const cachedPosts = await readCachedPosts();
-    if (!cachedPosts || cachedPosts.length === 0) return [];
-
-    return cachedPosts
-      .filter((post) =>
-        post._embedded?.["wp:term"]?.some((termArray: any[]) =>
-          termArray.some((term: any) => term.taxonomy === "category" && term.slug === subcategorySlug)
-        )
-      )
-      .map(transformWordPressPost);
-  } catch (error) {
-    console.warn(`Failed to fetch posts from subcategory "${subcategorySlug}":`, error);
-    return [];
-  }
-}
-
-/**
- * Get posts by author slug — WordPress only
- */
-export async function getPostsByAuthor(authorSlug: string, limit?: number): Promise<Post[]> {
-  try {
-    const { readCachedPosts } = await import("./wordpress/cache");
-    const { transformWordPressPost } = await import("./wordpress/transforms");
-
-    const cachedPosts = await readCachedPosts();
-    if (!cachedPosts || cachedPosts.length === 0) return [];
-
-    const filtered = cachedPosts.filter(
-      (post) => post._embedded?.author?.[0]?.slug === authorSlug
+    const { wpFetch } = await import("./wordpress/client");
+    const wpPosts = await wpFetch<any[]>(
+      `/posts?_embed&per_page=${count}&orderby=date&order=desc&_fields=id,slug,title,excerpt,date,_embedded`
     );
-    const sliced = limit ? filtered.slice(0, limit) : filtered;
-    return sliced.map(transformWordPressPost);
+
+    return wpPosts.map((wpPost: any) => {
+      const categories: { name: string; slug: string }[] = [];
+      if (wpPost._embedded?.["wp:term"]) {
+        for (const termArray of wpPost._embedded["wp:term"]) {
+          for (const term of termArray) {
+            if (term.taxonomy === "category") {
+              categories.push({ name: term.name, slug: term.slug });
+            }
+          }
+        }
+      }
+
+      const wpAuthor = wpPost._embedded?.author?.[0];
+      const featuredMedia = wpPost._embedded?.["wp:featuredmedia"]?.[0];
+
+      const title = wpPost.title.rendered.replace(/<[^>]*>/g, "").trim();
+      const excerpt = wpPost.excerpt.rendered.replace(/<[^>]*>/g, "").trim().slice(0, 300);
+      const words = wpPost.content?.rendered?.replace(/<[^>]*>/g, " ").trim().split(/\s+/).length || 0;
+      const readingTime = `${Math.max(1, Math.ceil(words / 200))} min`;
+
+      return {
+        slug: wpPost.slug,
+        title,
+        excerpt,
+        date: wpPost.date,
+        // PostIndexEntry.tags is required; the live _fields payload omits terms
+        tags: [],
+        image: featuredMedia ? { url: featuredMedia.source_url, alt: title } : undefined,
+        categories,
+        author: wpAuthor ? {
+          name: wpAuthor.name,
+          slug: wpAuthor.slug,
+          avatar: wpAuthor.avatar_urls?.["96"] || "",
+        } : undefined,
+        readingTime,
+      };
+    });
   } catch (error) {
-    console.warn(`Failed to fetch posts by author "${authorSlug}":`, error);
+    console.warn("Failed to fetch recent live posts:", error);
     return [];
   }
 }
 
 /**
- * Get all unique tags — WordPress only
+ * Get all unique tags from the index cache — WordPress only
  */
 export async function getAllTags(): Promise<string[]> {
+  if (!USE_WORDPRESS) return [];
   try {
-    const { readCachedPosts } = await import("./wordpress/cache");
-    const cachedPosts = await readCachedPosts();
-    if (!cachedPosts) return [];
+    const index = readIndexCache();
     const tags = new Set<string>();
-    cachedPosts.forEach((p) =>
-      p._embedded?.["wp:term"]?.flat()?.forEach((t: any) => {
-        if (t.taxonomy === "post_tag") tags.add(t.slug);
-      })
-    );
+    index.forEach((p) => p.tags?.forEach((tag) => tags.add(tag)));
     return Array.from(tags);
-  } catch {
-    return [];
-  }
-}
-
-/**
- * Get all categories — WordPress only
- */
-export async function getAllCategories(): Promise<Category[]> {
-  try {
-    const posts = await getPosts();
-    const categoryMap = new Map<string, Category>();
-    posts.forEach((post) => {
-      post.data.categories?.forEach((cat) => {
-        if (!categoryMap.has(cat.slug)) {
-          categoryMap.set(cat.slug, { id: cat.id, name: cat.name, slug: cat.slug });
-        }
-      });
-    });
-    return Array.from(categoryMap.values()).sort((a, b) => a.name.localeCompare(b.name));
   } catch (error) {
-    console.warn("Failed to get categories:", error);
-    return [];
-  }
-}
-
-/**
- * Get all subcategories — WordPress only
- */
-export async function getAllSubcategories(): Promise<Subcategory[]> {
-  try {
-    const posts = await getPosts();
-    const subcategoryMap = new Map<string, Subcategory>();
-    posts.forEach((post) => {
-      post.data.subcategories?.forEach((sub) => {
-        if (!subcategoryMap.has(sub.slug)) {
-          subcategoryMap.set(sub.slug, {
-            id: sub.id,
-            name: sub.name,
-            slug: sub.slug,
-            parentId: sub.parentId,
-          });
-        }
-      });
-    });
-    return Array.from(subcategoryMap.values()).sort((a, b) => a.name.localeCompare(b.name));
-  } catch (error) {
-    console.warn("Failed to get subcategories:", error);
+    console.warn("Failed to read tags from post index:", error);
     return [];
   }
 }
