@@ -3,9 +3,9 @@
 import Text from "@/components/fundations/elements/Text.astro";
 // Entries
 import BlogCard3 from "@/components/blog/landing/BlogCard3.astro";
-// Data
-import { getPostsByCategory } from "@/lib/data";
-const allPosts = await getPostsByCategory("the-ai-studio");
+// Data — posts are passed in by the parent page
+import type { PostIndexEntry } from "@/lib/data";
+const { posts } = Astro.props as { posts: PostIndexEntry[] };
 ---
 
 <div>
@@ -16,7 +16,7 @@ const allPosts = await getPostsByCategory("the-ai-studio");
     class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-2 relative before:absolute after:absolute before:bg-base-950 after:bg-base-950/10 before:top-0 before:left-0 before:h-px before:w-6 after:top-0 after:right-0 after:left-8 after:h-px pt-4"
   >
     {
-      allPosts.slice(0, 4).map((post) => <BlogCard3 post={post} />)
+      posts.slice(0, 4).map((post) => <BlogCard3 post={post} />)
     }
   </div> 
 </div>

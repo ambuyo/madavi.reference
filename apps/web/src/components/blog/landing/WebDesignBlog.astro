@@ -6,9 +6,9 @@ import ArrowRight from "@/components/fundations/icons/ArrowRight.astro";
 // Entries
 import BlogCard5 from "@/components/blog/landing/BlogCard5.astro";
 import BlogCard4 from "@/components/blog/landing/BlogCard4.astro";
-// Data
-import { getPostsByCategory } from "@/lib/data";
-const allPosts = await getPostsByCategory("web-design");
+// Data — posts are passed in by the parent page
+import type { PostIndexEntry } from "@/lib/data";
+const { posts } = Astro.props as { posts: PostIndexEntry[] };
 ---
 
 <div class="">
@@ -28,12 +28,12 @@ const allPosts = await getPostsByCategory("web-design");
   >
     <div class="lg:col-span-2">
       {
-        allPosts.slice(0, 1).map((post) => <BlogCard4 post={post} />)
+        posts.slice(0, 1).map((post) => <BlogCard4 post={post} />)
       }
     </div>
     <div class="mt-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-4">
       {
-        allPosts.slice(1, 4).map((post) => <BlogCard5 post={post} />)
+        posts.slice(1, 4).map((post) => <BlogCard5 post={post} />)
       }
     </div>
   </div>

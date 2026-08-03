@@ -6,8 +6,9 @@ import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 import ArrowRight from "@/components/fundations/icons/ArrowRight.astro";
 // Components
 import BlogCard5 from "@/components/blog/landing/BlogCard5.astro";
-// Data
-import { getPostsByCategory } from "@/lib/data";
+// Data — posts are passed in by the parent page
+import type { PostIndexEntry } from "@/lib/data";
+const { posts } = Astro.props as { posts: PostIndexEntry[] };
 
 const categories = [
   { name: "Marketing for Accelerators", slug: "accelerators" },
@@ -15,8 +16,8 @@ const categories = [
   { name: "Marketing for EdTech", slug: "edtech" },
 ];
 
-const categoryPosts = await Promise.all(
-  categories.map((cat) => getPostsByCategory(cat.slug))
+const categoryPosts = categories.map((cat) =>
+  posts.filter((p) => p.categories?.some((c) => c.slug === cat.slug))
 );
 ---
 

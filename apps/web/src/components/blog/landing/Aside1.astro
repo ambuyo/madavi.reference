@@ -5,10 +5,10 @@ import Text from "@/components/fundations/elements/Text.astro";
 import ArrowRight from "@/components/fundations/icons/ArrowRight.astro";
 // Entries
 import BlogCard5 from "@/components/blog/landing/BlogCard5.astro";
-// Data
-import { getPostsByCategory } from "@/lib/data";
-const allPosts = await getPostsByCategory("company-updates");
---- 
+// Data — posts are passed in by the parent page
+import type { PostIndexEntry } from "@/lib/data";
+const { posts } = Astro.props as { posts: PostIndexEntry[] };
+---
 
 <div>
   <Text
@@ -27,7 +27,7 @@ const allPosts = await getPostsByCategory("company-updates");
     class="relative before:absolute after:absolute before:bg-base-950 after:bg-base-950/10 before:top-0 before:left-0 before:h-px before:w-6 after:top-0 after:right-0 after:left-8 after:h-px pt-4 mt-2"
   >
     <div class="flex flex-col gap-4 border-b border-base-200 divide-y divide-base-200">
-      {allPosts.map((post) => <BlogCard5 post={post} />)}
+      {posts.map((post) => <BlogCard5 post={post} />)}
     </div>
   </div>
 </div>

@@ -3,9 +3,9 @@
 import Text from "@/components/fundations/elements/Text.astro";
 // Entries
 import BlogCard7 from "@/components/blog/landing/BlogCard7.astro";
-// Data
-import { getPosts } from "@/lib/data";
-const allPosts = await getPosts();
+// Data — posts are passed in by the parent page
+import type { PostIndexEntry } from "@/lib/data";
+const { posts } = Astro.props as { posts: PostIndexEntry[] };
 ---
 
 <div>
@@ -17,7 +17,7 @@ const allPosts = await getPosts();
   >
     <div class="relative">
       {
-        allPosts.slice(0, 1).map((post) => <BlogCard7 post={post} />)
+        posts.slice(0, 1).map((post) => <BlogCard7 post={post} />)
       }
     </div>
   </div>

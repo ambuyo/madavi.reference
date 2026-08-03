@@ -1,5 +1,5 @@
 ---
-export const prerender = true;
+export const prerender = false;
 // Fundations
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
@@ -16,6 +16,21 @@ import WebDesignBlog from "@/components/blog/landing/WebDesignBlog.astro";
 // Adverts
 import AdvertAside from "@/components/advert/AdvertAside.astro";
 import AdvertInline from "@/components/advert/AdvertInline.astro";
+// Data
+import { getPosts, getRecentLivePosts } from "@/lib/data";
+
+// Merge cached index + live recent posts
+const cachedPosts = await getPosts();
+const livePosts = await getRecentLivePosts(5);
+
+// Deduplicate: live posts that aren't in cache get added to front
+const cachedSlugs = new Set(cachedPosts.map(p => p.slug));
+const newPosts = livePosts.filter(p => !cachedSlugs.has(p.slug));
+const allPosts = [...newPosts, ...cachedPosts];
+
+// Filter posts per section category
+const byCategory = (slug: string) =>
+  allPosts.filter((p) => p.categories?.some((c) => c.slug === slug));
 
 const seo = {
   title: "Blog and Insights",
@@ -29,32 +44,31 @@ const seo = {
     <Wrapper variant="standard" class="py-12">
       <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 lg:gap-0">
         <div class="lg:col-span-3 lg:pr-8">
-          <BlogFeatured />
+          <BlogFeatured posts={allPosts.slice(0, 1)} />
           <div class="flex flex-col gap-12 mt-8">
-            <AIStudioBlog />
-            <GrowthMarketingBlog />
+            <AIStudioBlog posts={byCategory("the-ai-studio")} />
+            <GrowthMarketingBlog posts={byCategory("growth-marketing")} />
             <AdvertInline />
           </div>
         </div>
         <div class="lg:pl-8">
           <div class="lg:sticky lg:top-10 lg:z-20">
-            <Aside1 />
+            <Aside1 posts={byCategory("company-updates")} />
             <AdvertAside />
-          </div> 
+          </div>
         </div>
       </div>
       <div class="flex flex-col gap-4 mt-12">
-        <ContentMarketingBlog />
+        <ContentMarketingBlog posts={byCategory("content-marketing")} />
       </div>
     </Wrapper>
   </section>
-  <Categories1 />
-  <SeoMarketingBlog />
-  <Categories2 />
+  <Categories1 posts={allPosts} />
+  <SeoMarketingBlog posts={byCategory("seo-marketing")} />
+  <Categories2 posts={allPosts} />
   <section>
     <Wrapper variant="standard" class="py-12">
-      <WebDesignBlog />
+      <WebDesignBlog posts={byCategory("web-design")} />
     </Wrapper>
   </section>
 </BaseLayout>
-  
