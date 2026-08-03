@@ -36,15 +36,15 @@ const mediaItems = [
     href: `/our-work/${latestOurWork.slug}`,
   },
   latestAIStudio && {
-    image: getImageUrl(latestAIStudio.data.image),
+    image: getImageUrl(latestAIStudio.image),
     category: "AI Studio",
-    title: latestAIStudio.data.title,
+    title: latestAIStudio.title,
     href: `/blog/${latestAIStudio.slug}`,
   },
   latestGrowthMarketing && {
-    image: getImageUrl(latestGrowthMarketing.data.image),
+    image: getImageUrl(latestGrowthMarketing.image),
     category: "Growth Marketing",
-    title: latestGrowthMarketing.data.title,
+    title: latestGrowthMarketing.title,
     href: `/blog/${latestGrowthMarketing.slug}`,
   },
 ].filter((item): item is any => !!item);
