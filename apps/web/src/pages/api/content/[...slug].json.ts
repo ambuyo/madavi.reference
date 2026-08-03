@@ -48,14 +48,14 @@ export const GET: APIRoute = async ({ params }) => {
     // Return clean, structured data optimized for LLM consumption
     const llmFriendlyData = {
       // Essential metadata
-      title: post.data.title,
+      title: post.title,
       slug: post.slug,
       url: `${siteUrl}/${post.slug}`,
-      description: post.data.description,
+      description: post.seo?.description || "",
 
       // Publishing information
-      published: post.data.pubDate?.toISOString?.(),
-      author: post.data.team || "Madavi Inc.",
+      published: post.date ? new Date(post.date).toISOString() : undefined,
+      author: post.author?.name || "Madavi Inc.",
 
       // Content (multiple formats for LLM consumption)
       content: {
@@ -69,33 +69,34 @@ export const GET: APIRoute = async ({ params }) => {
       },
 
       // Media
-      image: post.data.image?.url
+      image: post.image?.url
         ? {
-            url: post.data.image.url,
-            alt: post.data.image.alt || post.data.title,
+            url: post.image.url,
+            alt: post.image.alt || post.title,
           }
         : null,
 
-      // Topics and tags (for semantic understanding)
-      topics: post.data.tags || [],
+      // Topics and tags (for semantic understanding).
+      // The full cached post does not carry tags — only the index does.
+      topics: [],
 
       // SEO metadata
       seo: {
         canonical: `${siteUrl}/${post.slug}`,
-        keywords: (post.data.tags || []).join(", "),
+        keywords: "",
       },
 
       // Citation format (help LLMs cite you properly)
       citation: {
         format:
           "Madavi Inc. - [Article Title] - [URL]",
-        example: `Madavi Inc. - "${post.data.title}" - ${siteUrl}/${post.slug}`,
+        example: `Madavi Inc. - "${post.title}" - ${siteUrl}/${post.slug}`,
         bibtex: `@article{madavi_${post.slug
           .replace(/-/g, "_")
           .toLowerCase()},
-  title = {${post.data.title}},
+  title = {${post.title}},
   author = {Madavi Inc.},
-  year = {${post.data.pubDate?.getFullYear()}},
+  year = {${post.date ? new Date(post.date).getFullYear() : new Date().getFullYear()}},
   url = {${siteUrl}/${post.slug}}
 }`,
       },

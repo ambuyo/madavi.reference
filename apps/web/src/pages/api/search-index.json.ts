@@ -22,9 +22,9 @@ export async function GET() {
 
   const content = [
     ...postsData.map((p) => ({
-      title: p.data.title,
-      description: p.data.description,
-      date: p.data.pubDate,
+      title: p.title,
+      description: p.excerpt,
+      date: p.date,
       slug: p.slug,
       type: "post",
       category: "Blog Post",

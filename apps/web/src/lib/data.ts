@@ -156,12 +156,32 @@ export interface PostIndexEntry {
   readingTime: string;
 }
 
+/**
+ * Full cached post written to posts/{slug}.json by
+ * scripts/cache-wordpress-posts.ts. Flat — no `data` wrapper — matching
+ * the LivePost shape from lib/wordpress/fetch.ts so cached and live posts
+ * can be consumed identically.
+ */
+export interface CachedPost {
+  slug: string;
+  title: string;
+  date: string;
+  image: { url: string; alt: string };
+  categories: { name: string; slug: string }[];
+  author?: { name: string; slug: string; avatar: string; bio: string };
+  body: string;
+  markdown: string;
+  plainText: string;
+  readingTime: string;
+  seo: { title: string; description: string };
+}
+
 function readIndexCache(): PostIndexEntry[] {
   if (!fs.existsSync(INDEX_FILE)) return [];
   return JSON.parse(fs.readFileSync(INDEX_FILE, "utf-8"));
 }
 
-function readPostCache(slug: string): Post | null {
+function readPostCache(slug: string): CachedPost | null {
   const file = path.join(POSTS_DIR, `${slug}.json`);
   if (!fs.existsSync(file)) return null;
   return JSON.parse(fs.readFileSync(file, "utf-8"));
@@ -242,7 +262,7 @@ export async function getPostsByAuthor(
  * Get a single post by slug from the per-post cache files.
  * Full body/markdown is pre-computed at build time — no Turndown at runtime.
  */
-export async function getPostBySlug(slug: string): Promise<Post | null> {
+export async function getPostBySlug(slug: string): Promise<CachedPost | null> {
   if (!USE_WORDPRESS) return null;
   try {
     return readPostCache(slug);

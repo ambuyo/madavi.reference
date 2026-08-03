@@ -12,6 +12,7 @@ import IndustryCard from "@/components/industries/IndustryCard.astro";
 import IndustryValueProposition from "@/components/industries/IndustryValueProposition.astro";
 // Data
 import { getIndustries, getPostsByCategory, getFAQsBySlug } from "@/lib/data";
+import type { PostIndexEntry } from "@/lib/data";
 const allIndustries = await getIndustries();
 // Get the industry slug from the URL
 const industrySlug = Astro.url.pathname.split("/").filter(Boolean).pop();
@@ -27,7 +28,7 @@ const relatedIndustries = allIndustries
   .slice(0, 2);
 
 // Fetch blog posts by category if blog section has a category
-let blogPosts = [];
+let blogPosts: PostIndexEntry[] = [];
 if (frontmatter.blog?.category) {
   blogPosts = await getPostsByCategory(frontmatter.blog.category);
   blogPosts = blogPosts.slice(0, 3); // Limit to 3 posts
@@ -191,11 +192,11 @@ if (frontmatter.faqs?.slug) {
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
               {blogPosts.map((post) => (
                 <article class="flex flex-col">
-                  {post.data.image && (
+                  {post.image?.url && (
                     <div class="mb-4 overflow-hidden rounded-lg h-48">
                       <img
-                        src={post.data.image}
-                        alt={post.data.title}
+                        src={post.image.url}
+                        alt={post.image.alt || post.title}
                         class="w-full h-full object-cover"
                       />
                     </div>
@@ -209,7 +210,7 @@ if (frontmatter.faqs?.slug) {
                       variant="displaySM"
                       class="text-base-900 font-display text-lg mb-2"
                     >
-                      {post.data.title}
+                      {post.title}
                     </Text>
                   </a>
                   <Text
@@ -217,7 +218,7 @@ if (frontmatter.faqs?.slug) {
                     variant="textBase"
                     class="text-base-600 leading-relaxed mb-4 line-clamp-3"
                   >
-                    {post.data.description}
+                    {post.excerpt}
                   </Text>
                   <div class="mt-auto">
                     <a

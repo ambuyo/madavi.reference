@@ -18,15 +18,15 @@ export const GET: APIRoute = async () => {
 
     // Blog posts
     const postsData = blogPosts.map((post) => ({
-      title: post.data.title,
+      title: post.title,
       url: `${siteUrl}/blog/${post.slug}`,
       slug: post.slug,
-      description: post.data.description,
-      published: post.data.pubDate?.toISOString?.(),
-      image: post.data.image?.url ?? post.data.image?.src,
+      description: post.excerpt,
+      published: post.date || undefined,
+      image: post.image?.url,
       apiEndpoint: `${siteUrl}/api/content/${post.slug}.json`,
-      topics: post.data.tags ?? [],
-      categories: post.data.categories ?? [],
+      topics: post.tags ?? [],
+      categories: post.categories ?? [],
     }));
 
     // Services / Capabilities
