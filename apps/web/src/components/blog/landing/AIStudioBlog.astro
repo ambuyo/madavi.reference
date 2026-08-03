@@ -3,9 +3,16 @@
 import Text from "@/components/fundations/elements/Text.astro";
 // Entries
 import BlogCard3 from "@/components/blog/landing/BlogCard3.astro";
-// Data — posts are passed in by the parent page
+// Data — posts are passed in by the parent page; live WP fallback
 import type { PostIndexEntry } from "@/lib/data";
-const { posts } = Astro.props as { posts: PostIndexEntry[] };
+import { getPostsByCategoryLive } from "@/lib/data";
+let { posts: allPosts } = Astro.props as { posts: PostIndexEntry[] };
+if (allPosts.length < 3) {
+  const live = await getPostsByCategoryLive("the-ai-studio", 3);
+  const slugs = new Set(allPosts.map(p => p.slug));
+  allPosts = [...allPosts, ...live.filter(p => !slugs.has(p.slug))];
+}
+const posts = allPosts;
 ---
 
 <div>
