@@ -323,7 +323,7 @@ export async function getRecentLivePosts(
   try {
     const { wpFetch } = await import("./wordpress/client");
     const wpPosts = await wpFetch<any[]>(
-      `/posts?_embed&per_page=${count}&orderby=date&order=desc&_fields=id,slug,title,excerpt,date,_embedded`
+      `/posts?_embed&per_page=${count}&orderby=date&order=desc`
     );
 
     return wpPosts.map((wpPost: any) => {
