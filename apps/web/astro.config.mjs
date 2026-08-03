@@ -2,11 +2,11 @@ import { defineConfig } from "astro/config";
 import sitemap from "@astrojs/sitemap";
 import react from "@astrojs/react";
 import tailwindcss from "@tailwindcss/vite";
-import node from "@astrojs/node";
+import netlify from "@astrojs/netlify";
 
 export default defineConfig({
   output: "server",
-  adapter: node({ mode: "standalone" }),
+  adapter: netlify(),
   redirects: {
     "/resources": { destination: "/blog", status: 301 },
     "/work/[...slug]": { destination: "/our-work/[slug]", status: 301 },
