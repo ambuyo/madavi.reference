@@ -1,15 +1,20 @@
 import { defineConfig } from "astro/config";
 import sitemap from "@astrojs/sitemap";
 import react from "@astrojs/react";
-import tailwindcss from "@tailwindcss/vite";
+import node from "@astrojs/node";
+import cloudflare from "@astrojs/cloudflare";
 import netlify from "@astrojs/netlify";
+
+const target = process.env.DEPLOY_TARGET || "vps";
+const isCloudflare = target === "cloudflare";
+const isNetlify = target === "netlify";
 
 export default defineConfig({
   output: "server",
-  adapter: netlify(),
+  adapter: isCloudflare ? cloudflare() : isNetlify ? netlify() : node({ mode: "standalone" }),
   redirects: {
     "/resources": { destination: "/blog", status: 301 },
-    "/work/[...slug]": { destination: "/our-work/[slug]", status: 301 },
+    "/work/[...slug]": { destination: "/our-work/[...slug]", status: 301 },
     "/capabilities/brand-communications": { destination: "/capabilities/brand-communication", status: 301 },
     "/gro/courses/artificial-intelligence-in-digital-marketing/": { destination: "/our-work/", status: 301 },
     "/turn-your-business-to-an-authentic-brand-in-kenya/": { destination: "/blog", status: 301 },
@@ -77,17 +82,30 @@ export default defineConfig({
         hostname: "cdn.sanity.io",
       },
     ],
-    // Optimize image formats and caching
-    service: {
-      entrypoint: "astro/assets/services/sharp",
-    },
+    // Cloudflare Pages doesn't support sharp (native binary).
+    // Use the no-op passthrough on Cloudflare; sharp on VPS.
+    service: isCloudflare
+      ? { entrypoint: "astro/assets/services/noop" }
+      : { entrypoint: "astro/assets/services/sharp" },
   },
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [],
     resolve: {
       alias: {
         "@": "/src",
       },
+      // Workers have DOMParser (Web API) but not require().
+      // Force browser builds for packages that have Node/browser forks.
+      conditions: isCloudflare
+        ? ["browser", "worker", "development|production"]
+        : [],
+    },
+    ssr: {
+      // turndown MUST stay external on Cloudflare. It internally calls
+      // require('@mixmark-io/domino') which crashes Workers at runtime.
+      // markdown.ts loads it via try { await import("turndown") } catch {} —
+      // on Workers the import fails gracefully, htmlToMarkdown returns "".
+      external: isCloudflare ? ["turndown"] : [],
     },
     optimizeDeps: {
       include: ["react", "react-dom", "react-dom/client"],

@@ -5,22 +5,25 @@
     "dev": "pnpm --parallel -r dev",
     "dev:web": "pnpm --filter @madavi/web dev",
     "dev:studio": "pnpm --filter @madavi/studio dev",
-    "build": "find node_modules/.pnpm -name 'esbuild' -path '*/bin/esbuild' -exec chmod +x {} \\; && pnpm --filter=web run build",
-    "build:all": "pnpm --parallel -r build",
-    "build:web": "pnpm --filter @madavi/web build",
-    "build:studio": "pnpm --filter @madavi/studio build",
+    "build": "pnpm run build:vps",
+    "build:vps": "corepack enable && DEPLOY_TARGET=vps pnpm --filter @madavi/web run build",
+    "build:cf": "corepack enable && DEPLOY_TARGET=cloudflare pnpm --filter @madavi/web run build",
+    "build:netlify": "corepack enable && DEPLOY_TARGET=netlify pnpm --filter @madavi/web run build",
+    "build:all": "corepack enable && pnpm --parallel -r build",
+    "build:web": "corepack enable && pnpm --filter @madavi/web build",
+    "build:studio": "corepack enable && pnpm --filter @madavi/studio build",
     "clean": "bash scripts/clean.sh",
     "seed:all": "SEED_ALL=1 pnpm exec tsx scripts/migrate-to-sanity.ts"
   },
   "packageManager": "pnpm@11.4.0",
   "dependencies": {
-    "@netlify/blobs": "^10.7.8",
     "@sanity/client": "^6.24.1",
     "@sanity/image-url": "^1.1.0",
     "dotenv": "^17.2.3",
     "gray-matter": "^4.0.3"
   },
   "devDependencies": {
-    "tsx": "^4.21.0"
+    "tsx": "^4.21.0",
+    "wrangler": "^4.103.0"
   }
 }

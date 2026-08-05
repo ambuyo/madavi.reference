@@ -1,10 +1,53 @@
+# Netlify deployment configuration
+# Monorepo — Astro app is in apps/web/
+# Uses @astrojs/netlify adapter (auto-generates SSR function)
+
 [build]
-  command = "pnpm --filter=@madavi/web run build && cp -r apps/web/.cache apps/web/dist/.cache"
-  publish = "apps/web/dist"
+  base = "apps/web"
+  command = "corepack enable && DEPLOY_TARGET=netlify pnpm run build"
+  publish = "dist"
 
 [build.environment]
   NODE_VERSION = "22"
   NODE_OPTIONS = "--experimental-sqlite"
 
-[functions]
-  node_bundler = "esbuild"
+# Security headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Redirects (keep in sync with astro.config.mjs)
+[[redirects]]
+  from = "/resources"
+  to = "/blog"
+  status = 301
+
+[[redirects]]
+  from = "/work/*"
+  to = "/our-work/:splat"
+  status = 301
+
+[[redirects]]
+  from = "/capabilities/brand-communications"
+  to = "/capabilities/brand-communication"
+  status = 301
+
+[[redirects]]
+  from = "/gro/courses/artificial-intelligence-in-digital-marketing/"
+  to = "/our-work/"
+  status = 301
+
+[[redirects]]
+  from = "/turn-your-business-to-an-authentic-brand-in-kenya/"
+  to = "/blog"
+  status = 301
+
+[[redirects]]
+  from = "/ai-studio/agents-development/kuzafy/"
+  to = "/solutions/kuzafy/"
+  status = 301
+
+# SSR routing is handled automatically by the @astrojs/netlify adapter
