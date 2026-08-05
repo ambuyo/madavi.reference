@@ -248,6 +248,54 @@ export async function getPostsBySubcategory(subcategorySlug: string): Promise<Po
 }
 
 /**
+ * Get posts by category directly from WordPress (bypasses cache).
+ * Used by category landing pages to surface recent posts not yet cached.
+ */
+export async function getPostsByCategoryLive(
+  categorySlug: string,
+  limit: number = 3
+): Promise<PostIndexEntry[]> {
+  if (!USE_WORDPRESS) return [];
+  try {
+    const { wpFetch } = await import("./wordpress/client");
+    const cats = await wpFetch<any[]>(`/categories?slug=${categorySlug}`);
+    const categoryId = cats?.[0]?.id;
+    if (!categoryId) {
+      console.warn(`Category slug "${categorySlug}" not found in WordPress`);
+      return [];
+    }
+    const wpPosts = await wpFetch<any[]>(
+      `/posts?_embed&per_page=${limit}&categories=${categoryId}&orderby=date&order=desc`
+    );
+    return wpPosts.map((wpPost: any) => {
+      const wpCats: { name: string; slug: string }[] = [];
+      if (wpPost._embedded?.["wp:term"]) {
+        for (const ta of wpPost._embedded["wp:term"]) {
+          for (const t of ta) {
+            if (t.taxonomy === "category") wpCats.push({ name: t.name, slug: t.slug });
+          }
+        }
+      }
+      const a = wpPost._embedded?.author?.[0];
+      const fm = wpPost._embedded?.["wp:featuredmedia"]?.[0];
+      const t = wpPost.title.rendered.replace(/<[^>]*>/g, "").trim();
+      return {
+        slug: wpPost.slug, title: t,
+        excerpt: wpPost.excerpt.rendered.replace(/<[^>]*>/g, "").trim().slice(0, 300),
+        date: wpPost.date, tags: [],
+        image: fm ? { url: fm.source_url, alt: t } : undefined,
+        categories: wpCats,
+        author: a ? { name: a.name, slug: a.slug, avatar: a.avatar_urls?.["96"] || "" } : undefined,
+        readingTime: "1 min",
+      };
+    });
+  } catch (error) {
+    console.warn(`Failed to fetch live posts for category "${categorySlug}":`, error);
+    return [];
+  }
+}
+
+/**
  * Get posts by author slug — reads from cache index, transforms only matching posts.
  */
 export async function getPostsByAuthor(authorSlug: string, limit?: number): Promise<Post[]> {
@@ -297,6 +345,83 @@ export async function getAllSubcategories(): Promise<Subcategory[]> {
     return await getCachedAllSubcategories();
   } catch (error) {
     console.warn("Failed to get subcategories:", error);
+    return [];
+  }
+}
+
+// =============================================================================
+// LIVE POSTS (not yet cached — fetched direct from WordPress)
+// =============================================================================
+
+/**
+ * Lightweight post shape for list views.
+ * Consumed by author pages to merge cached + live posts.
+ */
+export interface PostIndexEntry {
+  slug: string;
+  title: string;
+  excerpt: string;
+  date: string;
+  image?: { url: string; alt: string };
+  categories: { name: string; slug: string }[];
+  tags: string[];
+  author?: { name: string; slug: string; avatar: string };
+  readingTime: string;
+}
+
+/**
+ * Fetch the most recent N posts directly from WordPress (bypasses cache).
+ * Used by author/tag/category pages to surface posts published after the
+ * last cache snapshot.
+ */
+export async function getRecentLivePosts(
+  count: number = 5
+): Promise<PostIndexEntry[]> {
+  if (!USE_WORDPRESS) return [];
+  try {
+    const { wpFetch } = await import("./wordpress/client");
+    const wpPosts = await wpFetch<any[]>(
+      `/posts?_embed&per_page=${count}&orderby=date&order=desc`
+    );
+
+    return wpPosts.map((wpPost: any) => {
+      const categories: { name: string; slug: string }[] = [];
+      if (wpPost._embedded?.["wp:term"]) {
+        for (const termArray of wpPost._embedded["wp:term"]) {
+          for (const term of termArray) {
+            if (term.taxonomy === "category") {
+              categories.push({ name: term.name, slug: term.slug });
+            }
+          }
+        }
+      }
+
+      const wpAuthor = wpPost._embedded?.author?.[0];
+      const featuredMedia = wpPost._embedded?.["wp:featuredmedia"]?.[0];
+
+      const title = wpPost.title.rendered.replace(/<[^>]*>/g, "").trim();
+      const excerpt = wpPost.excerpt.rendered.replace(/<[^>]*>/g, "").trim().slice(0, 300);
+      const words = wpPost.content?.rendered?.replace(/<[^>]*>/g, " ").trim().split(/\s+/).length || 0;
+      const readingTime = `${Math.max(1, Math.ceil(words / 200))} min`;
+
+      return {
+        slug: wpPost.slug,
+        title,
+        excerpt,
+        date: wpPost.date,
+        tags: [],
+        image: featuredMedia ? { url: featuredMedia.source_url, alt: title } : undefined,
+        categories,
+        author: wpAuthor ? {
+          name: wpAuthor.name,
+          slug: wpAuthor.slug,
+          avatar: wpAuthor.avatar_urls?.["96"] || "",
+        } : undefined,
+        readingTime,
+      };
+    });
+  } catch (error) {
+    console.warn("Failed to fetch recent live posts:", error);
     return [];
   }
 }

@@ -40,7 +40,9 @@ export const GET: APIRoute = async () => {
       const { fileURLToPath } = await import("node:url");
       const entryDir = fileURLToPath(import.meta.url);
       clientCandidates.push(join(entryDir, "..", "..", "..", "client"));
-    } catch {}
+    } catch {
+      // client dir resolution is best-effort
+    }
 
     let clientDir = "";
     for (const candidate of clientCandidates) {
