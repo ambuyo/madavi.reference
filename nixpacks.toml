@@ -15,3 +15,7 @@ cmds = [
 
 [start]
 cmd = "node apps/web/dist/server/entry.mjs"
+
+[variables]
+PORT = "4321"
+HOST = "0.0.0.0"
