@@ -1,70 +1,40 @@
 import { createClient } from "@sanity/client";
 import type { SanityClient } from "@sanity/client";
 
-// Lazy singleton — prevents eager createClient at module scope from crashing
-// the process when SANITY_PROJECT_ID is not yet available (env sync, deploy race).
-// Pattern matches the resilient approach in sanity/lib/client.ts.
+function buildClient(overrides: Record<string, unknown> = {}): SanityClient | null {
+  const projectId = import.meta.env.SANITY_PROJECT_ID || import.meta.env.PUBLIC_SANITY_PROJECT_ID;
+  const dataset = import.meta.env.SANITY_DATASET || import.meta.env.PUBLIC_SANITY_DATASET || "production";
 
-let _client: SanityClient | null = null;
-let _previewClient: SanityClient | null = null;
-
-function createSanityClient(overrides: { useCdn: boolean; perspective: string }): SanityClient {
-  const projectId = import.meta.env.SANITY_PROJECT_ID;
   if (!projectId) {
-    // Never cache the error — transient env-missing (deploy race, env sync)
-    // must recover without a process restart. Throw fresh each time so the
-    // next call retries and succeeds when the env var appears.
-    throw new Error("SANITY_PROJECT_ID not set");
+    console.warn("Sanity client: no projectId configured — client unavailable");
+    return null as unknown as SanityClient;
   }
 
   return createClient({
     projectId,
-    dataset: import.meta.env.SANITY_DATASET || "production",
+    dataset,
     apiVersion: import.meta.env.SANITY_API_VERSION || "2024-01-01",
-    ...overrides,
+    useCdn: import.meta.env.PROD,
     token: import.meta.env.SANITY_READ_TOKEN,
+    perspective: "published",
     timeout: 10_000,
+    ...overrides,
   });
 }
 
-function getClient(): SanityClient {
-  if (!_client) {
-    _client = createSanityClient({ useCdn: import.meta.env.PROD, perspective: "published" });
+// Primary published client — null if projectId is not configured
+export const client = buildClient();
+
+// Client without CDN for real-time/preview — null if projectId is not configured
+export const previewClient = buildClient({ useCdn: false, perspective: "previewDrafts" });
+
+// Lazy getter that throws a clear error instead of silently returning null
+export function getClient(): SanityClient {
+  const c = client;
+  if (!c) {
+    throw new Error(
+      "Sanity client is not configured. Set SANITY_PROJECT_ID and SANITY_DATASET environment variables."
+    );
   }
-  return _client;
+  return c;
 }
-
-function getPreviewClient(): SanityClient {
-  if (!_previewClient) {
-    _previewClient = createSanityClient({ useCdn: false, perspective: "previewDrafts" });
-  }
-  return _previewClient;
-}
-
-// Proxy exports — transparent to callers (sanityFetch calls .fetch() on these)
-// but creation is deferred until first use.
-// IMPORTANT: functions are bound to the real client instance so that
-// ES2022 private fields (#httpRequest, etc.) resolve correctly.
-// All introspection traps are delegated — @sanity/image-url checks
-// 'config' in client before calling client.config(), which needs `has`.
-function proxyClient(getter: () => SanityClient): SanityClient {
-  return new Proxy({} as SanityClient, {
-    get(_target, prop) {
-      const real = getter();
-      const value = (real as any)[prop];
-      return typeof value === "function" ? value.bind(real) : value;
-    },
-    has(_target, prop) {
-      return prop in getter();
-    },
-    ownKeys(_target) {
-      return Reflect.ownKeys(getter());
-    },
-    getOwnPropertyDescriptor(_target, prop) {
-      return Object.getOwnPropertyDescriptor(getter(), prop);
-    },
-  });
-}
-
-export const client: SanityClient = proxyClient(getClient);
-export const previewClient: SanityClient = proxyClient(getPreviewClient);

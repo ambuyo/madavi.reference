@@ -1,4 +1,4 @@
-import { client, previewClient } from "./client";
+import { getClient, previewClient } from "./client";
 
 interface FetchOptions {
   preview?: boolean;
@@ -7,6 +7,7 @@ interface FetchOptions {
 /**
  * Fetch data from Sanity with proper caching for Astro
  * Uses CDN for production, bypasses CDN for previews
+ * Returns empty array if Sanity is not configured, so the build never crashes
  */
 export async function sanityFetch<T>(
   query: string,
@@ -14,7 +15,16 @@ export async function sanityFetch<T>(
   options: FetchOptions = {}
 ): Promise<T> {
   const { preview = false } = options;
-  const sanityClient = preview ? previewClient : client;
 
-  return sanityClient.fetch<T>(query, params);
+  try {
+    const sanityClient = preview ? previewClient : getClient();
+    if (!sanityClient) {
+      throw new Error("Sanity client is not initialized");
+    }
+    return sanityClient.fetch<T>(query, params);
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : String(error);
+    console.warn(`Sanity fetch failed (${msg}) — returning empty result`);
+    return [] as unknown as T;
+  }
 }

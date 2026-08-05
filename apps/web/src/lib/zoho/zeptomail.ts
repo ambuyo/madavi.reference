@@ -15,18 +15,11 @@ const client = new SendMailClient({
   token: ZEPTO_TOKEN,
 });
 
-interface Attachment {
-  filename: string;
-  content: string; // base64
-  mimeType: string;
-}
-
 interface SendParams {
   toName: string;
   toEmail: string;
   subject: string;
   htmlBody: string;
-  attachments?: Attachment[];
 }
 
 export async function sendZeptoMail(params: SendParams): Promise<boolean> {
@@ -43,15 +36,7 @@ export async function sendZeptoMail(params: SendParams): Promise<boolean> {
       htmlbody: params.htmlBody,
     };
 
-    if (params.attachments?.length) {
-      body.attachments = params.attachments.map((a) => ({
-        content: a.content,
-        filename: a.filename,
-        mime_type: a.mimeType,
-      }));
-    }
-
-    const resp = await client.sendMail(body);
+    const resp = (await client.sendMail(body as unknown as Parameters<typeof client.sendMail>[0])) as Record<string, unknown>;
 
     if (resp?.data) {
       console.log(`[ZeptoMail] Sent "${params.subject}" → ${params.toEmail}`);
@@ -98,7 +83,7 @@ export function buildAuditEmailHtml(params: {
       <p style="font-size: 14px; color: #374151; margin: 0 0 16px;">Hi ${firstName},</p>
       <p style="font-size: 14px; color: #374151; line-height: 1.6; margin: 0 0 24px;">
         Thank you for completing the Madavi AI Readiness Assessment for <strong>${companyName}</strong>.
-        Your full report is attached to this email.
+        Our team will review your results and reach out with a detailed report.
       </p>
 
       <!-- Score card -->

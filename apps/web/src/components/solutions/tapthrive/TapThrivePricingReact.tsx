@@ -2,8 +2,6 @@ import { CreativePricing } from "@/components/ui/creative-pricing";
 import type { PricingTier } from "@/components/ui/creative-pricing";
 import { Wifi, TrendingUp, Sparkles } from "lucide-react";
 
-const WA_BASE = "https://wa.me/254718735565?text=";
-
 const tiers: PricingTier[] = [
   {
     name: "Tap",

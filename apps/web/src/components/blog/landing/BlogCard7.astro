@@ -1,23 +1,24 @@
 ---
 import { Image } from "astro:assets";
 import Text from "@/components/fundations/elements/Text.astro";
+import { calculateReadingTime } from "@/lib/reading-time";
 
-// Consumes the flat PostIndexEntry shape from @/lib/data
 const post = Astro.props.post;
 const { url, title, pubDate, image, author, tags } = {
   url: "/blog/" + (post.slug || post.id),
-  tags: post.tags ?? [],
-  title: post.title,
-  author: post.author?.name ?? null,
-  image: post.image?.url,
-  pubDate: new Date(post.date).toLocaleDateString("en-US", {
+  tags: post.data.tags ?? [],
+  title: post.data.title,
+  author: post.data.team ?? null,
+  image: post.data.image?.url,
+  description: post.data.description,
+  pubDate: new Date(post.data.pubDate).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
     day: "2-digit",
   }),
 };
 
-const stats = post.readingTime || "";
+const stats = calculateReadingTime(post.body ?? "");
 
 const formattedAuthor = author
   ? author.replace(/-/g, " ").replace(/\b\w/g, (c: string) => c.toUpperCase())
@@ -30,7 +31,7 @@ const formattedAuthor = author
     <div>
       <div>
         {
-          tags.map((tag: string) => {
+          tags.map((tag) => {
             const formattedTag = tag.replace(/-/g, " ");
             return (
               <Text
@@ -61,7 +62,7 @@ const formattedAuthor = author
       <Text tag="p" variant="textXS" class="font-medium">
         <time datetime={pubDate}>{pubDate}</time>
         <span aria-hidden="true">·</span>
-        {stats.text}
+        {stats.displayText}
       </Text>
     </div>
   </div>

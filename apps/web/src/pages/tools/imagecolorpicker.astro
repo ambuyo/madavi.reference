@@ -1,0 +1,30 @@
+---
+export const prerender = true;
+
+// Layout
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+// React component (client:load — needs immediate interactivity for paste/drop)
+import ImageColorPicker from "@/components/tools/ImageColorPicker";
+---
+
+<BaseLayout
+  title="Free Image Color Picker — Extract HEX, RGB, HSL & HSV Colors Online"
+  description="Pick colors from any image instantly. Upload, paste, or drag & drop an image and click any pixel to get its color in HEX, RGB, HSL, and HSV. 100% free, no uploads — everything works in your browser."
+  canonical="https://madavi.co/tools/imagecolorpicker"
+  keywords={[
+    "image color picker",
+    "color picker from image",
+    "extract color from image",
+    "HEX color picker",
+    "RGB color picker",
+    "HSL color picker",
+    "image color extractor",
+    "online color picker",
+    "color code finder",
+    "free color picker tool",
+  ]}
+  hideMainCta={true}
+>
+  <ImageColorPicker client:load />
+</BaseLayout>

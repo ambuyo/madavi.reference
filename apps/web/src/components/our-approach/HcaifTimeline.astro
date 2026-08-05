@@ -1,0 +1,103 @@
+---
+import Text from "@/components/fundations/elements/Text.astro";
+import Wrapper from "@/components/fundations/containers/Wrapper.astro";
+
+const phases = [
+  {
+    days: "Days 1–3",
+    title: "Stakeholder Matrix & Driver-Tree Insulation",
+    description:
+      "We interview department leaders and map high-level corporate metrics down to daily workflow tasks, immediately eliminating speculative, low-ROI ideas from your pipeline.",
+    bgColor: "#E65100",
+  },
+  {
+    days: "Days 4–7",
+    title: "Infrastructure Auditing & Technical Stress Checks",
+    description:
+      "We run technical stress checks on your existing software stack, analyze data cleanliness, and audit vendor agreements to design strict data ring-fencing.",
+    bgColor: "#FF5000",
+  },
+  {
+    days: "Days 8–11",
+    title: "Operational Friction & Change Screening",
+    description:
+      "We shadow frontline teams to analyze user behavior, isolate manual bottlenecks (like cross-dashboard data transfers), and profile internal AI anxiety.",
+    bgColor: "#E65100",
+  },
+  {
+    days: "Days 12–14",
+    title: "Blueprint Synthesis & Financial Modeling",
+    description:
+      "We deliver your completed HCAIF Maturity Blueprint to the board. This includes an actionable Gap Ledger, technical specifications for custom sovereign code paths, and a localized financial model mapping upfront engineering costs directly against projected income statement returns.",
+    bgColor: "#FF5000",
+  },
+];
+---
+
+<section>
+  <Wrapper variant="standard" class="py-12">
+    <div class="max-w-3xl mb-12">
+      <Text
+        tag="h2"
+        variant="displayMD"
+        class="text-base-900 text-balance font-display"
+      >
+        Timeline & Tactical Execution
+      </Text>
+      <Text
+        tag="p"
+        variant="textBase"
+        class="text-base-700 mt-4 text-pretty"
+      >
+        The transition from operational uncertainty to a reality-adjusted roadmap is executed inside a fixed-scope, high-velocity window: The 14-Day HCAIF Diagnostic Sprint.
+      </Text>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0 rounded-lg overflow-hidden">
+      {
+        phases.map((phase) => (
+          <div class="p-8 lg:p-10 flex flex-col gap-4 text-white h-full" style={`background-color: ${phase.bgColor}`}>
+            <Text
+              tag="p"
+              variant="textXS"
+              class="text-white/80 uppercase font-semibold tracking-wide"
+            >
+              {phase.days}
+            </Text>
+            <Text
+              tag="h3"
+              variant="textLG"
+              class="text-white font-semibold font-display"
+            >
+              {phase.title}
+            </Text>
+            <Text
+              tag="p"
+              variant="textSM"
+              class="text-white/90 text-pretty"
+            >
+              {phase.description}
+            </Text>
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="mt-16 max-w-2xl">
+      <Text
+        tag="h2"
+        variant="displayMD"
+        class="text-base-900 text-balance font-display"
+      >
+        Fast-Track Your Enterprise AI Strategy
+      </Text>
+      <Text
+        tag="p"
+        variant="textBase"
+        class="text-base-700 mt-4 text-pretty"
+      >
+        Diagnosing your structural gaps is the difference between renting disconnected software seats and building a sovereign corporate asset that your company completely owns and controls.
+      </Text>
+    </div>
+  </Wrapper>
+</section>

@@ -125,7 +125,7 @@ export interface TeamMember {
       email?: string;
     };
   };
-  body?: PortableTextBlock[];
+  body?: string;
   render?: () => Promise<{ Content: unknown }>;
 }
 
@@ -393,7 +393,7 @@ export interface Service {
       note?: string;
     };
   };
-  body?: PortableTextBlock[];
+  body?: string;
   render?: () => Promise<{ Content: unknown }>;
 }
 
@@ -471,7 +471,7 @@ export interface Industry {
     relevantServices: string[];
     image?: UnifiedImage;
   };
-  body?: PortableTextBlock[];
+  body?: string;
   render?: () => Promise<{ Content: unknown }>;
 }
 
@@ -497,6 +497,8 @@ export interface SanitySingleWork {
   industry: string;
   imcServices?: string[];
   aiStudioServices?: string[];
+  imcServiceRefs?: Array<{ name: string }>;
+  aiStudioServiceRefs?: Array<{ name: string }>;
   /** @deprecated use imcServices + aiStudioServices */
   services?: string[];
   completionDate?: string; // ISO date string e.g. "2024-03-15"
@@ -550,7 +552,7 @@ export interface SingleWork {
     projectImages?: UnifiedImage[];
     pubDate: Date;
   };
-  body?: PortableTextBlock[];
+  body?: string;
   render?: () => Promise<{ Content: unknown }>;
 }
 
@@ -575,7 +577,7 @@ export interface InfoPage {
     page: string;
     pubDate: Date;
   };
-  body?: PortableTextBlock[];
+  body?: string;
   render?: () => Promise<{ Content: unknown }>;
 }
 

@@ -1,0 +1,32 @@
+# Wrangler configuration for Cloudflare Workers
+# Monorepo — Astro app is in apps/web/
+# Deploy: npx wrangler deploy --config apps/web/dist/server/wrangler.json
+name = "madavi"
+compatibility_date = "2025-01-01"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = "apps/web/dist"
+
+[env.production.vars]
+DEPLOY_TARGET = "cloudflare"
+PUBLIC_SANITY_PROJECT_ID = "6u680gce"
+PUBLIC_SANITY_DATASET = "production"
+PUBLIC_TURNSTILE_SITE_KEY = "0x4AAAAAAAaCsNSU6kPatEyp"
+PUBLIC_GA4_ID = "G-MWD6444FBQ"
+META_PIXEL_ID = "288245505871398"
+PUBLIC_R2_CDN_URL = "https://images.madavi.co"
+
+[vars]
+PUBLIC_SANITY_PROJECT_ID = "6u680gce"
+PUBLIC_SANITY_DATASET = "production"
+PUBLIC_TURNSTILE_SITE_KEY = "0x4AAAAAAAaCsNSU6kPatEyp"
+PUBLIC_GA4_ID = "G-MWD6444FBQ"
+META_PIXEL_ID = "288245505871398"
+PUBLIC_R2_CDN_URL = "https://images.madavi.co"
+
+# ─── Secrets (set via Cloudflare Dashboard or `wrangler secret put`) ───────
+# Required for production:
+#   SANITY_PROJECT_ID, SANITY_DATASET, SANITY_API_VERSION, SANITY_READ_TOKEN
+#   TURNSTILE_SECRET_KEY
+#   ZEPTOMAIL_API_KEY, ZEPTOMAIL_FROM_ADDRESS, ZEPTOMAIL_FROM_NAME
+#   ZOHO_DATACENTER, ZOHO_REFRESH_TOKEN, ZOHO_CLIENT_ID, ZOHO_CLIENT_SECRET
+#   WEBHOOK_SECRET

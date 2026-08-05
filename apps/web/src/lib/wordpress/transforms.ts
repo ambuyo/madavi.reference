@@ -1,10 +1,9 @@
 import {
-  WordPressPost,
-  WordPressCategory,
   getFeaturedImage,
-  stripHtml,
 } from "./fetch";
-import { htmlToMarkdown, extractPlainText, rewriteCmsDomainLinks } from "./markdown";
+import type { WordPressPost, WordPressCategory } from "./fetch";
+import { htmlToMarkdown, extractPlainText } from "./markdown";
+import { decodeHtmlEntities, stripHtml } from "./html";
 import type { Post } from "../sanity/types";
 
 // Helper to extract top-level categories (parent === 0) from embedded data
@@ -43,41 +42,30 @@ function extractSubcategories(wpPost: WordPressPost): Array<{ id: number; name: 
   return subcategories;
 }
 
-// Helper to decode HTML entities in content
-function decodeHtmlEntities(text: string): string {
-  const entityMap: Record<string, string> = {
-    "&amp;": "&",
-    "&lt;": "<",
-    "&gt;": ">",
-    "&quot;": '"',
-    "&#039;": "'",
-    "&apos;": "'",
-    "&nbsp;": " ",
-    "&hellip;": "…",
-    "&#8217;": "'",
-    "&#8216;": "'",
-    "&#8220;": String.fromCharCode(8220),
-    "&#8221;": String.fromCharCode(8221),
-    "&#8212;": "—",
-    "&#8211;": "–",
-  };
+// Rewrite internal cms.madavi.co hrefs to madavi.co paths
+function rewriteCmsDomainLinks(html: string): string {
+  return html.replace(
+    /href="https?:\/\/cms\.madavi\.co(\/[^"]*)"/g,
+    (match, path) => {
+      // Leave wp-* and feed paths as-is (admin, API, media served from CMS)
+      if (/^\/(wp-content|wp-admin|wp-json|wp-login|feed)\b/.test(path)) return match;
 
-  let decoded = text;
-  for (const [entity, char] of Object.entries(entityMap)) {
-    decoded = decoded.replace(new RegExp(entity, "g"), char);
-  }
+      // /category/slug → /blog/cat/slug
+      const catMatch = path.match(/^\/category\/([^/?#]+)/);
+      if (catMatch) return `href="/blog/cat/${catMatch[1].replace(/\/$/, '')}"`;
 
-  // Handle numeric entities &#XXXX;
-  decoded = decoded.replace(/&#(\d+);/g, (match, dec) => {
-    return String.fromCharCode(parseInt(dec, 10));
-  });
+      // /tag/slug → /blog/tag/slug
+      const tagMatch = path.match(/^\/tag\/([^/?#]+)/);
+      if (tagMatch) return `href="/blog/tag/${tagMatch[1].replace(/\/$/, '')}"`;
 
-  // Handle hex entities &#xXXXX;
-  decoded = decoded.replace(/&#x([0-9a-f]+);/gi, (match, hex) => {
-    return String.fromCharCode(parseInt(hex, 16));
-  });
+      // /author/slug → /blog (no author archive pages in Astro)
+      if (/^\/author\//.test(path)) return `href="/blog"`;
 
-  return decoded;
+      // Everything else treated as a post slug: /slug/ → /blog/slug
+      const clean = path.replace(/^\//, "").replace(/\/$/, "");
+      return clean ? `href="/blog/${clean}"` : `href="/blog"`;
+    }
+  );
 }
 
 // Transform WordPress post to our Post type

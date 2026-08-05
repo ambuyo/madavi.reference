@@ -2,7 +2,6 @@
 import Text from "@/components/fundations/elements/Text.astro";
 import Kicker from "@/components/fundations/elements/Kicker.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
-import { WavePath } from "@/components/ui/wave-path";
 
 interface Props {
   failures?: Array<{
@@ -48,45 +47,6 @@ const features = failures.length > 0 ? failures : [
     ],
   },
   {
-    title: "Capacity Issues",
-    bullets: [
-      "Team already at 120% capacity",
-      "No bandwidth for learning",
-      "No time for implementation",
-    ],
-  },
-];
-
-const columns = [
-  {
-    icon: "Team",
-    title: "Cultural Barriers",
-    bullets: [
-      "Team doesn't trust it",
-      "Leadership doesn't champion it",
-      "Previous tech failures created skepticism",
-    ],
-  },
-  {
-    icon: "Process",
-    title: "Process Chaos",
-    bullets: [
-      "Workflows too messy to automate",
-      "Every person does things differently",
-      "No standardization or documentation",
-    ],
-  },
-  {
-    icon: "Infrastructure",
-    title: "Technical Gaps",
-    bullets: [
-      "Systems don't integrate",
-      "Data quality is poor",
-      "Infrastructure can't handle it",
-    ],
-  },
-  {
-    icon: "Resources",
     title: "Capacity Issues",
     bullets: [
       "Team already at 120% capacity",

@@ -40,3 +40,4 @@ LLM-Manifest: https://madavi.co/llms.txt
 
 # ── Sitemaps ──
 Sitemap: https://madavi.co/sitemap-index.xml
+Sitemap: https://madavi.co/blog-sitemap.xml

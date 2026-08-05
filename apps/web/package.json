@@ -5,19 +5,25 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
-    "start": "astro dev",
+    "start": "node dist/server/entry.mjs",
+    "start:dev": "astro dev",
     "setup:bigin": "tsx scripts/setup-bigin.ts",
-    "cache:posts": "tsx scripts/cache-wordpress-posts.ts",
-    "populate:info-pages": "pnpm exec tsx scripts/populate-info-pages.ts",
-    "build": "export DEPLOY_TARGET=${DEPLOY_TARGET:-vps}; tsx scripts/cache-wordpress-posts.ts || true; astro build",
-    "build:cf": "export DEPLOY_TARGET=cloudflare; tsx scripts/cache-wordpress-posts.ts || true; astro build",
-    "build:netlify": "export DEPLOY_TARGET=netlify; tsx scripts/cache-wordpress-posts.ts || true; astro build",
+    "cache:posts1": "tsx scripts/cache-wordpress-posts.ts",
+    "populate:info-pages1": "pnpm exec tsx scripts/populate-info-pages.ts",
+    "build1": "export DEPLOY_TARGET=${DEPLOY_TARGET:-vps}; tsx scripts/cache-wordpress-posts.ts || true; astro build",
+    "build:cf1": "export DEPLOY_TARGET=cloudflare; tsx scripts/cache-wordpress-posts.ts || true; astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "cache:posts": "pnpm exec tsx scripts/cache-wordpress-posts.ts",
+    "populate:info-pages": "pnpm exec tsx scripts/populate-info-pages.ts",
+    "build2": "pnpm run cach  e:posts && astro build",
+    "build": "pnpm lint && pnpm typecheck && pnpm run cache:posts && astro build",
+    "build:ci": "pnpm lint || true; pnpm typecheck || true; pnpm run cache:posts || true; astro build"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^13.7.0",
-    "@astrojs/netlify": "^7.0.13",
     "@astrojs/node": "^10.1.2",
     "@astrojs/react": "^5.0.7",
     "@astrojs/rss": "^4.0.17",
@@ -50,8 +56,19 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.9",
+    "@eslint/js": "^10.0.1",
     "@tailwindcss/postcss": "^4.3.1",
+    "@types/react": "^18.3.31",
+    "@types/react-dom": "^18.3.7",
+    "@typescript-eslint/parser": "^8.64.0",
+    "eslint": "^9.39.4",
+    "eslint-plugin-astro": "^2.1.1",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
     "tailwindcss": "^4.1.18",
-    "tsx": "^4.21.0"
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.62.0"
   }
 }

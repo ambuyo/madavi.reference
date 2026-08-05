@@ -1,5 +1,8 @@
 ---
 export const prerender = false;
+const _pageStart = Date.now();
+console.log(`[page:blog] GET /blog`);
+
 // Fundations
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import Wrapper from "@/components/fundations/containers/Wrapper.astro";
@@ -37,6 +40,8 @@ const seo = {
   description: "Read insights and articles about AI consulting, digital transformation, and business strategy from Madavi.",
   type: "website" as const,
 };
+
+console.log(`[page:blog] Frontmatter complete (${Date.now() - _pageStart}ms)`);
 ---
 
 <BaseLayout seo={seo}>

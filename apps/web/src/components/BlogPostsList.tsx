@@ -39,7 +39,7 @@ export function BlogPostsList() {
           </a>
           {post.data.image?.url && (
             <img
-              src={post.data.image.url}
+              src={typeof post.data.image.url === "string" ? post.data.image.url : post.data.image.url.src}
               alt={post.data.image.alt || post.data.title}
               className="w-full h-64 object-cover rounded-lg mb-4"
             />

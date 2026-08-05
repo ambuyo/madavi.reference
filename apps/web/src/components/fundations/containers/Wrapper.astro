@@ -2,7 +2,7 @@
 interface Props {
   variant?: "megamenu" | "standard" | "paddingLess" | "prose";
   class?: string;
-  children?: any;
+  children?: unknown;
 }
 const { variant = "standard", class: extraClass = "" } = Astro.props;
 // Map each variant to its specific classes

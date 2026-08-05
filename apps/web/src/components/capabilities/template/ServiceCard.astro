@@ -2,12 +2,11 @@
 // Fundations
 import Text from "@/components/fundations/elements/Text.astro";
 // Icons for services
-const { title, summary, category, icon, url } = {
+const { title, summary, category, url } = {
   url: "/capabilities/" + Astro.props.service.slug,
   title: Astro.props.service.data.title,
   summary: Astro.props.service.data.summary,
   category: Astro.props.service.data.category,
-  icon: Astro.props.service.data.icon,
 };
 ---
 

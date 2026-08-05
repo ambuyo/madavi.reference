@@ -1,22 +1,22 @@
 ---
 import { Image } from "astro:assets";
 import Text from "@/components/fundations/elements/Text.astro";
+import { calculateReadingTime } from "@/lib/reading-time";
 
-// Consumes the flat PostIndexEntry shape from @/lib/data
 const post = Astro.props.post;
 const { url, title, pubDate, image, tags } = {
   url: "/blog/" + (post.slug || post.id),
-  tags: post.tags ?? [],
-  title: post.title,
-  image: post.image?.url || null,
-  pubDate: new Date(post.date).toLocaleDateString("en-US", {
+  tags: post.data.tags ?? [],
+  title: post.data.title,
+  image: post.data.image?.url || null,
+  pubDate: new Date(post.data.pubDate).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
     day: "2-digit",
   }),
 };
 
-const stats = post.readingTime || "";
+const stats = calculateReadingTime(post.body ?? "");
 ---
 
 <article class="relative flex flex-col group">
@@ -50,7 +50,7 @@ const stats = post.readingTime || "";
       <Text tag="p" variant="textXS">
         <time datetime={pubDate}>{pubDate}</time>
         <span aria-hidden="true">·</span>
-        {stats.text}
+        {stats.displayText}
       </Text>
     </div>
     <Text

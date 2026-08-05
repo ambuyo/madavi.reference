@@ -1,7 +1,7 @@
 ---
 export const prerender = true;
 import CareerLayout from "@/layouts/CareerLayout.astro";
-import { getCareers, getCareerById } from "@/lib/sanity/careers";
+import { getCareers } from "@/lib/sanity/careers";
 
 export async function getStaticPaths() {
   const careers = await getCareers();

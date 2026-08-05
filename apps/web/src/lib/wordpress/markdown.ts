@@ -1,69 +1,89 @@
-import TurndownService from "turndown";
+/**
+ * Markdown conversion utilities.
+ *
+ * Turndown is loaded via top-level await on platforms where it can work.
+ *
+ * Turndown needs one of two things internally:
+ *   1. `window.DOMParser` (browser / DOM environment), or
+ *   2. `require("@mixmark-io/domino")` (Node.js fallback)
+ *
+ * Cloudflare Workers ESM has NEITHER: `window` is undefined and `require`
+ * doesn't exist.  If we import turndown there, its module-level init runs
+ * `createHTMLParser()` → `require("@mixmark-io/domino")` → crashes with
+ * "ReferenceError: require is not defined".
+ *
+ * We guard with a pre-flight check so the import is never attempted on
+ * Workers.  On VPS (Node) and in the browser, turndown loads and works
+ * normally.
+ */
 
-// Build a TurndownService with all custom WordPress rules applied
-// (strikethrough, wp-caption, gallery). Shared by the build script
-// (cache-wordpress-posts.ts) and the live single-post fetch
-// (fetchAndTransformPost) so every path produces the same markdown.
-export function configureTurndown(): TurndownService {
-  const service = new TurndownService({
-    headingStyle: "atx",
-    codeBlockStyle: "fenced",
-    bulletListMarker: "-",
-    linkStyle: "inlined",
-  });
+const isNode = typeof process !== "undefined" && process.versions?.node;
+const isBrowser = typeof window !== "undefined";
+const supportsTurndown = isNode || isBrowser;
 
-  // Configure custom rules for better markdown output
-  service.addRule("strikethrough", {
-    filter: ["del", "s"],
-    replacement: (content) => `~~${content}~~`,
-  });
+let turndownService: any = null;
 
-  service.addRule("wordpressCaption", {
-    filter: (node) =>
-      node.tagName === "FIGURE" &&
-      node.classList.contains("wp-caption"),
-    replacement: (content, node) => {
-      const img = node.querySelector("img");
-      const figcaption = node.querySelector("figcaption");
-      if (img && figcaption) {
-        return `![${figcaption.textContent}](${img.src})\n*${figcaption.textContent}*\n`;
-      }
-      return content;
-    },
-  });
+if (supportsTurndown) {
+  try {
+    const TurndownService = (await import("turndown")).default;
+    turndownService = new TurndownService({
+      headingStyle: "atx",
+      codeBlockStyle: "fenced",
+      bulletListMarker: "-",
+      linkStyle: "inlined",
+    });
 
-  service.addRule("wordpressGallery", {
-    filter: (node) =>
-      node.tagName === "DIV" &&
-      node.classList.contains("wp-block-gallery"),
-    replacement: (content, node) => {
-      const images = node.querySelectorAll("img");
-      const alt = images[0]?.alt || "Gallery";
-      return `\n**Gallery**\n${Array.from(images)
-        .map((img) => `- ![${img.alt}](${img.src})`)
-        .join("\n")}\n`;
-    },
-  });
+    turndownService.addRule("strikethrough", {
+      filter: ["del", "s"],
+      replacement: (content: string) => `~~${content}~~`,
+    });
 
-  return service;
+    turndownService.addRule("wordpressCaption", {
+      filter: (node: any) =>
+        node.tagName === "FIGURE" && node.classList.contains("wp-caption"),
+      replacement: (content: string, node: any) => {
+        const img = node.querySelector("img");
+        const figcaption = node.querySelector("figcaption");
+        if (img && figcaption) {
+          return `![${figcaption.textContent}](${img.src})\n*${figcaption.textContent}*\n`;
+        }
+        return content;
+      },
+    });
+
+    turndownService.addRule("wordpressGallery", {
+      filter: (node: any) =>
+        node.tagName === "DIV" && node.classList.contains("wp-block-gallery"),
+      replacement: (content: string, node: any) => {
+        const images = node.querySelectorAll("img");
+        return `\n**Gallery**\n${Array.from(images)
+          .map((img: any) => `- ![${img.alt}](${img.src})`)
+          .join("\n")}\n`;
+      },
+    });
+  } catch (error) {
+    console.warn(
+      "[markdown] Turndown unavailable, markdown disabled:",
+      (error as Error).message,
+    );
+  }
 }
 
-const turndownService = configureTurndown();
-
-// Convert HTML to Markdown
+// Convert HTML to Markdown (sync — turndown loaded at module init via top-level await)
 export function htmlToMarkdown(html: string): string {
+  if (!turndownService) return ""; // Workers fallback
   try {
     let markdown = turndownService.turndown(html);
-
-    // Clean up excessive whitespace
     markdown = markdown
-      .replace(/\n{3,}/g, "\n\n") // Max 2 newlines
-      .replace(/[ \t]+$/gm, "") // Trailing whitespace
+      .replace(/\n{3,}/g, "\n\n")
+      .replace(/[ \t]+$/gm, "")
       .trim();
-
     return markdown;
   } catch (error) {
-    console.warn("Error converting HTML to Markdown, returning plain text:", error);
+    console.warn(
+      "Error converting HTML to Markdown, returning plain text:",
+      error,
+    );
     return stripHtml(html);
   }
 }
@@ -91,30 +111,4 @@ export function extractPlainText(html: string): string {
     .replace(/&#8221;/g, "”")
     .replace(/&#8212;/g, "—")
     .replace(/&#8211;/g, "–");
-}
-
-// Rewrite internal cms.madavi.co hrefs to madavi.co paths
-export function rewriteCmsDomainLinks(html: string): string {
-  return html.replace(
-    /href="https?:\/\/cms\.madavi\.co(\/[^"]*)"/g,
-    (match, path) => {
-      // Leave wp-* and feed paths as-is (admin, API, media served from CMS)
-      if (/^\/(wp-content|wp-admin|wp-json|wp-login|feed)\b/.test(path)) return match;
-
-      // /category/slug → /blog/cat/slug
-      const catMatch = path.match(/^\/category\/([^/?#]+)/);
-      if (catMatch) return `href="/blog/cat/${catMatch[1].replace(/\/$/, '')}"`;
-
-      // /tag/slug → /blog/tag/slug
-      const tagMatch = path.match(/^\/tag\/([^/?#]+)/);
-      if (tagMatch) return `href="/blog/tag/${tagMatch[1].replace(/\/$/, '')}"`;
-
-      // /author/slug → /blog (no author archive pages in Astro)
-      if (/^\/author\//.test(path)) return `href="/blog"`;
-
-      // Everything else treated as a post slug: /slug/ → /blog/slug
-      const clean = path.replace(/^\//, "").replace(/\/$/, "");
-      return clean ? `href="/blog/${clean}"` : `href="/blog"`;
-    }
-  );
 }

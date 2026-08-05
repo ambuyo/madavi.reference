@@ -11,7 +11,7 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   try {
-    const { wpFetch } = await import("@/lib/wordpress/client");
+    const { wpFetch, CACHE_LIMIT, PAGE_SIZE } = await import("@/lib/wordpress/client");
     const { setMemoryPosts } = await import("@/lib/wordpress/cache");
 
     const FIELDS = ["id", "slug", "date", "title", "excerpt", "content", "_links", "_embedded"].join(",");
@@ -20,22 +20,18 @@ export const POST: APIRoute = async ({ request }) => {
     const allPosts: any[] = [];
     let page = 1;
 
-    while (allPosts.length < 200) {
+    while (allPosts.length < CACHE_LIMIT) {
       const batch = await wpFetch<any[]>(
-        `/posts?_embed=${EMBED}&_fields=${FIELDS}&per_page=100&page=${page}&orderby=date&order=desc`
+        `/posts?_embed=${EMBED}&_fields=${FIELDS}&per_page=${PAGE_SIZE}&page=${page}&orderby=date&order=desc`
       );
       if (batch.length === 0) break;
       allPosts.push(...batch);
-      if (batch.length < 100) break;
+      if (batch.length < PAGE_SIZE) break;
       page++;
     }
 
-    const posts = allPosts.slice(0, 200);
+    const posts = allPosts.slice(0, CACHE_LIMIT);
     setMemoryPosts(posts);
-
-    // Also write to disk so the cache survives server restarts
-    const { writeCachedPosts } = await import("@/lib/wordpress/cache");
-    await writeCachedPosts(posts);
 
     console.log(`[revalidate] Cache updated — ${posts.length} posts`);
 

@@ -1,15 +1,18 @@
 # Netlify deployment configuration
 # Monorepo — Astro app is in apps/web/
-# Uses @astrojs/netlify adapter (auto-generates SSR function)
 
 [build]
-  base = "apps/web"
-  command = "corepack enable && DEPLOY_TARGET=netlify pnpm run build"
-  publish = "dist"
+  command = "pnpm run build:vps"
+  publish = "apps/web/dist"
 
 [build.environment]
   NODE_VERSION = "22"
   NODE_OPTIONS = "--experimental-sqlite"
+
+# The @astrojs/node adapter outputs a standalone server
+# Netlify runs it via the entry point
+[functions]
+  node_bundler = "esbuild"
 
 # Security headers
 [[headers]]
@@ -50,4 +53,8 @@
   to = "/solutions/kuzafy/"
   status = 301
 
-# SSR routing is handled automatically by the @astrojs/netlify adapter
+# SPA-style fallback — all unmatched routes go to the SSR handler
+[[redirects]]
+  from = "/*"
+  to = "/.netlify/functions/entry"
+  status = 200

@@ -11,6 +11,9 @@ export interface Props {
   keywords?: string[];
   ogImage?: string;
   twitterHandle?: string;
+  tags?: string[];
+  ogImageWidth?: number;
+  ogImageHeight?: number;
 }
 
 const {
@@ -25,11 +28,13 @@ const {
   keywords = [],
   ogImage = image,
   twitterHandle = "@madavihq",
+  tags = [],
+  ogImageWidth = 1200,
+  ogImageHeight = 630,
 } = Astro.props;
 
 const siteUrl = "https://madavi.co";
 const siteName = "Madavi Inc.";
-const siteDescription = "AI Strategy & Human-Centric Digital Transformation";
 const fullTitle = title.includes(siteName) ? title : `${title} | ${siteName}`;
 const fullCanonical = canonical
   ? canonical.startsWith("http")
@@ -61,6 +66,8 @@ const finalOgImage = ogImage
 <meta property="og:description" content={description} />
 <meta property="og:url" content={fullCanonical} />
 <meta property="og:image" content={finalOgImage} />
+<meta property="og:image:width" content={String(ogImageWidth)} />
+<meta property="og:image:height" content={String(ogImageHeight)} />
 <meta property="og:site_name" content={siteName} />
 
 <!-- Twitter Card Tags -->
@@ -80,6 +87,11 @@ const finalOgImage = ogImage
     {author && <meta property="article:author" content={author} />}
   </>
 )}
+
+<!-- Article tags (for content discovery) -->
+{tags.map((tag) => (
+  <meta property="article:tag" content={tag} />
+))}
 
 <!-- LLM-friendly meta tags -->
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />

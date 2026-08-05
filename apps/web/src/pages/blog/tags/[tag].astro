@@ -1,4 +1,5 @@
 ---
+const _pageStart = Date.now();
 // Fundations
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import Text from "@/components/fundations/elements/Text.astro";
@@ -7,25 +8,60 @@ import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 // Components
 import BlogEntry from "@/components/blog/categories/BlogCard1.astro";
 // Content
-import { getPostsByTag, getRecentLivePosts } from "@/lib/data";
+import { getPostsByTag } from "@/lib/data";
 
 export const prerender = false;
-const { tag } = Astro.params;
-if (!tag) return Astro.redirect("/blog");
 
-// Cached posts for this tag, plus live posts merged in
-const cachedPosts = await getPostsByTag(tag);
-const livePosts = await getRecentLivePosts(30);
-const cachedSlugs = new Set(cachedPosts.map(p => p.slug));
-const newPosts = livePosts.filter(p =>
-  !cachedSlugs.has(p.slug) &&
-  p.tags?.includes(tag)
-);
-const posts = [...newPosts, ...cachedPosts];
+const POSTS_PER_PAGE = 20;
+
+// Parse tag and optional page number from URL
+const { tag: tagParam } = Astro.params;
+if (!tagParam) {
+  console.log(`[page:blog:tag] GET /blog/tags — no tag param, redirecting`);
+  return Astro.redirect("/blog");
+}
+console.log(`[page:blog:tag] GET /blog/tags/${tagParam}`);
+
+const parts = tagParam.split("/");
+const tag = parts[0];
+const pageParam = parts[1] ? parseInt(parts[1]) : 1;
+
+const posts = await getPostsByTag(tag);
+
+// Calculate pagination
+const totalPages = Math.ceil(posts.length / POSTS_PER_PAGE) || 1;
+const currentPage = Math.min(Math.max(pageParam, 1), totalPages);
+
+if (currentPage !== pageParam) {
+  return Astro.redirect(
+    `/blog/tags/${tag}${currentPage > 1 ? `/${currentPage}` : ""}`
+  );
+}
+
+const startIdx = (currentPage - 1) * POSTS_PER_PAGE;
+const paginatedPosts = posts.slice(startIdx, startIdx + POSTS_PER_PAGE);
+
+const pagination = {
+  currentPage,
+  totalPages,
+  totalPosts: posts.length,
+  hasNextPage: currentPage < totalPages,
+  hasPrevPage: currentPage > 1,
+  nextPageUrl:
+    currentPage < totalPages
+      ? `/blog/tags/${tag}/${currentPage + 1}`
+      : null,
+  prevPageUrl:
+    currentPage > 1
+      ? `/blog/tags/${tag}${currentPage - 1 > 1 ? `/${currentPage - 1}` : ""}`
+      : null,
+};
+
+console.log(`[page:blog:tag] /blog/tags/${tag} — ${paginatedPosts.length} posts, page ${currentPage}/${totalPages} (${Date.now() - _pageStart}ms)`);
 
 const seo = {
-  title: `Articles tagged "${tag}"`,
-  description: `Read articles about ${tag} from Madavi's blog on AI consulting and digital transformation.`,
+  title: `Articles tagged "${tag.replace(/-/g, " ")}"${currentPage > 1 ? ` — Page ${currentPage}` : ""}`,
+  description: `Read articles about ${tag.replace(/-/g, " ")} from Madavi's blog on AI consulting and digital transformation.${currentPage > 1 ? ` Page ${currentPage} of ${totalPages}.` : ""}`,
   type: "website" as const,
 };
 ---
@@ -42,16 +78,52 @@ const seo = {
         >
           {tag.replace(/-/g, " ")}
         </Text>
+        <p class="mt-4 text-base-600">
+          {pagination.totalPosts} article{pagination.totalPosts !== 1 ? "s" : ""}
+        </p>
       </div>
       <div
         class="grid grid-cols-1 md:grid-cols-2 mt-12 gap-2 p-8 lg:p-12 bg-base-50"
       >
         {
-          posts.map((post, index) => (
+          paginatedPosts.map((post, index) => (
             <BlogEntry post={post} index={index + 1} />
           ))
         }
       </div>
+
+      <!-- Pagination -->
+      {totalPages > 1 && (
+        <nav class="flex items-center justify-center gap-4 mt-12" aria-label="Pagination">
+          {pagination.hasPrevPage ? (
+            <a
+              href={pagination.prevPageUrl}
+              class="px-4 py-2 text-sm font-medium text-base-700 bg-base-100 rounded-lg hover:bg-base-200 transition-colors"
+            >
+              ← Previous
+            </a>
+          ) : (
+            <span class="px-4 py-2 text-sm font-medium text-base-400 bg-base-50 rounded-lg cursor-not-allowed">
+              ← Previous
+            </span>
+          )}
+          <span class="text-sm text-base-600">
+            Page {currentPage} of {totalPages}
+          </span>
+          {pagination.hasNextPage ? (
+            <a
+              href={pagination.nextPageUrl}
+              class="px-4 py-2 text-sm font-medium text-base-700 bg-base-100 rounded-lg hover:bg-base-200 transition-colors"
+            >
+              Next →
+            </a>
+          ) : (
+            <span class="px-4 py-2 text-sm font-medium text-base-400 bg-base-50 rounded-lg cursor-not-allowed">
+              Next →
+            </span>
+          )}
+        </nav>
+      )}
     </Wrapper>
   </section>
 </BaseLayout>

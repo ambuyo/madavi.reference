@@ -13,7 +13,7 @@ export async function GET() {
       },
       posts: {
         count: posts.length,
-        entries: posts.map(entry => ({ slug: entry.slug || entry.id, title: entry.data.title }))
+        entries: posts.map(entry => ({ slug: (entry as Record<string, unknown>).slug as string || entry.id, title: entry.data.title }))
       }
     }, null, 2), {
       headers: { "Content-Type": "application/json" }

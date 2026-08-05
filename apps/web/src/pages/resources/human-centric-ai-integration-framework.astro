@@ -1,0 +1,34 @@
+---
+export const prerender = true;
+// Fundations
+import BaseLayout from "@/layouts/BaseLayout.astro";
+// Our Approach Components
+import ApproachHero from "@/components/our-approach/ApproachHero.astro";
+import ApproachOld from "@/components/our-approach/ApproachOld.astro";
+import HcaifTimeline from "@/components/our-approach/HcaifTimeline.astro";
+import HcaifPillars from "@/components/our-approach/hcaifPillars.astro";
+import HcaifPillars2 from "@/components/our-approach/hcaifPillars2.astro";
+import HcaifPillars3 from "@/components/our-approach/hcaifPillars3.astro";
+import HcaifPillars4 from "@/components/our-approach/hcaifPillars4.astro";
+import HcaifPillars5 from "@/components/our-approach/hcaifPillars5.astro";
+import HcaifFrameworkSchema from "@/components/HcaifFrameworkSchema.astro";
+
+const seo = {
+  title: "Human-Centric AI Integration Framework (HCAIF) — 5-Pillar Diagnostic Sprint",
+  description: "A 14-day diagnostic framework that cross-references your enterprise against five operational gaps — Strategic Alignment, Technical Readiness, Governance, Cultural Readiness, and Operational Integration — before writing a single line of code.",
+  type: "website" as const,
+};
+
+---
+
+<BaseLayout seo={seo}>
+  <HcaifFrameworkSchema />
+  <ApproachHero />
+  <ApproachOld />
+  <HcaifPillars />
+  <HcaifPillars2 />
+  <HcaifPillars3 />
+  <HcaifPillars4 />
+  <HcaifPillars5 />
+  <HcaifTimeline />
+</BaseLayout>

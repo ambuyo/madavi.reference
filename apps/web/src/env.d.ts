@@ -36,9 +36,11 @@ interface ImportMetaEnv {
   readonly PUBLIC_R2_CDN_URL: string;
 
   // ── Deploy ──
-  readonly DEPLOY_TARGET?: "vps" | "cloudflare" | "netlify";
+  readonly DEPLOY_TARGET?: "vps" | "cloudflare";
 }
 
 interface ImportMeta {
   readonly env: ImportMetaEnv;
 }
+
+declare module "turndown";

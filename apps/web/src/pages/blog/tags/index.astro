@@ -1,4 +1,6 @@
 ---
+const _pageStart = Date.now();
+console.log(`[page:blog:tags] GET /blog/tags`);
 // Fundations
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import Text from "@/components/fundations/elements/Text.astro";
@@ -10,6 +12,7 @@ import ArrowRight from "@/components/fundations/icons/ArrowRight.astro";
 import { getAllTags } from "@/lib/data";
 export const prerender = false;
 const tags = await getAllTags();
+console.log(`[page:blog:tags] ${tags.length} tags loaded (${Date.now() - _pageStart}ms)`);
 
 const seo = {
   title: "Blog Tags",

@@ -1,21 +1,8 @@
-import { readCachedPosts } from "../../lib/wordpress/cache";
-import { transformWordPressPost } from "../../lib/wordpress/transforms";
+import { readCachedTransformedPosts } from "../../lib/wordpress/cache";
 
 export async function GET() {
   try {
-    const cachedPosts = await readCachedPosts();
-
-    if (!cachedPosts || cachedPosts.length === 0) {
-      return new Response(JSON.stringify({ posts: [], error: "No cached posts available" }), {
-        status: 200,
-        headers: {
-          "Content-Type": "application/json",
-          "Cache-Control": "public, max-age=300", // Cache for 5 minutes if empty
-        },
-      });
-    }
-
-    const transformedPosts = cachedPosts.map(transformWordPressPost);
+    const transformedPosts = await readCachedTransformedPosts();
 
     return new Response(JSON.stringify({ posts: transformedPosts }), {
       status: 200,

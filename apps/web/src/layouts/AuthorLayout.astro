@@ -13,7 +13,7 @@ interface Props {
     avatar?: string;
     bio?: string;
   };
-  posts: any[];
+  posts: Record<string, unknown>[];
   pagination?: {
     currentPage: number;
     totalPages: number;

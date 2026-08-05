@@ -9,11 +9,11 @@ const tapThriveSchema = z.object({
   name: z.string().min(1, "Full name is required"),
   whatsapp: z.string().min(1, "WhatsApp number is required"),
   business: z.string().min(1, "Business name is required"),
-  businessType: z.string().optional().default(""),
-  plan: z.string().optional().default(""),
-  locations: z.string().optional().default(""),
-  hasGMB: z.string().optional().default(""),
-  question: z.string().optional().default(""),
+  businessType: z.string(),
+  plan: z.string(),
+  locations: z.string(),
+  hasGMB: z.string(),
+  question: z.string(),
   privacy: z.boolean().refine((val) => val === true, {
     message: "You must agree to the privacy policy",
   }),
@@ -38,17 +38,17 @@ const labelClass = "block text-sm font-medium text-base-900 mb-2";
 
 export function TapThriveContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
+  const [submitStatus, setSubmitStatus] = useState<
+    "idle" | "success" | "error"
+  >("idle");
   const [submitMessage, setSubmitMessage] = useState("");
-  const [visible, setVisible] = useState(false);
+  const visible = submitStatus !== "idle";
 
   useEffect(() => {
     if (submitStatus === "idle") return;
-    setVisible(true);
-    const fade = setTimeout(() => setVisible(false), 7000);
     const clear = setTimeout(() => setSubmitStatus("idle"), 7600);
-    return () => { clearTimeout(fade); clearTimeout(clear); };
-  }, [submitStatus, submitMessage]);
+    return () => clearTimeout(clear);
+  }, [submitStatus]);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const turnstileRef = useRef<TurnstileInstance>(null);
 
@@ -59,6 +59,13 @@ export function TapThriveContactForm() {
     reset,
   } = useForm<TapThriveFormData>({
     resolver: zodResolver(tapThriveSchema),
+    defaultValues: {
+      businessType: "",
+      plan: "",
+      locations: "",
+      hasGMB: "",
+      question: "",
+    },
     mode: "onBlur",
   });
 
@@ -71,15 +78,15 @@ export function TapThriveContactForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name:         data.name,
-          whatsapp:     data.whatsapp,
-          business:     data.business,
+          name: data.name,
+          whatsapp: data.whatsapp,
+          business: data.business,
           businessType: data.businessType,
-          plan:         data.plan,
-          locations:    data.locations,
-          hasGMB:       data.hasGMB,
-          question:     data.question,
-          privacy:      data.privacy,
+          plan: data.plan,
+          locations: data.locations,
+          hasGMB: data.hasGMB,
+          question: data.question,
+          privacy: data.privacy,
           turnstileToken,
         }),
       });
@@ -88,14 +95,21 @@ export function TapThriveContactForm() {
 
       if (response.ok) {
         setSubmitStatus("success");
-        setSubmitMessage("Demo request sent! We'll be in touch within one business day.");
+        setSubmitMessage(
+          "Demo request sent! We'll be in touch within one business day.",
+        );
         reset();
         setTurnstileToken(null);
         turnstileRef.current?.reset();
       } else {
         console.error("TapThrive API error:", result);
         setSubmitStatus("error");
-        setSubmitMessage(result.detail || result.error || result.message || "Failed to send message. Please try again.");
+        setSubmitMessage(
+          result.detail ||
+            result.error ||
+            result.message ||
+            "Failed to send message. Please try again.",
+        );
       }
     } catch (err) {
       console.error("TapThrive form error:", err);
@@ -107,12 +121,19 @@ export function TapThriveContactForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 p-8" style={{ backgroundColor: "#FAF5EF" }}>
-
+    <form
+      onSubmit={(e) => {
+        handleSubmit(onSubmit)(e);
+      }}
+      className="space-y-6 p-8"
+      style={{ backgroundColor: "#FAF5EF" }}
+    >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Full Name */}
         <div>
-          <label htmlFor="tt-name" className={labelClass}>Full Name *</label>
+          <label htmlFor="tt-name" className={labelClass}>
+            Full Name *
+          </label>
           <input
             {...register("name")}
             type="text"
@@ -120,12 +141,19 @@ export function TapThriveContactForm() {
             placeholder="Your full name"
             className={inputClass}
           />
-          {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
+          {errors.name && (
+            <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>
+          )}
         </div>
 
         {/* WhatsApp */}
         <div>
-          <label htmlFor="tt-whatsapp" className={labelClass}>WhatsApp Number * <span className="text-base-400 font-normal">(We'll reply here)</span></label>
+          <label htmlFor="tt-whatsapp" className={labelClass}>
+            WhatsApp Number *{" "}
+            <span className="text-base-400 font-normal">
+              (We&apos;ll reply here)
+            </span>
+          </label>
           <input
             {...register("whatsapp")}
             type="tel"
@@ -133,14 +161,20 @@ export function TapThriveContactForm() {
             placeholder="+254 7XX XXX XXX"
             className={inputClass}
           />
-          {errors.whatsapp && <p className="text-red-500 text-xs mt-1">{errors.whatsapp.message}</p>}
+          {errors.whatsapp && (
+            <p className="text-red-500 text-xs mt-1">
+              {errors.whatsapp.message}
+            </p>
+          )}
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Business name */}
         <div>
-          <label htmlFor="tt-business" className={labelClass}>Business Name *</label>
+          <label htmlFor="tt-business" className={labelClass}>
+            Business Name *
+          </label>
           <input
             {...register("business")}
             type="text"
@@ -148,16 +182,28 @@ export function TapThriveContactForm() {
             placeholder="e.g. Java House, Karen"
             className={inputClass}
           />
-          {errors.business && <p className="text-red-500 text-xs mt-1">{errors.business.message}</p>}
+          {errors.business && (
+            <p className="text-red-500 text-xs mt-1">
+              {errors.business.message}
+            </p>
+          )}
         </div>
 
         {/* Business type */}
         <div>
-          <label htmlFor="tt-biztype" className={labelClass}>Type of business</label>
-          <select {...register("businessType")} id="tt-biztype" className={inputClass}>
+          <label htmlFor="tt-biztype" className={labelClass}>
+            Type of business
+          </label>
+          <select
+            {...register("businessType")}
+            id="tt-biztype"
+            className={inputClass}
+          >
             <option value="">Select your industry</option>
             {businessTypes.map((t) => (
-              <option key={t} value={t}>{t}</option>
+              <option key={t} value={t}>
+                {t}
+              </option>
             ))}
           </select>
         </div>
@@ -166,22 +212,38 @@ export function TapThriveContactForm() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Plan */}
         <div>
-          <label htmlFor="tt-plan" className={labelClass}>Plan of interest</label>
+          <label htmlFor="tt-plan" className={labelClass}>
+            Plan of interest
+          </label>
           <select {...register("plan")} id="tt-plan" className={inputClass}>
             <option value="">Select a plan</option>
-            <option value="TapThrive NFC Review Card only — KSh 4,500 (one-off)">TapThrive NFC Review Card only — KSh 4,500 (one-off)</option>
+            <option value="TapThrive NFC Review Card only — KSh 4,500 (one-off)">
+              TapThrive NFC Review Card only — KSh 4,500 (one-off)
+            </option>
             <option value="Tap — KSh 2,500/mo">Tap — KSh 2,500/mo</option>
-            <option value="Tap + Grow — KSh 5,000/mo">Tap + Grow — KSh 5,000/mo</option>
-            <option value="Tap + Glow — KSh 9,000/mo">Tap + Glow — KSh 9,000/mo</option>
-            <option value="Enterprise / Multi-location">Enterprise / Multi-location</option>
+            <option value="Tap + Grow — KSh 5,000/mo">
+              Tap + Grow — KSh 5,000/mo
+            </option>
+            <option value="Tap + Glow — KSh 9,000/mo">
+              Tap + Glow — KSh 9,000/mo
+            </option>
+            <option value="Enterprise / Multi-location">
+              Enterprise / Multi-location
+            </option>
             <option value="Not sure yet">Not sure yet</option>
           </select>
         </div>
 
         {/* Locations */}
         <div>
-          <label htmlFor="tt-locations" className={labelClass}>Number of locations</label>
-          <select {...register("locations")} id="tt-locations" className={inputClass}>
+          <label htmlFor="tt-locations" className={labelClass}>
+            Number of locations
+          </label>
+          <select
+            {...register("locations")}
+            id="tt-locations"
+            className={inputClass}
+          >
             <option value="">Select</option>
             <option value="1">1 location</option>
             <option value="2-5">2–5 locations</option>
@@ -195,23 +257,36 @@ export function TapThriveContactForm() {
       <div>
         <label htmlFor="tt-gmb" className={labelClass}>
           Do you have an active Google Business Profile?
-          <span className="text-white/40 font-normal ml-1">(affects setup cost)</span>
+          <span className="text-white/40 font-normal ml-1">
+            (affects setup cost)
+          </span>
         </label>
         <select {...register("hasGMB")} id="tt-gmb" className={inputClass}>
           <option value="">Select an option</option>
-          <option value="Yes — verified and live">Yes — verified and live</option>
-          <option value="Yes — claimed but not optimised">Yes — claimed but not optimised</option>
-          <option value="No — needs to be created">No — needs to be created</option>
+          <option value="Yes — verified and live">
+            Yes — verified and live
+          </option>
+          <option value="Yes — claimed but not optimised">
+            Yes — claimed but not optimised
+          </option>
+          <option value="No — needs to be created">
+            No — needs to be created
+          </option>
           <option value="Not sure">Not sure</option>
         </select>
         <p className="text-white/40 text-xs mt-2">
-          If you don't have a verified Google Business Profile, we'll set one up for you — this is charged separately (KSh 5,000) and takes 3–7 days including verification.
+          If you don&apos;t have a verified Google Business Profile, we&apos;ll
+          set one up for you — this is charged separately (KSh 5,000) and takes
+          3–7 days including verification.
         </p>
       </div>
 
       {/* Optional question */}
       <div>
-        <label htmlFor="tt-question" className={labelClass}>Anything specific you want to know? <span className="text-base-400 font-normal">(optional)</span></label>
+        <label htmlFor="tt-question" className={labelClass}>
+          Anything specific you want to know?{" "}
+          <span className="text-base-400 font-normal">(optional)</span>
+        </label>
         <textarea
           {...register("question")}
           id="tt-question"
@@ -231,13 +306,18 @@ export function TapThriveContactForm() {
         />
         <label htmlFor="tt-privacy" className="text-sm text-base-700">
           I agree to the{" "}
-          <a href="/legal/privacy-policy" className="underline hover:opacity-80">
+          <a
+            href="/legal/privacy-policy"
+            className="underline hover:opacity-80"
+          >
             Privacy Policy
           </a>{" "}
           and consent to being contacted about TapThrive.
         </label>
       </div>
-      {errors.privacy && <p className="text-red-500 text-xs">{errors.privacy.message}</p>}
+      {errors.privacy && (
+        <p className="text-red-500 text-xs">{errors.privacy.message}</p>
+      )}
 
       {/* Status messages */}
       {submitStatus !== "idle" && (
@@ -260,7 +340,10 @@ export function TapThriveContactForm() {
       {/* Turnstile */}
       <Turnstile
         ref={turnstileRef}
-        siteKey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "1x00000000000000000000AA"}
+        siteKey={
+          import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ??
+          "1x00000000000000000000AA"
+        }
         onSuccess={setTurnstileToken}
         onExpire={() => setTurnstileToken(null)}
         options={{ theme: "light" }}
@@ -275,7 +358,6 @@ export function TapThriveContactForm() {
       >
         {isSubmitting ? "Sending..." : "Book A Demo"}
       </button>
-
     </form>
   );
 }

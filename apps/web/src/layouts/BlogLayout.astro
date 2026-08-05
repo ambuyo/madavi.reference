@@ -9,7 +9,6 @@ import Wrapper from "@/components/fundations/containers/Wrapper.astro";
 import OptimizedImage from "@/components/OptimizedImage.astro";
 // Sections
 import BlogCard from "@/components/blog/categories/BlogCard1.astro";
-import Kicker from "@/components/fundations/elements/Kicker.astro";
 // Utils
 import { calculateReadingTime } from "@/lib/reading-time";
 
@@ -20,7 +19,7 @@ interface Props {
   wordCount?: number;
 }
 
-const { frontmatter, seo, plainText = "", wordCount = 0 } = Astro.props;
+const { frontmatter, seo, plainText = "" } = Astro.props;
 
 // Calculate reading time from plain text
 const readingTime = plainText ? calculateReadingTime(plainText) : null;

@@ -1,4 +1,5 @@
 ---
+const _pageStart = Date.now();
 import CategoryLayout from "@/layouts/CategoryLayout.astro";
 import { getPostsByCategory, getRecentLivePosts, getCategoryDescription } from "@/lib/data";
 
@@ -7,7 +8,11 @@ export const prerender = false;
 const POSTS_PER_PAGE = 20;
 
 const { category: categoryParam } = Astro.params;
-if (!categoryParam) return Astro.redirect("/blog");
+if (!categoryParam) {
+  console.log(`[page:blog:cat] GET /blog/cat — no category param, redirecting`);
+  return Astro.redirect("/blog");
+}
+console.log(`[page:blog:cat] GET /blog/cat/${categoryParam}`);
 
 // Parse category and page from params
 const parts = categoryParam.split('/');
@@ -29,6 +34,7 @@ const categoryInfo = cachedPosts[0]?.categories?.find(c => c.slug === category)
   ?? newPosts.flatMap(p => p.categories || []).find(c => c.slug === category);
 
 if (!categoryInfo) {
+  console.log(`[page:blog:cat] Category "${category}" not found, redirecting to /blog (${Date.now() - _pageStart}ms)`);
   return Astro.redirect("/blog");
 }
 
@@ -55,6 +61,8 @@ const pagination = {
   nextPageUrl: currentPage < totalPages ? `/blog/cat/${category}/${currentPage + 1}` : null,
   prevPageUrl: currentPage > 1 ? `/blog/cat/${category}${currentPage - 1 > 1 ? `/${currentPage - 1}` : ''}` : null,
 };
+
+console.log(`[page:blog:cat] /blog/cat/${category} — ${paginatedPosts.length} posts, page ${currentPage}/${totalPages} (${Date.now() - _pageStart}ms)`);
 ---
 
 <CategoryLayout

@@ -28,6 +28,8 @@ import type {
   Industry,
   SingleWork,
   InfoPage,
+  Category,
+  Subcategory,
 } from "./sanity/types";
 
 // =============================================================================
@@ -53,146 +55,82 @@ export const USE_WORDPRESS = true;
 /**
  * Dynamically import Sanity modules only when needed
  * This ensures no Sanity code is bundled when USE_SANITY is false
+ * Returns null if Sanity is not configured (missing env vars)
  */
 async function getSanityModules() {
-  const [
-    { sanityFetch },
-    {
-      allPostsQuery,
-      postBySlugQuery,
-      postsByTagQuery,
-      allTagsQuery,
-      allCategoriesQuery,
-      allSubcategoriesQuery,
-      postsByCategorySlugQuery,
-      postsBySubcategorySlugQuery,
-      allTeamMembersQuery,
-      teamMemberBySlugQuery,
-      allServicesQuery,
-      serviceBySlugQuery,
-      allIndustriesQuery,
-      industryBySlugQuery,
-      allCaseStudiesQuery,
-      caseStudyBySlugQuery,
-      allInfoPagesQuery,
-      infoPageBySlugQuery,
-    },
-    {
-      transformPost,
-      transformTeamMember,
-      transformService,
-      transformIndustry,
-      transformSingleWork,
-      transformInfoPage,
-    },
-  ] = await Promise.all([
-    import("./sanity/fetch"),
-    import("./sanity/queries"),
-    import("./sanity/transforms"),
-  ]);
+  try {
+    const [
+      { sanityFetch },
+      {
+        allPostsQuery,
+        postBySlugQuery,
+        postsByTagQuery,
+        allTagsQuery,
+        allCategoriesQuery,
+        allSubcategoriesQuery,
+        postsByCategorySlugQuery,
+        postsBySubcategorySlugQuery,
+        allTeamMembersQuery,
+        teamMemberBySlugQuery,
+        allServicesQuery,
+        serviceBySlugQuery,
+        allIndustriesQuery,
+        industryBySlugQuery,
+        allCaseStudiesQuery,
+        caseStudyBySlugQuery,
+        allInfoPagesQuery,
+        infoPageBySlugQuery,
+      },
+      {
+        transformPost,
+        transformTeamMember,
+        transformService,
+        transformIndustry,
+        transformSingleWork,
+        transformInfoPage,
+      },
+    ] = await Promise.all([
+      import("./sanity/fetch"),
+      import("./sanity/queries"),
+      import("./sanity/transforms"),
+    ]);
 
-  return {
-    sanityFetch,
-    queries: {
-      allPostsQuery,
-      postBySlugQuery,
-      postsByTagQuery,
-      allTagsQuery,
-      allCategoriesQuery,
-      allSubcategoriesQuery,
-      postsByCategorySlugQuery,
-      postsBySubcategorySlugQuery,
-      allTeamMembersQuery,
-      teamMemberBySlugQuery,
-      allServicesQuery,
-      serviceBySlugQuery,
-      allIndustriesQuery,
-      industryBySlugQuery,
-      allCaseStudiesQuery,
-      caseStudyBySlugQuery,
-      allInfoPagesQuery,
-      infoPageBySlugQuery,
-    },
-    transforms: {
-      transformPost,
-      transformTeamMember,
-      transformService,
-      transformIndustry,
-      transformSingleWork,
-      transformInfoPage,
-    },
-  };
-}
-
-// =============================================================================
-// WORDPRESS CACHE — THIN READ LAYER
-// =============================================================================
-
-import * as fs from "fs";
-import * as path from "path";
-
-// Cache paths — resolve at build time (apps/web) vs runtime (repo root)
-// Resolve cache directory — tries local dev paths then Netlify function paths.
-// On Netlify the build copies .cache/ into dist/ so it's deployed with the function.
-const CACHE_DIR = [
-  path.join(".cache"),
-  path.join("apps", "web", ".cache"),
-  path.join("dist", ".cache"),
-  path.join("apps", "web", "dist", ".cache"),
-  // Netlify function CWD varies; also check relative paths from repo root
-  path.join(process.cwd(), ".cache"),
-  path.join(process.cwd(), "apps", "web", ".cache"),
-  path.join(process.cwd(), "dist", ".cache"),
-].find(fs.existsSync) ?? path.join(".cache");
-
-const INDEX_FILE = path.join(CACHE_DIR, "index.json");
-const POSTS_DIR = path.join(CACHE_DIR, "posts");
-
-/**
- * Lightweight index entry written by scripts/cache-wordpress-posts.ts.
- * Consumed by list views (blog index, category/tag/author pages).
- */
-export interface PostIndexEntry {
-  slug: string;
-  title: string;
-  excerpt: string;
-  date: string;
-  image?: { url: string; alt: string };
-  categories: { name: string; slug: string }[];
-  tags: string[];
-  author?: { name: string; slug: string; avatar: string };
-  readingTime: string;
-}
-
-/**
- * Full cached post written to posts/{slug}.json by
- * scripts/cache-wordpress-posts.ts. Flat — no `data` wrapper — matching
- * the LivePost shape from lib/wordpress/fetch.ts so cached and live posts
- * can be consumed identically.
- */
-export interface CachedPost {
-  slug: string;
-  title: string;
-  date: string;
-  image: { url: string; alt: string };
-  categories: { name: string; slug: string }[];
-  author?: { name: string; slug: string; avatar: string; bio: string };
-  body: string;
-  markdown: string;
-  plainText: string;
-  readingTime: string;
-  seo: { title: string; description: string };
-}
-
-function readIndexCache(): PostIndexEntry[] {
-  if (!fs.existsSync(INDEX_FILE)) return [];
-  return JSON.parse(fs.readFileSync(INDEX_FILE, "utf-8"));
-}
-
-function readPostCache(slug: string): CachedPost | null {
-  const file = path.join(POSTS_DIR, `${slug}.json`);
-  if (!fs.existsSync(file)) return null;
-  return JSON.parse(fs.readFileSync(file, "utf-8"));
+    return {
+      sanityFetch,
+      queries: {
+        allPostsQuery,
+        postBySlugQuery,
+        postsByTagQuery,
+        allTagsQuery,
+        allCategoriesQuery,
+        allSubcategoriesQuery,
+        postsByCategorySlugQuery,
+        postsBySubcategorySlugQuery,
+        allTeamMembersQuery,
+        teamMemberBySlugQuery,
+        allServicesQuery,
+        serviceBySlugQuery,
+        allIndustriesQuery,
+        industryBySlugQuery,
+        allCaseStudiesQuery,
+        caseStudyBySlugQuery,
+        allInfoPagesQuery,
+        infoPageBySlugQuery,
+      },
+      transforms: {
+        transformPost,
+        transformTeamMember,
+        transformService,
+        transformIndustry,
+        transformSingleWork,
+        transformInfoPage,
+      },
+    };
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : String(error);
+    console.warn(`Sanity unavailable (${msg}) — using empty data for all CMS-driven pages.`);
+    return null;
+  }
 }
 
 // =============================================================================
@@ -200,241 +138,165 @@ function readPostCache(slug: string): CachedPost | null {
 // =============================================================================
 
 /**
- * Get all posts from the build-time index cache.
- * Instant, no network — new posts appear after a rebuild/redeploy.
+ * Get all posts — reads from pre-transformed cache for instant loading.
+ * Posts are transformed once at cache-load time, so all listing pages
+ * share the same Turndown pass.
  */
-export async function getPosts(limit?: number): Promise<PostIndexEntry[]> {
-  if (!USE_WORDPRESS) return [];
-  try {
-    const index = readIndexCache();
-    return limit ? index.slice(0, limit) : index;
-  } catch (error) {
-    console.warn("Failed to read post index:", error);
+export async function getPosts(limit?: number) {
+  if (!USE_WORDPRESS) {
     return [];
   }
-}
 
-/**
- * Get posts by category slug from the index cache.
- */
-export async function getPostsByCategory(
-  categorySlug: string,
-  limit?: number
-): Promise<PostIndexEntry[]> {
-  if (!USE_WORDPRESS) return [];
   try {
-    const index = readIndexCache();
-    const filtered = index.filter((p) =>
-      p.categories?.some((c) => c.slug === categorySlug)
-    );
-    return limit ? filtered.slice(0, limit) : filtered;
-  } catch (error) {
-    console.warn(`Failed to filter posts by category "${categorySlug}":`, error);
-    return [];
-  }
-}
+    const { readCachedTransformedPosts } = await import("./wordpress/cache");
 
-/**
- * Fetch posts by category directly from WordPress — used as fallback when
- * the cache doesn't have enough posts for a category section.
- */
-export async function getPostsByCategoryLive(
-  categorySlug: string,
-  limit: number = 3
-): Promise<PostIndexEntry[]> {
-  if (!USE_WORDPRESS) return [];
-  try {
-    const { wpFetch } = await import("./wordpress/client");
-    // Look up category ID from slug
-    const cats = await wpFetch<any[]>(`/categories?slug=${categorySlug}`);
-    const categoryId = cats?.[0]?.id;
-    if (!categoryId) {
-      console.warn(`Category slug "${categorySlug}" not found in WordPress`);
-      return [];
+    const transformed = await readCachedTransformedPosts();
+    if (transformed && transformed.length > 0) {
+      return limit ? transformed.slice(0, limit) : transformed;
     }
-    const wpPosts = await wpFetch<any[]>(
-      `/posts?_embed&per_page=${limit}&categories=${categoryId}&orderby=date&order=desc`
-    );
-    return wpPosts.map((wpPost: any) => {
-      const cats: { name: string; slug: string }[] = [];
-      if (wpPost._embedded?.["wp:term"]) {
-        for (const ta of wpPost._embedded["wp:term"]) {
-          for (const t of ta) {
-            if (t.taxonomy === "category") cats.push({ name: t.name, slug: t.slug });
-          }
-        }
-      }
-      const a = wpPost._embedded?.author?.[0];
-      const fm = wpPost._embedded?.["wp:featuredmedia"]?.[0];
-      const t = wpPost.title.rendered.replace(/<[^>]*>/g, "").trim();
-      return {
-        slug: wpPost.slug, title: t,
-        excerpt: wpPost.excerpt.rendered.replace(/<[^>]*>/g, "").trim().slice(0, 300),
-        date: wpPost.date, tags: [],
-        image: fm ? { url: fm.source_url, alt: t } : undefined,
-        categories: cats,
-        author: a ? { name: a.name, slug: a.slug, avatar: a.avatar_urls?.["96"] || "" } : undefined,
-        readingTime: "1 min",
-      };
-    });
+
+    // Cache miss entirely — fetch fresh and transform (first boot only)
+    const { fetchWordPressPosts } = await import("./wordpress/fetch");
+    const { transformWordPressPost } = await import("./wordpress/transforms");
+    const rawPosts = await fetchWordPressPosts(limit ?? 2000);
+    return rawPosts.map(transformWordPressPost);
   } catch (error) {
-    console.warn(`Failed to fetch live posts for category "${categorySlug}":`, error);
+    console.warn("Failed to load posts from cms.madavi.co:", error);
     return [];
   }
 }
 
 /**
- * Get posts by tag slug from the index cache.
+ * Get a single post by slug.
+ * Looks up the slug index first (O(1)), falls back to live WP API.
+ * With full content in cache (Phase 1.4), cache hits are now the common case.
  */
-export async function getPostsByTag(tag: string): Promise<PostIndexEntry[]> {
-  if (!USE_WORDPRESS) return [];
-  try {
-    const index = readIndexCache();
-    return index.filter((p) => p.tags?.includes(tag));
-  } catch (error) {
-    console.warn(`Failed to filter posts by tag "${tag}":`, error);
-    return [];
-  }
-}
-
-/**
- * Get posts by author slug from the index cache.
- */
-export async function getPostsByAuthor(
-  authorSlug: string,
-  limit?: number
-): Promise<PostIndexEntry[]> {
-  if (!USE_WORDPRESS) return [];
-  try {
-    const index = readIndexCache();
-    const filtered = index.filter((p) => p.author?.slug === authorSlug);
-    return limit ? filtered.slice(0, limit) : filtered;
-  } catch (error) {
-    console.warn(`Failed to filter posts by author "${authorSlug}":`, error);
-    return [];
-  }
-}
-
-/**
- * Get a single post by slug from the per-post cache files.
- * Full body/markdown is pre-computed at build time — no Turndown at runtime.
- */
-export async function getPostBySlug(slug: string): Promise<CachedPost | null> {
-  if (!USE_WORDPRESS) return null;
-  try {
-    return readPostCache(slug);
-  } catch (error) {
-    console.warn(`Failed to read post cache for "${slug}":`, error);
+export async function getPostBySlug(slug: string) {
+  if (!USE_WORDPRESS) {
     return null;
   }
-}
 
-/**
- * SSR fallback: fetch ONE post live from WordPress and transform it at
- * request time. Used for posts published after the last cache build.
- * Returns the Post shape with the same fields consumers expect from
- * cached posts (markdown via the same pipeline as the build script).
- */
-export async function getPostBySlugLive(slug: string): Promise<Post | null> {
-  if (!USE_WORDPRESS) return null;
   try {
-    const { fetchAndTransformPost } = await import("./wordpress/fetch");
-    const livePost = await fetchAndTransformPost(slug);
-    if (!livePost) return null;
+    // 1. Try cache index first (O(1) lookup)
+    const { getCachedPostBySlug } = await import("./wordpress/cache");
+    const cached = await getCachedPostBySlug(slug);
 
-    // Convert LivePost to Post shape
-    return {
-      slug: livePost.slug,
-      data: {
-        title: livePost.title,
-        description: livePost.seo.description,
-        pubDate: new Date(livePost.date),
-        tags: [],
-        // Post.data.categories requires an `id` — index/live posts don't carry one
-        categories: livePost.categories.map((c) => ({ ...c, id: 0 })),
-        author: livePost.author,
-        image: livePost.image,
-      },
-      body: livePost.body,
-      markdown: livePost.markdown,
-      plainText: livePost.plainText,
-    };
+    if (cached) {
+      const { transformWordPressPost } = await import("./wordpress/transforms");
+      return transformWordPressPost(cached);
+    }
+
+    // 2. Not in cache — fetch live (new post, not yet cached)
+    const { fetchWordPressPostBySlug } = await import("./wordpress/fetch");
+    const { transformWordPressPost } = await import("./wordpress/transforms");
+    const post = await fetchWordPressPostBySlug(slug);
+    if (post) {
+      return transformWordPressPost(post);
+    }
+
+    console.warn(`Post "${slug}" not found`);
   } catch (error) {
-    console.warn(`Failed to fetch live post "${slug}" from WordPress:`, error);
-    return null;
+    console.warn(`Failed to get post "${slug}":`, error);
   }
+
+  return null;
 }
 
 /**
- * Fetch the N most recent posts live from WordPress, shaped like index
- * entries. Used to merge brand-new posts (absent from the cache) into
- * list pages without a rebuild.
+ * Get posts by tag — reads from cache index, transforms only matching posts.
  */
-export async function getRecentLivePosts(
-  count: number = 5
-): Promise<PostIndexEntry[]> {
-  if (!USE_WORDPRESS) return [];
+export async function getPostsByTag(tag: string): Promise<Post[]> {
   try {
-    const { wpFetch } = await import("./wordpress/client");
-    const wpPosts = await wpFetch<any[]>(
-      `/posts?_embed&per_page=${count}&orderby=date&order=desc`
-    );
-
-    return wpPosts.map((wpPost: any) => {
-      const categories: { name: string; slug: string }[] = [];
-      if (wpPost._embedded?.["wp:term"]) {
-        for (const termArray of wpPost._embedded["wp:term"]) {
-          for (const term of termArray) {
-            if (term.taxonomy === "category") {
-              categories.push({ name: term.name, slug: term.slug });
-            }
-          }
-        }
-      }
-
-      const wpAuthor = wpPost._embedded?.author?.[0];
-      const featuredMedia = wpPost._embedded?.["wp:featuredmedia"]?.[0];
-
-      const title = wpPost.title.rendered.replace(/<[^>]*>/g, "").trim();
-      const excerpt = wpPost.excerpt.rendered.replace(/<[^>]*>/g, "").trim().slice(0, 300);
-      const words = wpPost.content?.rendered?.replace(/<[^>]*>/g, " ").trim().split(/\s+/).length || 0;
-      const readingTime = `${Math.max(1, Math.ceil(words / 200))} min`;
-
-      return {
-        slug: wpPost.slug,
-        title,
-        excerpt,
-        date: wpPost.date,
-        // PostIndexEntry.tags is required; the live _fields payload omits terms
-        tags: [],
-        image: featuredMedia ? { url: featuredMedia.source_url, alt: title } : undefined,
-        categories,
-        author: wpAuthor ? {
-          name: wpAuthor.name,
-          slug: wpAuthor.slug,
-          avatar: wpAuthor.avatar_urls?.["96"] || "",
-        } : undefined,
-        readingTime,
-      };
-    });
-  } catch (error) {
-    console.warn("Failed to fetch recent live posts:", error);
+    const { getCachedPostsByTag } = await import("./wordpress/cache");
+    const { transformWordPressPost } = await import("./wordpress/transforms");
+    const matched = await getCachedPostsByTag(tag);
+    return matched.map(transformWordPressPost);
+  } catch {
     return [];
   }
 }
 
 /**
- * Get all unique tags from the index cache — WordPress only
+ * Get posts by category slug — reads from cache index, transforms only matching posts.
+ */
+export async function getPostsByCategory(categorySlug: string, limit?: number): Promise<Post[]> {
+  try {
+    const { getCachedPostsByCategory } = await import("./wordpress/cache");
+    const { transformWordPressPost } = await import("./wordpress/transforms");
+    const matched = await getCachedPostsByCategory(categorySlug);
+    const sliced = limit ? matched.slice(0, limit) : matched;
+    return sliced.map(transformWordPressPost);
+  } catch (error) {
+    console.warn(`Failed to fetch posts from category "${categorySlug}":`, error);
+    return [];
+  }
+}
+
+/**
+ * Get posts by subcategory slug — reads from cache index.
+ */
+export async function getPostsBySubcategory(subcategorySlug: string): Promise<Post[]> {
+  try {
+    const { getCachedPostsByCategory } = await import("./wordpress/cache");
+    const { transformWordPressPost } = await import("./wordpress/transforms");
+    const matched = await getCachedPostsByCategory(subcategorySlug);
+    return matched.map(transformWordPressPost);
+  } catch (error) {
+    console.warn(`Failed to fetch posts from subcategory "${subcategorySlug}":`, error);
+    return [];
+  }
+}
+
+/**
+ * Get posts by author slug — reads from cache index, transforms only matching posts.
+ */
+export async function getPostsByAuthor(authorSlug: string, limit?: number): Promise<Post[]> {
+  try {
+    const { getCachedPostsByAuthor } = await import("./wordpress/cache");
+    const { transformWordPressPost } = await import("./wordpress/transforms");
+    const matched = await getCachedPostsByAuthor(authorSlug);
+    const sliced = limit ? matched.slice(0, limit) : matched;
+    return sliced.map(transformWordPressPost);
+  } catch (error) {
+    console.warn(`Failed to fetch posts by author "${authorSlug}":`, error);
+    return [];
+  }
+}
+
+/**
+ * Get all unique tags — reads from pre-built index, no transforms needed.
  */
 export async function getAllTags(): Promise<string[]> {
-  if (!USE_WORDPRESS) return [];
   try {
-    const index = readIndexCache();
-    const tags = new Set<string>();
-    index.forEach((p) => p.tags?.forEach((tag) => tags.add(tag)));
-    return Array.from(tags);
+    const { getCachedAllTags } = await import("./wordpress/cache");
+    return await getCachedAllTags();
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Get all categories — reads from pre-built index, no transforms needed.
+ */
+export async function getAllCategories(): Promise<Category[]> {
+  try {
+    const { getCachedAllCategories } = await import("./wordpress/cache");
+    return await getCachedAllCategories();
   } catch (error) {
-    console.warn("Failed to read tags from post index:", error);
+    console.warn("Failed to get categories:", error);
+    return [];
+  }
+}
+
+/**
+ * Get all subcategories — reads from pre-built index, no transforms needed.
+ */
+export async function getAllSubcategories(): Promise<Subcategory[]> {
+  try {
+    const { getCachedAllSubcategories } = await import("./wordpress/cache");
+    return await getCachedAllSubcategories();
+  } catch (error) {
+    console.warn("Failed to get subcategories:", error);
     return [];
   }
 }
@@ -485,15 +347,12 @@ export async function getCategoryDescription(
  */
 export async function getTeamMembers(limit?: number): Promise<TeamMember[]> {
   if (USE_SANITY) {
-    try {
-      const { sanityFetch, queries, transforms } = await getSanityModules();
-      const members = await sanityFetch<any[]>(queries.allTeamMembersQuery);
-      const result = members.map(transforms.transformTeamMember);
-      return limit ? result.slice(0, limit) : result;
-    } catch (error) {
-      console.error("Failed to fetch team members from Sanity:", error instanceof Error ? error.message : String(error));
-      return [];
-    }
+    const modules = await getSanityModules();
+    if (!modules) return [];
+    const { sanityFetch, queries, transforms } = modules;
+    const members = await sanityFetch<any[]>(queries.allTeamMembersQuery);
+    const result = members.map(transforms.transformTeamMember);
+    return limit ? result.slice(0, limit) : result;
   }
 
   const members = await getCollection("team");
@@ -517,16 +376,13 @@ export async function getTeamMemberBySlug(
   slug: string
 ): Promise<TeamMember | null> {
   if (USE_SANITY) {
-    try {
-      const { sanityFetch, queries, transforms } = await getSanityModules();
-      const member = await sanityFetch<any>(queries.teamMemberBySlugQuery, {
-        slug,
-      });
-      return member ? transforms.transformTeamMember(member) : null;
-    } catch (error) {
-      console.error(`Failed to fetch team member "${slug}" from Sanity:`, error instanceof Error ? error.message : String(error));
-      return null;
-    }
+    const modules = await getSanityModules();
+    if (!modules) return null;
+    const { sanityFetch, queries, transforms } = modules;
+    const member = await sanityFetch<any>(queries.teamMemberBySlugQuery, {
+      slug,
+    });
+    return (member && !Array.isArray(member)) ? transforms.transformTeamMember(member) : null;
   }
 
   const entry = await getEntry("team", slug);
@@ -552,29 +408,23 @@ export async function getTeamMemberBySlug(
  * Get all services
  */
 export async function getServices(limit?: number): Promise<Service[]> {
-  try {
-    const { sanityFetch, queries, transforms } = await getSanityModules();
-    const services = await sanityFetch<any[]>(queries.allServicesQuery);
-    const result = services.filter(Boolean).map(transforms.transformService).filter((s: any) => s?.slug);
-    return limit ? result.slice(0, limit) : result;
-  } catch (error) {
-    console.error("Failed to fetch services from Sanity:", error instanceof Error ? error.message : String(error));
-    return [];
-  }
+  const modules = await getSanityModules();
+  if (!modules) return [];
+  const { sanityFetch, queries, transforms } = modules;
+  const services = await sanityFetch<any[]>(queries.allServicesQuery);
+  const result = services.filter(Boolean).map(transforms.transformService).filter((s: any) => s?.slug);
+  return limit ? result.slice(0, limit) : result;
 }
 
 /**
  * Get a single service by slug
  */
 export async function getServiceBySlug(slug: string): Promise<Service | null> {
-  try {
-    const { sanityFetch, queries, transforms } = await getSanityModules();
-    const service = await sanityFetch<any>(queries.serviceBySlugQuery, { slug });
-    return service ? transforms.transformService(service) : null;
-  } catch (error) {
-    console.error(`Failed to fetch service "${slug}" from Sanity:`, error instanceof Error ? error.message : String(error));
-    return null;
-  }
+  const modules = await getSanityModules();
+  if (!modules) return null;
+  const { sanityFetch, queries, transforms } = modules;
+  const service = await sanityFetch<any>(queries.serviceBySlugQuery, { slug });
+  return (service && !Array.isArray(service)) ? transforms.transformService(service) : null;
 }
 
 // =============================================================================
@@ -586,17 +436,14 @@ export async function getServiceBySlug(slug: string): Promise<Service | null> {
  */
 export async function getIndustries(limit?: number): Promise<Industry[]> {
   if (USE_SANITY) {
-    try {
-      const { sanityFetch, queries, transforms } = await getSanityModules();
-      const industries = await sanityFetch<any[]>(queries.allIndustriesQuery);
-      const result = industries
-        .map(transforms.transformIndustry)
-        .filter(industry => industry.slug !== null && industry.slug !== undefined);
-      return limit ? result.slice(0, limit) : result;
-    } catch (error) {
-      console.error("Failed to fetch industries from Sanity:", error instanceof Error ? error.message : String(error));
-      return [];
-    }
+    const modules = await getSanityModules();
+    if (!modules) return [];
+    const { sanityFetch, queries, transforms } = modules;
+    const industries = await sanityFetch<any[]>(queries.allIndustriesQuery);
+    const result = industries
+      .map(transforms.transformIndustry)
+      .filter(industry => industry.slug !== null && industry.slug !== undefined);
+    return limit ? result.slice(0, limit) : result;
   }
 
   const industries = await getCollection("industries");
@@ -631,16 +478,13 @@ export async function getIndustryBySlug(
   slug: string
 ): Promise<Industry | null> {
   if (USE_SANITY) {
-    try {
-      const { sanityFetch, queries, transforms } = await getSanityModules();
-      const industry = await sanityFetch<any>(queries.industryBySlugQuery, {
-        slug,
-      });
-      return industry ? transforms.transformIndustry(industry) : null;
-    } catch (error) {
-      console.error(`Failed to fetch industry "${slug}" from Sanity:`, error instanceof Error ? error.message : String(error));
-      return null;
-    }
+    const modules = await getSanityModules();
+    if (!modules) return null;
+    const { sanityFetch, queries, transforms } = modules;
+    const industry = await sanityFetch<any>(queries.industryBySlugQuery, {
+      slug,
+    });
+    return (industry && !Array.isArray(industry)) ? transforms.transformIndustry(industry) : null;
   }
 
   const industries = await getCollection("industries");
@@ -681,21 +525,18 @@ export async function getIndustryBySlug(
  */
 export async function getOurWork(limit?: number): Promise<SingleWork[]> {
   if (USE_SANITY) {
-    try {
-      const { sanityFetch, queries, transforms } = await getSanityModules();
-      const caseStudies = await sanityFetch<any[]>(queries.allCaseStudiesQuery);
-      const result = caseStudies
-        .filter(Boolean)
-        .map(transforms.transformSingleWork)
-        .filter((cs: any) => cs?.slug && cs?.data?.client);
-      return limit ? result.slice(0, limit) : result;
-    } catch (error) {
-      console.error("Failed to fetch case studies from Sanity:", error instanceof Error ? error.message : String(error));
-      return [];
-    }
+    const modules = await getSanityModules();
+    if (!modules) return [];
+    const { sanityFetch, queries, transforms } = modules;
+    const caseStudies = await sanityFetch<any[]>(queries.allCaseStudiesQuery);
+    const result = caseStudies
+      .filter(Boolean)
+      .map(transforms.transformSingleWork)
+      .filter((cs: any) => cs?.slug && cs?.data?.client);
+    return limit ? result.slice(0, limit) : result;
   }
 
-  const caseStudies = await getCollection("caseStudies");
+  const caseStudies = (await getCollection("caseStudies" as Parameters<typeof getCollection>[0])) as unknown as Array<{ id: string; data: SingleWork["data"]; render: () => unknown }>;
   return caseStudies
     .filter((caseStudy: any) => caseStudy?.data?.image && caseStudy?.data?.industry)
     .map((caseStudy: any) => ({
@@ -719,7 +560,7 @@ export async function getOurWork(limit?: number): Promise<SingleWork[]> {
         projectImages: caseStudy.data.projectImages,
         pubDate: caseStudy.data.pubDate,
       },
-      render: () => render(caseStudy),
+      render: () => render(caseStudy as unknown as Parameters<typeof render>[0]),
     }));
 }
 
@@ -730,19 +571,16 @@ export async function getSingleWorkBySlug(
   slug: string
 ): Promise<SingleWork | null> {
   if (USE_SANITY) {
-    try {
-      const { sanityFetch, queries, transforms } = await getSanityModules();
-      const caseStudy = await sanityFetch<any>(queries.caseStudyBySlugQuery, {
-        slug,
-      });
-      return caseStudy ? transforms.transformSingleWork(caseStudy) : null;
-    } catch (error) {
-      console.error(`Failed to fetch case study "${slug}" from Sanity:`, error instanceof Error ? error.message : String(error));
-      return null;
-    }
+    const modules = await getSanityModules();
+    if (!modules) return null;
+    const { sanityFetch, queries, transforms } = modules;
+    const caseStudy = await sanityFetch<any>(queries.caseStudyBySlugQuery, {
+      slug,
+    });
+    return (caseStudy && !Array.isArray(caseStudy)) ? transforms.transformSingleWork(caseStudy) : null;
   }
 
-  const entry = await getEntry("caseStudies", slug);
+  const entry = (await getEntry("caseStudies" as Parameters<typeof getEntry>[0], slug)) as unknown as { id: string; data: SingleWork["data"]; render: () => unknown };
   if (!entry) return null;
   return {
     slug: entry.id,
@@ -765,7 +603,7 @@ export async function getSingleWorkBySlug(
       projectImages: entry.data.projectImages,
       pubDate: entry.data.pubDate,
     },
-    render: () => render(entry),
+    render: () => render(entry as unknown as Parameters<typeof render>[0]),
   };
 }
 
@@ -778,14 +616,11 @@ export async function getSingleWorkBySlug(
  */
 export async function getInfoPages(): Promise<InfoPage[]> {
   if (USE_SANITY) {
-    try {
-      const { sanityFetch, queries, transforms } = await getSanityModules();
-      const pages = await sanityFetch<any[]>(queries.allInfoPagesQuery);
-      return pages.map(transforms.transformInfoPage);
-    } catch (error) {
-      console.error("Failed to fetch info pages from Sanity:", error instanceof Error ? error.message : String(error));
-      return [];
-    }
+    const modules = await getSanityModules();
+    if (!modules) return [];
+    const { sanityFetch, queries, transforms } = modules;
+    const pages = await sanityFetch<any[]>(queries.allInfoPagesQuery);
+    return pages.map(transforms.transformInfoPage);
   }
 
   const pages = await getCollection("infopages");
@@ -806,14 +641,11 @@ export async function getInfoPageBySlug(
   slug: string
 ): Promise<InfoPage | null> {
   if (USE_SANITY) {
-    try {
-      const { sanityFetch, queries, transforms } = await getSanityModules();
-      const page = await sanityFetch<any>(queries.infoPageBySlugQuery, { slug });
-      return page ? transforms.transformInfoPage(page) : null;
-    } catch (error) {
-      console.error(`Failed to fetch info page "${slug}" from Sanity:`, error instanceof Error ? error.message : String(error));
-      return null;
-    }
+    const modules = await getSanityModules();
+    if (!modules) return null;
+    const { sanityFetch, queries, transforms } = modules;
+    const page = await sanityFetch<any>(queries.infoPageBySlugQuery, { slug });
+    return (page && !Array.isArray(page)) ? transforms.transformInfoPage(page) : null;
   }
 
   const entry = await getEntry("infopages", slug);

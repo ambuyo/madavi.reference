@@ -1,6 +1,7 @@
 ---
 export const prerender = true;
 import SingleBlogLayout from "@/layouts/SingleBlogLayout.astro";
+import WPContent from "@/components/WPContent.astro";
 import { getPostBySlug } from "@/lib/data";
 import { readCachedPosts } from "@/lib/wordpress/cache";
 
@@ -57,5 +58,5 @@ const authorName = post.author?.name || "";
   seoImage={imageUrl}
   compiledBy={authorName}
 >
-  {post.body && <div set:html={post.body} />}
+  {post.body && <WPContent html={post.body} />}
 </SingleBlogLayout>

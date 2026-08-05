@@ -1,23 +1,15 @@
 ---
-export const prerender = false;
 import SingleBlogLayout from "@/layouts/SingleBlogLayout.astro";
-import { getPostBySlug, getPostBySlugLive } from "@/lib/data";
+import WPContent from "@/components/WPContent.astro";
+import { getPostBySlug } from "@/lib/data";
+
+export const prerender = false;
 
 const { slug } = Astro.params;
-const slugStr = Array.isArray(slug) ? slug[slug.length - 1] : slug;
-
-// Try cache first, then live WP for new posts
-const cached = await getPostBySlug(slugStr!);
-// Cache files are flat (top-level title/date/image/seo/body); the layouts
-// expect the Post shape with a `data` wrapper — normalize here.
-const post = cached
-  ? {
-      data: cached as any,
-      body: cached.body,
-      markdown: cached.markdown,
-      plainText: cached.plainText,
-    }
-  : await getPostBySlugLive(slugStr!);
+const startTime = Date.now();
+console.log(`[page:blog] GET /blog/${slug}`);
+const post = await getPostBySlug(slug!);
+console.log(`[page:blog] /blog/${slug} — post=${post ? "found" : "not found"} (${Date.now() - startTime}ms)`);
 
 if (!post) {
   return Astro.redirect("/404");
@@ -37,21 +29,26 @@ const authorName = post.data.team || post.data.author?.name || "Madavi";
 const authorAvatar = post.data.author?.avatar;
 const authorSlug = post.data.author?.slug;
 
-// Cached posts carry seo.title/seo.description; live posts carry description
-// plus optional seo.metaTitle/metaDescription.
-const seoTitle = post.data.seo?.title || post.data.seo?.metaTitle || post.data.title;
-const seoDescription = post.data.seo?.description || post.data.seo?.metaDescription || post.data.description;
+const seoTitle = post.data.seo?.metaTitle || post.data.title;
+const seoDescription = post.data.seo?.metaDescription || post.data.description;
 const seoImage = post.data.seo?.ogImage?.asset?.url || imageUrl;
 
-// Cached posts use `date` (string); live posts use `pubDate` (Date)
-const publishDate = post.data.pubDate || (post.data.date ? new Date(post.data.date) : new Date());
+const tags = post.data.tags || [];
+const breadcrumb = [
+  { name: "Home", url: "https://madavi.co" },
+  { name: "Blog", url: "https://madavi.co/blog" },
+];
+if (categoryName && categorySlug) {
+  breadcrumb.push({ name: categoryName, url: `https://madavi.co/blog/cat/${categorySlug}` });
+}
+breadcrumb.push({ name: post.data.title, url: Astro.url.href });
 ---
 
 <SingleBlogLayout
   title={post.data.title}
   category={categoryName}
   categorySlug={categorySlug}
-  date={publishDate}
+  date={post.data.pubDate || new Date()}
   readingTime={readingTime}
   image={imageUrl}
   description={post.data.description}
@@ -61,6 +58,8 @@ const publishDate = post.data.pubDate || (post.data.date ? new Date(post.data.da
   compiledBy={authorName}
   authorAvatar={authorAvatar}
   authorSlug={authorSlug}
+  tags={tags}
+  breadcrumb={breadcrumb}
 >
-  {post.body && <div set:html={post.body} />}
+  {post.body && <WPContent html={post.body} />}
 </SingleBlogLayout>

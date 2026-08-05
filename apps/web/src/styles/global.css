@@ -241,3 +241,14 @@
   background-color: var(--color-base-80);
 }
 
+/* ── Custom keyframes (migrated from tailwind.config.mjs) ── */
+@keyframes hover-wiggle {
+  0%, 100% { transform: rotate(-1deg); }
+  50% { transform: rotate(1deg); }
+}
+
+@keyframes debris-fall {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(180deg); opacity: 0; }
+}
+
